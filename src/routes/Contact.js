@@ -1,11 +1,18 @@
+import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
+import contactImage from './../assets/sapphireindoors2.jpg'
 
 function Contact (){
 
     return(
         <>
         <Navbar></Navbar>
-        <h1>Contact page!</h1>
+        <Intro
+            cName = "intro-mid"
+            introImg={contactImage}
+            title= "Contact Us"
+
+        />
             
         </>
     )

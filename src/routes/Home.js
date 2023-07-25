@@ -1,7 +1,6 @@
 import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
-import HomeImage from './../assets/sapphireindoors1.jpg'
-
+import HomeImage from './../assets/sapphireoutdoors3.jpg'
 
 function Home() {
   return (
