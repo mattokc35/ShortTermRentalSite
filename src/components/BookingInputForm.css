@@ -22,3 +22,16 @@
     font-style: italic;
     font-weight:normal;
 }
+
+.getPriceButton {
+    position:relative;
+    top:85px;
+    text-decoration: none;
+    background:  rgb(66, 84, 143);
+    padding: 1rem 2rem;
+    border-radius: 6px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: white;
+}

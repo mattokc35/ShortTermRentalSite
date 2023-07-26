@@ -16,6 +16,7 @@ function BookingInputForm(props) {
       <div className="BookingInputForm">
         <h2>Our 3-bedroom home sleeps up to a maximum of 12 guests</h2>
       </div>
+      <form>
       <div className="BookingInputFormInner">
         <h1>Select your dates:</h1>
         <DateRangePicker
@@ -39,7 +40,10 @@ function BookingInputForm(props) {
           label="Pets"
           options={petOptions}
         ></NumberSelect>
+        <button className="getPriceButton">Get Price</button>
       </div>
+      
+      </form>
     </>
   );
 }
