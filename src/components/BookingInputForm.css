@@ -1,0 +1,24 @@
+.BookingInputForm {
+    position: relative;
+    left:0%;
+    top: 15px;
+    
+}
+
+.BookingInputFormInner{
+    position: relative;
+    top:18px;
+    left:0%;
+}
+
+.DateRangePicker{
+    position: relative;
+    top:15px;
+    left:0%;
+}
+
+
+.BookingInputForm h2 {
+    font-style: italic;
+    font-weight:normal;
+}

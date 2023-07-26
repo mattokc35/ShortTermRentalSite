@@ -11,7 +11,6 @@ function Contact (){
             cName = "intro-mid"
             introImg={contactImage}
             title= "Contact Us"
-
         />
             
         </>

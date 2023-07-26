@@ -1,6 +1,7 @@
 import Navbar from "../components/Navbar";
 import bookingImage from './../assets/sapphireindoors1.jpg'
 import Intro from "../components/Intro";
+import BookingInputForm from "../components/BookingInputForm";
 
 
 function Book (){
@@ -13,6 +14,9 @@ function Book (){
             introImg={bookingImage}
             title= "Book Now"
         />
+        <BookingInputForm>
+
+        </BookingInputForm>
             
         </>
     )
