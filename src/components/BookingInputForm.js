@@ -12,6 +12,7 @@ import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
 import initialPriceRequest from "../network/postRequests";
 import checkTotalGuests from "../inputs/InputVerification";
+import differenceInDays from "date-fns/differenceInDays";
 
 function BookingInputForm(props) {
   const [selectValues, setSelectValues] = useState({
@@ -26,13 +27,16 @@ function BookingInputForm(props) {
   };
 
   const [startDate, setStartDate] = useState();
+  const [totalPrice, setTotalPrice] = useState(null);
   const [endDate, setEndDate] = useState();
   const [focusedInput, setFocusedInput] = useState();
 
   // Event handler for form submission
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
+    console.log(startDate);
     event.preventDefault();
     let data = {
+      numberOfNights: differenceInDays(endDate.toDate(), startDate.toDate()),
       startDate: startDate,
       endDate: endDate,
       selectedAdults: selectValues.selectedAdults,
@@ -49,7 +53,14 @@ function BookingInputForm(props) {
         data.selectedInfants
       )
     ) {
-      initialPriceRequest(data);
+      try {
+        const response = await initialPriceRequest(data);
+        const price = response.totalPrice;
+        setTotalPrice(price);
+      } catch (error) {
+        // Handle any errors that occurred during the fetch
+        console.error("Error:", error);
+      }
     } else {
       alert("Total number of guests exceeds the limit of 12");
     }
@@ -119,6 +130,16 @@ function BookingInputForm(props) {
           </button>
         </div>
       </form>
+      <div className="totalPriceSection">
+        {totalPrice !== null && (
+          <>
+            <h2>Total Price: $ {totalPrice}</h2>
+            <button type="submit" className="getPriceButton">
+              Proceed to Guest Info
+            </button>
+          </>
+        )}
+      </div>
     </>
   );
 }

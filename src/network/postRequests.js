@@ -1,14 +1,27 @@
-const initialPriceRequest = (input) => {
-    fetch("http://localhost:8000/initial-request", {
+const initialPriceRequest = async (input) => {
+    try {
+      const response = await fetch("http://localhost:8000/initial-request", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        // We convert the React state to JSON and send it as the POST body
         body: JSON.stringify(input),
-      }).then(function (response) {
-        return response.json();
       });
-}
-
-export default initialPriceRequest;
+  
+      if (!response.ok) {
+        // Handle non-200 status codes if needed
+        throw new Error("Network response was not ok");
+      }
+  
+      const data = await response.json();
+      console.log(data); // Log the data received from the server
+  
+      return data; // Return the parsed data
+    } catch (error) {
+      // Handle any errors that occurred during the fetch
+      console.error("Error:", error);
+      return null; // Return null or a default value if there was an error
+    }
+  };
+  
+  export default initialPriceRequest;

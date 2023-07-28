@@ -6,9 +6,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
 app.post('/initial-request', (req, res) => {
+    let totalPrice = req.body.numberOfNights * 200;
     console.log(req.body);
-    res.json({ message: "Hello from server!" });
+    res.json({ totalPrice });
 });
 
 
