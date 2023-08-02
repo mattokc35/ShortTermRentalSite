@@ -5,6 +5,8 @@ import Home from './routes/Home';
 import Book from './routes/Book';
 import Contact from './routes/Contact';
 import About from './routes/About';
+import PrivateRoutes from './routes/PrivateRoutes';
+
 
 
 function App() {
