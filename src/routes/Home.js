@@ -1,7 +1,11 @@
 import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
 import HomeImage from './../assets/sapphireoutdoors3.jpg'
+import Footer from "../components/Footer";
+import "../App.css"
 
+
+import "../App.css"
 function Home() {
   return (
     <>
@@ -15,6 +19,8 @@ function Home() {
         url="/book"
         btnClass="show"
       ></Intro>
+     
+      
     </>
   );
 }

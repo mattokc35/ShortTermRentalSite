@@ -1,0 +1,66 @@
+.modalContainer {
+  width: 70%;
+  height: 100vh;
+  border-radius: 12px;
+  background-color: white;
+  box-shadow: black 0px 5px 15px;
+  padding: 25px;
+  position:absolute;
+  z-index: 1000;
+  left:99%;
+  transform: translate(-50%, -10%);
+  border: 10px solid  rgb(66, 84, 143);
+  overflow-y:auto;
+}
+
+.modalBackground {
+position: absolute;
+width: 50vw;
+justify-content: center;
+align-items: center;
+left:0;
+right:0;
+height: 50vh;
+}
+
+
+textarea{
+  width: 102%;
+  height: 150px; /* You can adjust the height value as per your requirement */
+  resize: vertical; /* Allows vertical resizing of the textarea */
+}
+
+/* Add this rule to make the label display above the textarea */
+.TextAreaContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.modalContainer button {
+  color: red;
+  position: absolute;
+  top:1%;
+  right:1%;
+  width: 3%;
+  border: 2px solid  rgb(66, 84, 143);
+
+}
+
+.modalContainer bold{
+  font-weight: bold;
+}
+
+.modalContainer h1{
+  font-weight: bold;
+  font-size: 225%;
+  margin-bottom: 3%;
+  margin-top: 2%;
+}
+
+.TextInputRow{
+  display: flex;
+  font-size: 175%;
+  align-items:center;
+  justify-content: center;
+}

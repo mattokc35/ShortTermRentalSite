@@ -1,4 +1,6 @@
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import "../App.css"
 
 
 function About (){
@@ -7,6 +9,7 @@ function About (){
         <>
         <Navbar></Navbar>
         <h1>About page!</h1>
+       
             
         </>
     )

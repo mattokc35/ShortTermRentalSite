@@ -13,6 +13,7 @@ import "react-dates/lib/css/_datepicker.css";
 import initialPriceRequest from "../network/postRequests";
 import checkTotalGuests from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
+import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
 
 function BookingInputForm(props) {
   const [selectValues, setSelectValues] = useState({
@@ -30,10 +31,10 @@ function BookingInputForm(props) {
   const [totalPrice, setTotalPrice] = useState(null);
   const [endDate, setEndDate] = useState();
   const [focusedInput, setFocusedInput] = useState();
+  const [openPaymentModal, setPaymentModal] = useState(false);
 
   // Event handler for form submission
   const handleFormSubmit = async (event) => {
-    console.log(startDate);
     event.preventDefault();
     let data = {
       numberOfNights: differenceInDays(endDate.toDate(), startDate.toDate()),
@@ -44,6 +45,7 @@ function BookingInputForm(props) {
       selectedInfants: selectValues.selectedInfants,
       selectedPets: selectValues.selectedPets,
     };
+
 
     //check for input verification (total of adults, children, and infants needs to be < 12)
     if (
@@ -69,6 +71,9 @@ function BookingInputForm(props) {
   return (
     <>
       <div className="BookingInputForm">
+      {openPaymentModal && (  
+        <GuestInfoPaymentPageModal closeModal={setPaymentModal} startDate={JSON.stringify(startDate._d)} endDate={JSON.stringify(endDate._d)} adults={selectValues.selectedAdults}  children={selectValues.selectedChildren} price={totalPrice}></GuestInfoPaymentPageModal> 
+      )}
         <h2>Our 3-bedroom home sleeps up to a maximum of 12 guests</h2>
       </div>
       <form onSubmit={handleFormSubmit}>
@@ -80,6 +85,7 @@ function BookingInputForm(props) {
             endDate={endDate}
             endDateId="end-date"
             onDatesChange={({ startDate, endDate }) => {
+              setTotalPrice(null);
               setStartDate(startDate);
               setEndDate(endDate);
             }}
@@ -128,18 +134,28 @@ function BookingInputForm(props) {
           <button type="submit" className="getPriceButton">
             Get Price
           </button>
+        
         </div>
       </form>
       <div className="totalPriceSection">
         {totalPrice !== null && (
           <>
             <h2>Total Price: $ {totalPrice}</h2>
-            <button type="submit" className="getPriceButton">
+            <button
+              className="getPriceButton"
+              onClick={() => {
+                setPaymentModal(!openPaymentModal);
+              }}
+            >
               Proceed to Guest Info
             </button>
           </>
         )}
+        
       </div>
+     
+     
+     
     </>
   );
 }
