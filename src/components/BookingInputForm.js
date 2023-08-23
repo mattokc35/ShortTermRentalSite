@@ -10,7 +10,7 @@ import {
 } from "../constants/constants";
 import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
-import initialPriceRequest from "../network/postRequests";
+import {initialPriceRequest, calendarRequest} from "../network/networkRequests";
 import checkTotalGuests from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
@@ -22,6 +22,20 @@ function BookingInputForm(props) {
     selectedInfants: 0,
     selectedPets: 0,
   });
+
+  //useEffect hook, will run on render and if variable changes
+  React.useEffect(() => {
+    async function fetchCalendarData() {
+      let bookedDatesArr = []
+      const bookedDatesResponse= await calendarRequest();
+      console.log(bookedDatesResponse.checkedOutDates[0])
+      console.log(differenceInDays(new Date(bookedDatesResponse.checkedOutDates[1]), new Date(bookedDatesResponse.checkedOutDates[0])))
+  
+    }
+    fetchCalendarData()
+   
+  }, []);
+
 
   const changeHandler = (name, selectedOption) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });
@@ -89,6 +103,7 @@ function BookingInputForm(props) {
               setStartDate(startDate);
               setEndDate(endDate);
             }}
+            excludeDates={[]}
             focusedInput={focusedInput}
             onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
           ></DateRangePicker>
