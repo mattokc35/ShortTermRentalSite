@@ -10,10 +10,14 @@ import {
 } from "../constants/constants";
 import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
-import {initialPriceRequest, calendarRequest} from "../network/networkRequests";
+import {
+  initialPriceRequest,
+  calendarRequest,
+} from "../network/networkRequests";
 import checkTotalGuests from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
+import { addDays } from "date-fns";
 
 function BookingInputForm(props) {
   const [selectValues, setSelectValues] = useState({
@@ -26,21 +30,21 @@ function BookingInputForm(props) {
   //useEffect hook, will run on render and if variable changes
   React.useEffect(() => {
     async function fetchCalendarData() {
-      let bookedDatesArr = []
-      const bookedDatesResponse= await calendarRequest();
-      console.log(bookedDatesResponse.checkedOutDates[0])
-      console.log(differenceInDays(new Date(bookedDatesResponse.checkedOutDates[1]), new Date(bookedDatesResponse.checkedOutDates[0])))
-  
+      const bookedDatesResponse = await calendarRequest();
+      console.log(bookedDatesResponse.BookedRanges);
+      setBookedDates(
+        (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
+      );
+      console.log(bookedDates);
     }
-    fetchCalendarData()
-   
+    fetchCalendarData();
   }, []);
-
 
   const changeHandler = (name, selectedOption) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });
   };
 
+  const [bookedDates, setBookedDates] = useState([]);
   const [startDate, setStartDate] = useState();
   const [totalPrice, setTotalPrice] = useState(null);
   const [endDate, setEndDate] = useState();
@@ -59,7 +63,6 @@ function BookingInputForm(props) {
       selectedInfants: selectValues.selectedInfants,
       selectedPets: selectValues.selectedPets,
     };
-
 
     //check for input verification (total of adults, children, and infants needs to be < 12)
     if (
@@ -82,12 +85,31 @@ function BookingInputForm(props) {
     }
   };
 
+  //function to check if calendar date is blocked
+  const checkDateBlocked = (date) => {
+    for (let i = 0; i < bookedDates.length; i++) {
+      if (
+        date.isBetween(bookedDates[i].start, bookedDates[i].end, "days", "[]")
+      ) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   return (
     <>
       <div className="BookingInputForm">
-      {openPaymentModal && (  
-        <GuestInfoPaymentPageModal closeModal={setPaymentModal} startDate={JSON.stringify(startDate._d)} endDate={JSON.stringify(endDate._d)} adults={selectValues.selectedAdults}  children={selectValues.selectedChildren} price={totalPrice}></GuestInfoPaymentPageModal> 
-      )}
+        {openPaymentModal && (
+          <GuestInfoPaymentPageModal
+            closeModal={setPaymentModal}
+            startDate={JSON.stringify(startDate._d)}
+            endDate={JSON.stringify(endDate._d)}
+            adults={selectValues.selectedAdults}
+            children={selectValues.selectedChildren}
+            price={totalPrice}
+          ></GuestInfoPaymentPageModal>
+        )}
         <h2>Our 3-bedroom home sleeps up to a maximum of 12 guests</h2>
       </div>
       <form onSubmit={handleFormSubmit}>
@@ -103,7 +125,7 @@ function BookingInputForm(props) {
               setStartDate(startDate);
               setEndDate(endDate);
             }}
-            excludeDates={[]}
+            isDayBlocked={checkDateBlocked}
             focusedInput={focusedInput}
             onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
           ></DateRangePicker>
@@ -149,7 +171,6 @@ function BookingInputForm(props) {
           <button type="submit" className="getPriceButton">
             Get Price
           </button>
-        
         </div>
       </form>
       <div className="totalPriceSection">
@@ -166,11 +187,7 @@ function BookingInputForm(props) {
             </button>
           </>
         )}
-        
       </div>
-     
-     
-     
     </>
   );
 }
