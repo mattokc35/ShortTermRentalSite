@@ -1,0 +1,41 @@
+.ContactForm {
+  margin: 0 auto;
+}
+
+label {
+  vertical-align: middle;
+}
+
+input {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: 65%;
+}
+textarea {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 65%;
+  text-align: center;
+}
+
+.contactButton {
+  text-decoration: none;
+  background: rgb(66, 84, 143);
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: white;
+  height: 45%;
+}
+
+.contactButton:hover {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}

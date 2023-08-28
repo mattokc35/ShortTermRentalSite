@@ -24,12 +24,12 @@ img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: .69;
+    opacity: .70;
 }
 
 .intro-text{
     position: absolute;
-    top:87%;
+    top:81%;
     left: 50%;
     transform: translate(-50%, -50%);
     width:100%;

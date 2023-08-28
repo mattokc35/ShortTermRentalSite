@@ -1,14 +1,15 @@
 .modalContainer {
-  width: 52%;
-  height: 140%;
+  width: 25%;
+  height: 70%;
   border-radius: 12px;
   background-color: white;
   box-shadow: black 0px 5px 15px;
   padding: 25px;
   position:absolute;
   z-index: 1000;
-  left:99%;
-  transform: translate(-50%, -10%);
+  left:50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   border: 10px solid  rgb(66, 84, 143);
   overflow-y:auto;
 }
@@ -16,16 +17,24 @@
 
 @media screen and (max-width: 1700px) and (min-width:1101px){
   .modalContainer{
-    width: 90%;
+    width: 45%;
+    left:50%;
+    top: 50%;
+    height: 70%;
   }
+  
 }
+
 
 @media screen and (max-width: 450px){
   .modalContainer{
-    width: 190%;
+    width: 99%;
+    height: 95%;
+    left: 50%;
+    top: 50%;
   }
   .modalContainer h1{
-    font-size: 125%;
+    font-size: 120%;
   }
   
   .TextInputRow{
@@ -38,19 +47,22 @@
 
 @media screen and (max-width: 1100px) and (min-width: 451px){
   .modalContainer{
-    width: 130%;
+    width: 65%;
+    height: 68%;
   }
 }
 
 
 .modalBackground {
 position: absolute;
-width: 50vw;
+width: 100vw;
 justify-content: center;
 align-items: center;
 left:0;
 right:0;
-height: 50vh;
+height: 100vh;
+backdrop-filter: blur(3px);
+z-index:10;
 }
 
 
@@ -94,7 +106,7 @@ textarea{
 
 .TextInputRow{
   display: flex;
-  font-size: 160%;
+  font-size: 140%;
   align-items:center;
   justify-content: center;
 }

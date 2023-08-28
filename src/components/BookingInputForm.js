@@ -53,7 +53,8 @@ function BookingInputForm(props) {
 
   // Event handler for form submission
   const handleFormSubmit = async (event) => {
-    event.preventDefault();
+    //event.preventDefault();
+    console.log("submit")
     let data = {
       numberOfNights: differenceInDays(endDate.toDate(), startDate.toDate()),
       startDate: startDate,
@@ -82,6 +83,7 @@ function BookingInputForm(props) {
       }
     } else {
       alert("Total number of guests exceeds the limit of 12");
+
     }
   };
 
@@ -168,25 +170,22 @@ function BookingInputForm(props) {
               changeHandler("selectedPets", selectedOption)
             }
           ></NumberSelect>
-          <button type="submit" className="getPriceButton">
-            Get Price
-          </button>
         </div>
       </form>
       <div className="totalPriceSection">
-        {totalPrice !== null && (
-          <>
-            <h2>Total Price: $ {totalPrice}</h2>
+      
+          
             <button
               className="getPriceButton"
               onClick={() => {
+                handleFormSubmit();
                 setPaymentModal(!openPaymentModal);
               }}
             >
-              Proceed to Guest Info
+              Get Price
             </button>
-          </>
-        )}
+          
+       
       </div>
     </>
   );

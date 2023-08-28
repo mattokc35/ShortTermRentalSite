@@ -8,6 +8,7 @@
   position: relative;
   top: 18px;
   left: 0%;
+  font-size: 88%;
 }
 
 .DateRangePicker {
@@ -32,7 +33,16 @@
   font-weight: bold;
   letter-spacing: 2px;
   color: white;
+  
 }
+
+.getPriceButton:hover {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  transition: all 0.2s ease-in-out;
+}
+
 
 .totalPriceSection {
   position: relative;

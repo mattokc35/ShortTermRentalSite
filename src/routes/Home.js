@@ -8,6 +8,9 @@ import HomeDetails from "../components/HomeDetails";
 function Home() {
   return (
     <>
+
+
+   
       <Navbar></Navbar>
       <Intro
         cName="intro-mid"
@@ -19,9 +22,8 @@ function Home() {
         btnClass="show"
       />
       <br/>
-      <br/>
-      <br/>
       <HomeDetails/>
+   
     </>
   );
 }
