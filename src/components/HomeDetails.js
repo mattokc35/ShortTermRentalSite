@@ -13,7 +13,7 @@ function HomeDetails() {
         <>
         <h3>Welcome to our beautiful home...</h3>
         <div className="carousel-section">
-        <Carousel showIndicators={false}>
+        <Carousel showIndicators={false} className="carousel">
                 <div>
                     <img src={HomeImage} />
                     <p className="">Outdoors!</p>

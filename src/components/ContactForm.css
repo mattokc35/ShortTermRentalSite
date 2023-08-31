@@ -1,5 +1,32 @@
 .ContactForm {
   margin: 0 auto;
+  width: 100%;
+}
+
+@media screen and (max-width: 550px) {
+  .ContactForm {
+    margin: 0 auto;
+    position: relative;
+  }
+  input {
+    width: 100%;
+  }
+  .ContactForm textarea {
+    display: block;
+    font-size: 115%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+    text-align: center;
+  }
+  .ContactForm input {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-size: 115%;
+    width: 60%;
+  }
 }
 
 label {
@@ -11,23 +38,26 @@ input {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  width: 65%;
+  font-size: 115%;
+  width: 30%;
 }
 textarea {
   display: block;
+  font-size: 115%;
   margin-left: auto;
   margin-right: auto;
-  width: 65%;
+  width: 30%;
   text-align: center;
 }
 
 .contactButton {
   text-decoration: none;
-  background: rgb(66, 84, 143);
-  padding: 1rem 2rem;
-  border-radius: 4px;
+  background: #0f52ba;
+  padding: 1rem 2rem 1rem;
+  border-radius: 6px;
   font-size: 1.3rem;
   font-weight: bold;
+  border: none;
   letter-spacing: 2px;
   color: white;
   height: 45%;

@@ -173,8 +173,6 @@ function BookingInputForm(props) {
         </div>
       </form>
       <div className="totalPriceSection">
-      
-          
             <button
               className="getPriceButton"
               onClick={() => {

@@ -9,6 +9,8 @@
   top: 18px;
   left: 0%;
   font-size: 88%;
+  z-index: 5;
+  color: #0F52BA;
 }
 
 .DateRangePicker {
@@ -20,19 +22,22 @@
 .BookingInputForm h2 {
   font-style: italic;
   font-weight: normal;
+  color: #0F52BA;
 }
 
 .getPriceButton {
   position: relative;
   top: 87px;
   text-decoration: none;
-  background: rgb(66, 84, 143);
+  background: #0F52BA
+;
   padding: 1rem 2rem;
   border-radius: 6px;
   font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: 2px;
   color: white;
+  border: none;
   
 }
 

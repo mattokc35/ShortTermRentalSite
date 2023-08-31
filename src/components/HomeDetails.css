@@ -1,7 +1,8 @@
 h3 {
   font-size: 189%;
   font-weight: 450;
-  color: rgb(66, 84, 143);
+  color: #0F52BA
+;
   padding: 0.5rem 0 2rem 0;
   font-style: italic;
 }
@@ -10,22 +11,39 @@ h3 {
   h3 {
     font-size: 130%;
     font-weight: 450;
-    color: rgb(66, 84, 143);
+    color: #0F52BA
+;
     padding: 0.5rem 0 2rem 0;
     font-style: italic;
   }
 
   p {
     font-size: 1%;
-    color: rgb(66, 84, 143);
+    color: #0F52BA;
   }
 }
 
+@media screen and (min-width:1500px){
+  .carousel {
+    width: 65%;
+    height: 200%;
+  
+  }
+  .thumbs-wrapper{
+    position:relative;
+    left: 25%;
+  
+  }
+  
+}
+
+
 .carousel-section img {
-  opacity: 0.9;
+  opacity: 1.0;
 }
 
 p {
   font-size: 130%;
-  color: rgb(66, 84, 143);
+  color: #0F52BA
+;
 }

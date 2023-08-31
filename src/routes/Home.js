@@ -1,6 +1,6 @@
 import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
-import HomeImage from "./../assets/sapphireoutdoors3.jpg";
+import HomeImage from "./../assets/sapphirebed.jpg";
 import Footer from "../components/Footer";
 import "../App.css";
 import HomeDetails from "../components/HomeDetails";

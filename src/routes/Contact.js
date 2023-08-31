@@ -1,6 +1,6 @@
 import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
-import contactImage from "./../assets/sapphireindoors2.jpg";
+import contactImage from "./../assets/livingroom2.jpg";
 import Footer from "../components/Footer";
 import "../App.css";
 import ContactForm from "../components/ContactForm";
