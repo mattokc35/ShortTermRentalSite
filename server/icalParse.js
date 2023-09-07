@@ -9,7 +9,5 @@ Object.entries(events).map((entry) => {
   let value = entry[1];
   let startDate = JSON.stringify(value.start).substring(1, 25);
   let endDate = JSON.stringify(value.end).substring(1, 25);
-  console.log(startDate, "\n", endDate, "\n\n");
   return startDate, endDate;
 });
-

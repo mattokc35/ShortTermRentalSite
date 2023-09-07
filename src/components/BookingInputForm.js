@@ -11,15 +11,22 @@ import {
 import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
 import {
-  initialPriceRequest,
   calendarRequest,
+  priceRequest,
 } from "../network/networkRequests";
 import checkTotalGuests from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
-import { addDays } from "date-fns";
+import "bootstrap/dist/css/bootstrap.css";
+import Modal from "react-bootstrap/Modal";
+import { Button } from "react-bootstrap";
+import { calculatePrice } from "../helpers/helperFunctions";
 
-function BookingInputForm(props) {
+function BookingInputForm() {
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const [selectValues, setSelectValues] = useState({
     selectedAdults: 1,
     selectedChildren: 0,
@@ -31,13 +38,17 @@ function BookingInputForm(props) {
   React.useEffect(() => {
     async function fetchCalendarData() {
       const bookedDatesResponse = await calendarRequest();
-      console.log(bookedDatesResponse.BookedRanges);
       setBookedDates(
         (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
       );
-      console.log(bookedDates);
+    }
+
+    async function fetchPriceData() {
+      const priceArray = await priceRequest();
+      setPriceArray(priceArray);
     }
     fetchCalendarData();
+    fetchPriceData();
   }, []);
 
   const changeHandler = (name, selectedOption) => {
@@ -49,12 +60,18 @@ function BookingInputForm(props) {
   const [totalPrice, setTotalPrice] = useState(null);
   const [endDate, setEndDate] = useState();
   const [focusedInput, setFocusedInput] = useState();
-  const [openPaymentModal, setPaymentModal] = useState(false);
+  const [nightsPrice, setNightsPrice] = useState();
+  const [priceArray, setPriceArray] = useState([]);
 
   // Event handler for form submission
   const handleFormSubmit = async (event) => {
     //event.preventDefault();
-    console.log("submit")
+    let totalPrice = calculatePrice(
+      startDate,
+      endDate,
+      selectValues.selectedPets,
+      priceArray
+    );
     let data = {
       numberOfNights: differenceInDays(endDate.toDate(), startDate.toDate()),
       startDate: startDate,
@@ -74,16 +91,17 @@ function BookingInputForm(props) {
       )
     ) {
       try {
-        const response = await initialPriceRequest(data);
-        const price = response.totalPrice;
-        setTotalPrice(price);
+        //const response = await initialPriceRequest(data);
+        //const price = response.totalPrice;
+        setTotalPrice(totalPrice[0]);
+        setNightsPrice(totalPrice[1]);
+        handleShow();
       } catch (error) {
         // Handle any errors that occurred during the fetch
         console.error("Error:", error);
       }
     } else {
       alert("Total number of guests exceeds the limit of 12");
-
     }
   };
 
@@ -99,19 +117,60 @@ function BookingInputForm(props) {
     return false;
   };
 
+  const renderDayContents = (date) => {
+    console.log(priceArray);
+    let found = 1;
+    found = priceArray.PriceData[0].data.findIndex(
+      (element) => element.date === date.format("YYYY-MM-DD")
+    );
+    if (found === -1) {
+      return;
+    }
+    const entries = Object.entries(priceArray.PriceData[0].data);
+
+    let foundPrice = JSON.stringify(entries[found][1].price);
+    let dayValue = JSON.stringify(date._d).substring(9, 11);
+    return (
+      <>
+        <div className="calendar-box">
+          <br />
+          <p className="calendar-text-day">{dayValue} </p>
+          <br></br>
+          <div className="calendar-price-div">
+            <p className="calendar-text-price">${foundPrice} </p>
+          </div>
+        </div>
+      </>
+    );
+  };
   return (
     <>
       <div className="BookingInputForm">
-        {openPaymentModal && (
-          <GuestInfoPaymentPageModal
-            closeModal={setPaymentModal}
-            startDate={JSON.stringify(startDate._d)}
-            endDate={JSON.stringify(endDate._d)}
-            adults={selectValues.selectedAdults}
-            children={selectValues.selectedChildren}
-            price={totalPrice}
-          ></GuestInfoPaymentPageModal>
-        )}
+        <div className="PaymentModal">
+          <Modal show={show}>
+            <Modal.Header>
+              <Modal.Title>Guest Info/Payment</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <GuestInfoPaymentPageModal
+                startDate={JSON.stringify(startDate)}
+                endDate={JSON.stringify(endDate)}
+                adults={selectValues.selectedAdults}
+                children={selectValues.selectedChildren}
+                price={totalPrice}
+                nightsPrice={nightsPrice}
+              ></GuestInfoPaymentPageModal>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Close
+              </Button>
+              <Button variant="primary" onClick={handleClose}>
+                Save Changes
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
         <h2>Our 3-bedroom home sleeps up to a maximum of 12 guests</h2>
       </div>
       <form onSubmit={handleFormSubmit}>
@@ -127,6 +186,7 @@ function BookingInputForm(props) {
               setStartDate(startDate);
               setEndDate(endDate);
             }}
+            renderDayContents={renderDayContents}
             isDayBlocked={checkDateBlocked}
             focusedInput={focusedInput}
             onFocusChange={(focusedInput) => setFocusedInput(focusedInput)}
@@ -173,17 +233,14 @@ function BookingInputForm(props) {
         </div>
       </form>
       <div className="totalPriceSection">
-            <button
-              className="getPriceButton"
-              onClick={() => {
-                handleFormSubmit();
-                setPaymentModal(!openPaymentModal);
-              }}
-            >
-              Get Price
-            </button>
-          
-       
+        <button
+          className="getPriceButton"
+          onClick={() => {
+            handleFormSubmit();
+          }}
+        >
+          Get Price
+        </button>
       </div>
     </>
   );

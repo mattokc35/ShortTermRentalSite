@@ -1,112 +1,18 @@
-.modalContainer {
-  width: 25%;
-  height: 70%;
-  border-radius: 12px;
-  background-color: white;
-  box-shadow: black 0px 5px 15px;
-  padding: 25px;
-  position:absolute;
-  z-index: 1000;
-  left:50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  border: 10px solid  rgb(66, 84, 143);
-  overflow-y:auto;
+
+
+
+h5{
+  font-size: 120%;
+  text-align: center;
 }
-
-
-@media screen and (max-width: 1700px) and (min-width:1101px){
-  .modalContainer{
-    width: 45%;
-    left:50%;
-    top: 50%;
-    height: 70%;
-  }
-  
-}
-
-
-@media screen and (max-width: 450px){
-  .modalContainer{
-    width: 99%;
-    height: 95%;
-    left: 50%;
-    top: 50%;
-  }
-  .modalContainer h1{
-    font-size: 120%;
-  }
-  
-  .TextInputRow{
-    display: flex;
-    font-size: 1px;
-    align-items:center;
-    justify-content: center;
-  }
-}
-
-@media screen and (max-width: 1100px) and (min-width: 451px){
-  .modalContainer{
-    width: 65%;
-    height: 68%;
-  }
-}
-
-
-.modalBackground {
-position: absolute;
-width: 100vw;
-justify-content: center;
-align-items: center;
-left:0;
-right:0;
-height: 100vh;
-backdrop-filter: blur(3px);
-z-index:10;
-}
-
-
-textarea{
-  width: 102%;
-  height: 150px; /* You can adjust the height value as per your requirement */
-  resize: vertical; /* Allows vertical resizing of the textarea */
-}
-
-/* Add this rule to make the label display above the textarea */
-.TextAreaContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.modalContainer button {
-  color: red;
-  position: absolute;
-  top:1%;
-  right:1%;
-  width: 7%;
-  border: 2px solid  rgb(66, 84, 143);
-
-}
-
-.modalContainer bold{
-  font-weight: bold;
-}
-
-.modalContainer h1{
-  font-weight: bold;
-  font-size: 210%;
-  margin-bottom: 3%;
-  margin-top: 2%;
-}
-
-.modalContainer h2{
-  font-size: 130%;
+h4{
+  font-size: 90%;
+  text-align: center;
 }
 
 .TextInputRow{
   display: flex;
-  font-size: 140%;
+  font-size: 100%;
   align-items:center;
   justify-content: center;
 }

@@ -1,11 +1,15 @@
 import React, { useRef } from "react";
 import emailjs from "@emailjs/browser";
 import "./ContactForm.css";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
+import "bootstrap/dist/css/bootstrap.css";
 
 function ContactForm() {
   const form = useRef();
 
-  const sendEmail = (e) => {
+  const handleSubmit = (e) => {
+    console.log("SEND EMAIL");
     e.preventDefault();
 
     emailjs
@@ -26,22 +30,44 @@ function ContactForm() {
   };
   return (
     <>
-      <h3>Send Us A Message Below</h3>
       <div className="ContactForm">
-        <form ref={form} onSubmit={sendEmail}>
-          <label>Name: 
-          <input type="text" name="user_name" />
-          </label>
-          <label>Email:  
-          <input type="email" name="user_email" />
-          </label>
-          <label>Message:
-          <textarea name="message" />
-          </label>
-          <br/>
-          <input type="submit" className="contactButton" value="Send" />
-          <br/>
-        </form>
+        <Form ref={form}>
+          <Form.Group className="mb-3" controlId="formBasicName">
+            <Form.Label>Guest Name</Form.Label>
+            <Form.Control
+              type="name"
+              name="user_name"
+              placeholder="Enter name"
+            />
+          </Form.Group>
+          <Form.Group
+            className="mb-3"
+            name="user_email"
+            controlId="formBasicEmail"
+          >
+            <Form.Label>Email address</Form.Label>
+            <Form.Control
+              type="email"
+              name="user_email"
+              placeholder="Enter email"
+            />
+            <Form.Text className="text-muted">
+              We'll never share your email with anyone else.
+            </Form.Text>
+          </Form.Group>
+          <Form.Group controlId="exampleForm.ControlTextarea1">
+            <Form.Label>Questions/Comments</Form.Label>
+            <Form.Control as="textarea" rows="3" name="message" />
+          </Form.Group>
+          <Button
+            className="contactSubmitButton"
+            variant="primary"
+            type="submit"
+            onClick={handleSubmit}
+          >
+            Submit
+          </Button>
+        </Form>
       </div>
     </>
   );

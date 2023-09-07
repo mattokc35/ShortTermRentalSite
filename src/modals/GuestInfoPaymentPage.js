@@ -1,62 +1,58 @@
 import "./GuestInfoPaymentPageModal.css";
-import TextInput from "../inputs/TextInput";
 import { useState, React } from "react";
 
-function GuestInfoPaymentPageModal(props) {
+import Form from "react-bootstrap/Form";
 
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhone] = useState('');
+function GuestInfoPaymentPageModal(props) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhone] = useState("");
   const [comments, setComments] = useState("");
   return (
     <>
-      <div className="modalBackground">
-        <div className="modalContainer">
-          <button onClick={() => props.closeModal(false)}> X </button>
+      <h5>
+        {" "}
+        <bold> Reservation Dates: </bold> {props.startDate.substr(1, 10)} to{" "}
+        {props.endDate.substr(1, 10)}
+      </h5>
+      <h5>
+        {" "}
+        <bold> Adults: </bold> {props.adults} <bold> Children: </bold>{" "}
+        {props.children} <bold> Infants: </bold> 0 <bold> Pets: </bold> 0
+      </h5>
+      <h4>
+        {" "}
+        <bold> Total Price:</bold> ${props.price}
+      </h4>
 
-          <h1>Reservation Info</h1>
-          <h2>
-            {" "}
-            <bold> Reservation Dates: </bold> {props.startDate.substr(1, 10)} to{" "}
-            {props.endDate.substr(1, 10)}
-          </h2>
-          <h2>
-            {" "}
-            <bold> Adults: </bold> {props.adults} <bold> Children: </bold>{" "}
-            {props.children} <bold> Infants: </bold> 0 <bold> Pets: </bold> 0
-          </h2>
-          <h2>
-            {" "}
-            <bold> Total Price:</bold> ${props.price}
-          </h2>
+      <Form>
+        <Form.Group className="mb-3" controlId="formBasicName">
+          <Form.Label>Guest Name</Form.Label>
+          <Form.Control type="name" placeholder="Enter name" />
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control type="email" placeholder="Enter email" />
+          <Form.Text className="text-muted">
+            We'll never share your email with anyone else.
+          </Form.Text>
+        </Form.Group>
 
-          <h1>Guest Info</h1>
-          <div className="TextInputRow">
-            <TextInput
-              label="Guest Name: "
-              className="textInputClass"
-            ></TextInput>
-          </div>
-          <div className="TextInputRow">
-            <TextInput
-              label="Email Address:  "
-              className="textInputClass"
-            ></TextInput>
-          </div>
-          <div className="TextInputRow">
-            <TextInput
-              label="Phone Number:"
-              className="textInputClass"
-            ></TextInput>
-          </div>
-          <div className="TextInputRow">
-            <div className="TextAreaContainer">
-              <label>Questions or Comments?</label>
-              <textarea></textarea>
-            </div>
-          </div>
-        </div>
-      </div>
+        <Form.Group className="mb-3" controlId="formBasicPhoneNumber">
+          <Form.Label>Phone Number</Form.Label>
+          <Form.Control type="tel" placeholder="Phone Number" />
+          <Form.Text className="text-muted">
+            We'll never share your phone number with anyone else.
+          </Form.Text>
+        </Form.Group>
+        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+          <Form.Check type="checkbox" label="Check me out" />
+        </Form.Group>
+        <Form.Group controlId="exampleForm.ControlTextarea1">
+          <Form.Label>Questions/Comments</Form.Label>
+          <Form.Control as="textarea" rows="3" name="address" />
+        </Form.Group>
+      </Form>
     </>
   );
 }

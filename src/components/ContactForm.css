@@ -1,36 +1,11 @@
-.ContactForm {
-  margin: 0 auto;
-  width: 100%;
+.ContactForm .form-control {
+  width: 59%;
+  max-width: 70%;
+  position: relative;
 }
 
-@media screen and (max-width: 550px) {
-  .ContactForm {
-    margin: 0 auto;
-    position: relative;
-  }
-  input {
-    width: 100%;
-  }
-  .ContactForm textarea {
-    display: block;
-    font-size: 115%;
-    margin-left: auto;
-    margin-right: auto;
-    width: 60%;
-    text-align: center;
-  }
-  .ContactForm input {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    font-size: 115%;
-    width: 60%;
-  }
-}
-
-label {
-  vertical-align: middle;
+.ContactForm .form-label {
+  color: #0f52ba;
 }
 
 input {
@@ -42,30 +17,17 @@ input {
   width: 30%;
 }
 textarea {
-  display: block;
-  font-size: 115%;
+  text-align: center;
   margin-left: auto;
   margin-right: auto;
-  width: 30%;
-  text-align: center;
+  margin-bottom: 10px;
 }
 
-.contactButton {
-  text-decoration: none;
-  background: #0f52ba;
-  padding: 1rem 2rem 1rem;
-  border-radius: 6px;
-  font-size: 1.3rem;
-  font-weight: bold;
-  border: none;
-  letter-spacing: 2px;
-  color: white;
-  height: 45%;
+.contactSubmitButton {
+  background-color: #0f52ba;
 }
 
-.contactButton:hover {
+.contactSubmitButton:hover {
   background-color: white;
   color: black;
-  border-radius: 4px;
-  transition: all 0.2s ease-in-out;
 }

@@ -13,10 +13,15 @@
   color: #0F52BA;
 }
 
-.DateRangePicker {
-  position: relative;
-  top: 15px;
-  left: 0%;
+
+
+.DayPicker_transitionContainer {
+  padding-bottom:50px;
+  box-sizing: content-box;
+}
+
+.PaymentModal{
+  z-index: 10;
 }
 
 .BookingInputForm h2 {
@@ -25,13 +30,39 @@
   color: #0F52BA;
 }
 
+
+.calendar-text-day{
+  font-size: 70%;
+
+}
+
+.calendar-text-price{
+  position: relative;
+  color: grey;
+  font-size: 90%;
+
+}
+
+.calendar-price-div{
+  position:relative;
+  margin: 6px -10px 2px 0px;
+  right:5px;
+  top:10px;
+
+}
+
+
+.calendar-box{
+  display:flex;
+}
+
 .getPriceButton {
   position: relative;
   top: 87px;
   text-decoration: none;
   background: #0F52BA
 ;
-  padding: 1rem 2rem;
+  padding: 0.5rem 1rem;
   border-radius: 6px;
   font-size: 1.3rem;
   font-weight: bold;

@@ -2,18 +2,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 30px;
+  padding: 20px 30px 5px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.24);
   width: 95%;
   background-color: #0F52BA
 ;
-  height: 80px;
+  height: 82px;
   border-radius: 13px;
   position: fixed;
   top:20px;
   left:50%;
   transform: translate(-50%);
-  z-index: 9999;
+  z-index: 20;
 }
 
 .navbar-logo {

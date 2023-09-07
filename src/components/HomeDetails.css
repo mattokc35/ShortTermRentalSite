@@ -1,8 +1,7 @@
 h3 {
   font-size: 189%;
   font-weight: 450;
-  color: #0F52BA
-;
+  color: #0f52ba;
   padding: 0.5rem 0 2rem 0;
   font-style: italic;
 }
@@ -11,39 +10,33 @@ h3 {
   h3 {
     font-size: 130%;
     font-weight: 450;
-    color: #0F52BA
-;
+    color: #0f52ba;
     padding: 0.5rem 0 2rem 0;
     font-style: italic;
   }
 
   p {
     font-size: 1%;
-    color: #0F52BA;
+    color: #0f52ba;
   }
 }
 
-@media screen and (min-width:1500px){
+@media screen and (min-width: 1500px) {
   .carousel {
     width: 65%;
     height: 200%;
-  
   }
-  .thumbs-wrapper{
-    position:relative;
+  .thumbs-wrapper {
+    position: relative;
     left: 25%;
-  
   }
-  
 }
 
-
 .carousel-section img {
-  opacity: 1.0;
+  opacity: 1;
 }
 
 p {
   font-size: 130%;
-  color: #0F52BA
-;
+  color: #0f52ba;
 }
