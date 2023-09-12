@@ -1,6 +1,6 @@
 const ical = require("node-ical");
 
-const events = ical.sync.parseFile("listing-770162982905269943.ics");
+const events = ical.sync.parseFile("your-ical-file-here");
 delete events.vcalendar;
 delete events.prodid;
 
