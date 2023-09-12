@@ -4,7 +4,6 @@ export function calculatePrice(startDate, endDate, pets, priceArray) {
   let startDateCopy = startDate.clone();
 
   for (var m = startDateCopy; m.isBefore(endDate); m.add(1, "days")) {
-
     //find price for date
     let found = priceArray.PriceData[0].data.findIndex(
       (element) => element.date === m.format("YYYY-MM-DD")

@@ -1,18 +1,15 @@
-
-
-
-h5{
+h5 {
   font-size: 120%;
   text-align: center;
 }
-h4{
+h4 {
   font-size: 90%;
   text-align: center;
 }
 
-.TextInputRow{
+.TextInputRow {
   display: flex;
   font-size: 100%;
-  align-items:center;
+  align-items: center;
   justify-content: center;
 }

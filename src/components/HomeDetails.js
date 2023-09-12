@@ -1,41 +1,43 @@
 import React, { useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
-import HomeImage from "./../assets/sapphireoutdoors3.jpg";
-import Home2Image from "./../assets/sapphireindoors1.jpg";
-import Home3Image from "./../assets/sapphireoutdoors2.jpg";
-import Home4Image from "./../assets/sapphireindoors2.jpg";
-import Home5Image from "./../assets/sapphireoutdoors1.jpg";
+import { carouselImages } from "../constants/constants";
+import { Amenities } from "../constants/constants";
 import "./HomeDetails.css";
 
 function HomeDetails() {
   return (
     <>
       <h3>Welcome to our beautiful home...</h3>
-      <div className="carousel-section">
-        <Carousel showIndicators={false} className="carousel">
-          <div>
-            <img src={HomeImage} />
-            <p className="">Outdoors!</p>
-          </div>
-          <div>
-            <img src={Home2Image} />
-            <p className="">Placeholder</p>
-          </div>
-          <div>
-            <img src={Home3Image} />
-            <p className="">Beautiful Night Life</p>
-          </div>
-          <div>
-            <img src={Home4Image} />
-            <p className="">Fully Stocked Kitchen!</p>
-          </div>
-          <div>
-            <img src={Home5Image} />
-            <p className="">Lounge On The Balcony!</p>
-          </div>
-        </Carousel>
+      <div className="homeDetails">
+        <div className="carousel-section">
+          <Carousel showIndicators={false} className="carousel">
+            {carouselImages.map(function (object, i) {
+              return (
+                <div>
+                  {" "}
+                  <img src={object.src} /> <p>{object.caption}</p>{" "}
+                </div>
+              );
+            })}
+          </Carousel>
+        </div>
+        <div className="amenities-section">
+          <h4>
+            Introducing Sapphire by the Sea, an immaculate luxury beach house
+            that has been recently constructed in 2022! It is equipped with
+            everything you need to make unforgettable memories. Just a short
+            5-minute walk to the sands of Crystal Beach and more!
+          </h4>
+          <ul>
+            {Amenities.map(function (object, i) {
+              return <li>{object}</li>;
+            })}
+          </ul>
+        </div>
       </div>
+      <br></br>
+      <br></br>
     </>
   );
 }

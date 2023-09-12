@@ -1,11 +1,13 @@
-.number-select-form {
-  position: relative;
-  top: 55px;
-  left: 38%;
-  width: 24%;
+.number-select-form{
+    position: relative;
+    top:55px;
+    left:38%;
+    width: 24%
 }
-.number-select-component {
-  position: relative;
-  padding-top: 10px;
-  padding-bottom: 10px;
+.number-select-component{
+    position: relative;
+    padding-top:10px;
+    padding-bottom:10px;
+    
 }
+

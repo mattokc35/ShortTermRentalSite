@@ -14,7 +14,7 @@ import {
   calendarRequest,
   priceRequest,
 } from "../network/networkRequests";
-import checkTotalGuests from "../inputs/InputVerification";
+import { bookingFormValidation } from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
 import "bootstrap/dist/css/bootstrap.css";
@@ -34,6 +34,17 @@ function BookingInputForm() {
     selectedPets: 0,
   });
 
+  // Create a state variable to track form validity
+  const [bookingFormNotValid, setbookingFormNotValid] = useState(true);
+  const [validationMessage, setValidationMessage] = useState("");
+  const [bookedDates, setBookedDates] = useState([]);
+  const [startDate, setStartDate] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [focusedInput, setFocusedInput] = useState();
+  const [nightsPrice, setNightsPrice] = useState();
+  const [priceArray, setPriceArray] = useState([]);
+
   //useEffect hook, will run on render and if variable changes
   React.useEffect(() => {
     async function fetchCalendarData() {
@@ -41,6 +52,7 @@ function BookingInputForm() {
       setBookedDates(
         (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
       );
+      console.log(bookedDates);
     }
 
     async function fetchPriceData() {
@@ -49,19 +61,26 @@ function BookingInputForm() {
     }
     fetchCalendarData();
     fetchPriceData();
-  }, []);
+    const { selectedAdults, selectedChildren, selectedInfants } = selectValues;
+    const isBookingFormValid = bookingFormValidation(
+      selectedAdults,
+      selectedChildren,
+      selectedInfants,
+      startDate,
+      endDate,
+      bookedDates
+    );
+    setbookingFormNotValid(isBookingFormValid[0]);
+    setValidationMessage(isBookingFormValid[1]);
+  }, [selectValues, startDate, endDate]);
 
   const changeHandler = (name, selectedOption) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });
+    /*
+    const { selectedAdults, selectedChildren, selectedInfants } = selectValues;
+    const isBookingFormValid = bookingFormValidation(selectedAdults, selectedChildren, selectedInfants);
+    */
   };
-
-  const [bookedDates, setBookedDates] = useState([]);
-  const [startDate, setStartDate] = useState();
-  const [totalPrice, setTotalPrice] = useState(null);
-  const [endDate, setEndDate] = useState();
-  const [focusedInput, setFocusedInput] = useState();
-  const [nightsPrice, setNightsPrice] = useState();
-  const [priceArray, setPriceArray] = useState([]);
 
   // Event handler for form submission
   const handleFormSubmit = async (event) => {
@@ -83,25 +102,16 @@ function BookingInputForm() {
     };
 
     //check for input verification (total of adults, children, and infants needs to be < 12)
-    if (
-      checkTotalGuests(
-        data.selectedAdults,
-        data.selectedChildren,
-        data.selectedInfants
-      )
-    ) {
-      try {
-        //const response = await initialPriceRequest(data);
-        //const price = response.totalPrice;
-        setTotalPrice(totalPrice[0]);
-        setNightsPrice(totalPrice[1]);
-        handleShow();
-      } catch (error) {
-        // Handle any errors that occurred during the fetch
-        console.error("Error:", error);
-      }
-    } else {
-      alert("Total number of guests exceeds the limit of 12");
+
+    try {
+      //const response = await initialPriceRequest(data);
+      //const price = response.totalPrice;
+      setTotalPrice(totalPrice[0]);
+      setNightsPrice(totalPrice[1]);
+      handleShow();
+    } catch (error) {
+      // Handle any errors that occurred during the fetch
+      console.error("Error:", error);
     }
   };
 
@@ -118,7 +128,6 @@ function BookingInputForm() {
   };
 
   const renderDayContents = (date) => {
-    console.log(priceArray);
     let found = 1;
     found = priceArray.PriceData[0].data.findIndex(
       (element) => element.date === date.format("YYYY-MM-DD")
@@ -157,6 +166,8 @@ function BookingInputForm() {
                 endDate={JSON.stringify(endDate)}
                 adults={selectValues.selectedAdults}
                 children={selectValues.selectedChildren}
+                infants={selectValues.selectedInfants}
+                pets={selectValues.selectedPets}
                 price={totalPrice}
                 nightsPrice={nightsPrice}
               ></GuestInfoPaymentPageModal>
@@ -164,9 +175,6 @@ function BookingInputForm() {
             <Modal.Footer>
               <Button variant="secondary" onClick={handleClose}>
                 Close
-              </Button>
-              <Button variant="primary" onClick={handleClose}>
-                Save Changes
               </Button>
             </Modal.Footer>
           </Modal>
@@ -233,11 +241,13 @@ function BookingInputForm() {
         </div>
       </form>
       <div className="totalPriceSection">
+        {bookingFormNotValid && <h6>{validationMessage}</h6>}
         <button
           className="getPriceButton"
           onClick={() => {
             handleFormSubmit();
           }}
+          disabled={bookingFormNotValid}
         >
           Get Price
         </button>

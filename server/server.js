@@ -10,9 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+//parse calendar
 let BookedRanges = [];
 
-//get price data from PriceLabs API
 const PriceLabsRequest = async (input) => {
   try {
     const response = await fetch("https://api.pricelabs.co/v1/listing_prices", {
@@ -24,7 +24,7 @@ const PriceLabsRequest = async (input) => {
       body: JSON.stringify({
         listings: [
           {
-            id: "your-property-id",
+            id: "your-id-here",
             pms: "airbnb",
           },
         ],

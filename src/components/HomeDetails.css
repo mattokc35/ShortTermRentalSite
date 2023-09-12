@@ -21,14 +21,13 @@ h3 {
   }
 }
 
-@media screen and (min-width: 1500px) {
+@media screen and (min-width: 1800px) {
   .carousel {
-    width: 65%;
-    height: 200%;
+    width: 68%;
   }
   .thumbs-wrapper {
     position: relative;
-    left: 25%;
+    left: 20%;
   }
 }
 
@@ -36,7 +35,54 @@ h3 {
   opacity: 1;
 }
 
+.amenities-section h4 {
+  font-size: 110%;
+  width: 85%;
+  position: relative;
+  left: 7%;
+}
+.amenities-section {
+  text-align: left;
+  position: relative;
+  font-style: italic;
+}
+.amenities-section ul {
+  margin: 2px;
+  padding: 0;
+  position: relative;
+  left: 15%;
+  font-size: 95%;
+}
 p {
-  font-size: 130%;
+  font-size: 105%;
   color: #0f52ba;
+}
+
+@media screen and (max-width: 500px) {
+  .amenities-section ul {
+    text-align: left;
+    width: 80%;
+  }
+}
+
+@media screen and (min-width: 1800px) {
+  .homeDetails {
+    display: flex;
+  }
+  .amenities-section {
+    text-align: left;
+    position: relative;
+    right: 28%;
+    width: 100%;
+    font-style: italic;
+    font-size: 122%;
+  }
+  .amenities-section h4 {
+    text-align: left;
+    width: 385%;
+  }
+  .amenities-section ul {
+    text-align: left;
+    width: 385%;
+  }
 }

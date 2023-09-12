@@ -1,7 +1,8 @@
 export const initialPriceRequest = async (input) => {
   try {
-    const response = await fetch("http://localhost:8000/initial-request", {
+    const response = await fetch("your-server-url-here/initial-request", {
       method: "POST",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,8 +27,9 @@ export const initialPriceRequest = async (input) => {
 
 export const calendarRequest = async () => {
   try {
-    const response = await fetch("http://localhost:8000/calendar-request", {
+    const response = await fetch("your-server-url-here/calendar-request", {
       method: "GET",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
@@ -51,8 +53,9 @@ export const calendarRequest = async () => {
 
 export const priceRequest = async () => {
   try {
-    const response = await fetch("http://localhost:8000/price-request", {
+    const response = await fetch("your-server-url-here/price-request", {
       method: "GET",
+      mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },

@@ -5,13 +5,12 @@
   padding: 20px 30px 5px;
   box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.24);
   width: 95%;
-  background-color: #0F52BA
-;
+  background-color: #0f52ba;
   height: 82px;
   border-radius: 13px;
   position: fixed;
-  top:20px;
-  left:50%;
+  top: 20px;
+  left: 50%;
   transform: translate(-50%);
   z-index: 20;
 }
@@ -50,8 +49,8 @@
   transition: all 0.2s ease-in-out;
 }
 
-.menu-icons{
-  display:none;
+.menu-icons {
+  display: none;
 }
 
 @media screen and (max-width: 850px) {
@@ -59,8 +58,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background: #0F52BA
-;
+    background: #0f52ba;
     width: 100%;
     height: auto;
     position: absolute;
@@ -96,11 +94,11 @@
   .NavbarItems {
     z-index: 99;
   }
-  .menu-icons{
-    display:block;
-    cursor:pointer;
+  .menu-icons {
+    display: block;
+    cursor: pointer;
   }
-  .menu-icons i{
+  .menu-icons i {
     font-size: 1.2rem;
     color: #222;
   }
