@@ -8,9 +8,6 @@ import HomeDetails from "../components/HomeDetails";
 function Home() {
   return (
     <>
-
-
-   
       <Navbar></Navbar>
       <Intro
         cName="intro-mid"
@@ -21,9 +18,8 @@ function Home() {
         url="/book"
         btnClass="show"
       />
-      <br/>
-      <HomeDetails/>
-   
+      <br />
+      <HomeDetails />
     </>
   );
 }

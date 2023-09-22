@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.css";
 import { DateRangePicker } from "react-dates";
 import "react-dates/initialize";
 import NumberSelect from "../inputs/NumberSelect";
@@ -10,17 +11,14 @@ import {
 } from "../constants/constants";
 import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
-import {
-  calendarRequest,
-  priceRequest,
-} from "../network/networkRequests";
+import { calendarRequest, priceRequest } from "../network/networkRequests";
 import { bookingFormValidation } from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
-import "bootstrap/dist/css/bootstrap.css";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import { calculatePrice } from "../helpers/helperFunctions";
+import moment from "moment";
 
 function BookingInputForm() {
   const [show, setShow] = useState(false);
@@ -43,16 +41,23 @@ function BookingInputForm() {
   const [endDate, setEndDate] = useState(null);
   const [focusedInput, setFocusedInput] = useState();
   const [nightsPrice, setNightsPrice] = useState();
+  const [numberOfNights, setNumNights] = useState(0);
   const [priceArray, setPriceArray] = useState([]);
+  const [tax, setTax] = useState(0);
+  const [petFee, setPetFee] = useState(0);
 
   //useEffect hook, will run on render and if variable changes
   React.useEffect(() => {
     async function fetchCalendarData() {
       const bookedDatesResponse = await calendarRequest();
       setBookedDates(
-        (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
+        (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges),
       );
-      console.log(bookedDates);
+    }
+
+    async function fetchPriceData() {
+      const priceArray = await priceRequest();
+      setPriceArray(priceArray);
     }
 
     async function fetchPriceData() {
@@ -68,7 +73,7 @@ function BookingInputForm() {
       selectedInfants,
       startDate,
       endDate,
-      bookedDates
+      bookedDates,
     );
     setbookingFormNotValid(isBookingFormValid[0]);
     setValidationMessage(isBookingFormValid[1]);
@@ -89,8 +94,10 @@ function BookingInputForm() {
       startDate,
       endDate,
       selectValues.selectedPets,
-      priceArray
+      priceArray,
     );
+
+    let numberOfNights = differenceInDays(endDate.toDate(), startDate.toDate());
     let data = {
       numberOfNights: differenceInDays(endDate.toDate(), startDate.toDate()),
       startDate: startDate,
@@ -106,8 +113,11 @@ function BookingInputForm() {
     try {
       //const response = await initialPriceRequest(data);
       //const price = response.totalPrice;
+      setNumNights(numberOfNights);
       setTotalPrice(totalPrice[0]);
       setNightsPrice(totalPrice[1]);
+      setTax(totalPrice[2]);
+      setPetFee(totalPrice[4]);
       handleShow();
     } catch (error) {
       // Handle any errors that occurred during the fetch
@@ -118,9 +128,9 @@ function BookingInputForm() {
   //function to check if calendar date is blocked
   const checkDateBlocked = (date) => {
     for (let i = 0; i < bookedDates.length; i++) {
-      if (
-        date.isBetween(bookedDates[i].start, bookedDates[i].end, "days", "[]")
-      ) {
+      const startMoment = moment(bookedDates[i].start, "YYYY-MM-DD");
+      const endMoment = moment(bookedDates[i].end, "YYYY-MM-DD");
+      if (date.isBetween(startMoment, endMoment, "day", "()")) {
         return true;
       }
     }
@@ -130,7 +140,7 @@ function BookingInputForm() {
   const renderDayContents = (date) => {
     let found = 1;
     found = priceArray.PriceData[0].data.findIndex(
-      (element) => element.date === date.format("YYYY-MM-DD")
+      (element) => element.date === date.format("YYYY-MM-DD"),
     );
     if (found === -1) {
       return;
@@ -170,6 +180,9 @@ function BookingInputForm() {
                 pets={selectValues.selectedPets}
                 price={totalPrice}
                 nightsPrice={nightsPrice}
+                tax={(Math.round(tax * 100) / 100).toFixed(2)}
+                petFee={petFee}
+                numNights={numberOfNights}
               ></GuestInfoPaymentPageModal>
             </Modal.Body>
             <Modal.Footer>
@@ -180,14 +193,16 @@ function BookingInputForm() {
           </Modal>
         </div>
         <h2>Our 3-bedroom home sleeps up to a maximum of 12 guests</h2>
+        <br></br>
       </div>
       <form onSubmit={handleFormSubmit}>
         <div className="BookingInputFormInner">
-          <h1>Select your dates:</h1>
+          <h2>Select your dates:</h2>
           <DateRangePicker
             startDate={startDate}
             startDateId="start-date"
             endDate={endDate}
+            numberOfMonths={1}
             endDateId="end-date"
             onDatesChange={({ startDate, endDate }) => {
               setTotalPrice(null);

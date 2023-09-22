@@ -1,13 +1,16 @@
 export const initialPriceRequest = async (input) => {
   try {
-    const response = await fetch("your-server-url-here/initial-request", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/initial-request",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(input),
       },
-      body: JSON.stringify(input),
-    });
+    );
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -15,7 +18,6 @@ export const initialPriceRequest = async (input) => {
     }
 
     const data = await response.json();
-    console.log(data); // Log the data received from the server
 
     return data; // Return the parsed data
   } catch (error) {
@@ -27,13 +29,16 @@ export const initialPriceRequest = async (input) => {
 
 export const calendarRequest = async () => {
   try {
-    const response = await fetch("your-server-url-here/calendar-request", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/calendar-request",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -41,7 +46,6 @@ export const calendarRequest = async () => {
     }
 
     const data = await response.json();
-    console.log(data); // Log the data received from the server
 
     return data; // Return the parsed data
   } catch (error) {
@@ -53,13 +57,16 @@ export const calendarRequest = async () => {
 
 export const priceRequest = async () => {
   try {
-    const response = await fetch("your-server-url-here/price-request", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/price-request",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
       },
-    });
+    );
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -67,7 +74,6 @@ export const priceRequest = async () => {
     }
 
     const data = await response.json();
-    console.log(data); // Log the data received from the server
 
     return data; // Return the parsed data
   } catch (error) {

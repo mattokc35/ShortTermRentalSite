@@ -4,6 +4,8 @@ import { Carousel } from "react-responsive-carousel";
 import { carouselImages } from "../constants/constants";
 import { Amenities } from "../constants/constants";
 import "./HomeDetails.css";
+import YouTubeEmbed from "./YoutubeEmbed";
+import ContactForm from "./ContactForm";
 
 function HomeDetails() {
   return (
@@ -36,7 +38,15 @@ function HomeDetails() {
           </ul>
         </div>
       </div>
-      <br></br>
+      <div className="video-section">
+        <br></br>
+
+        <div className="YoutubeEmbed2">
+          <h3>Check out a video tour below!</h3>
+          <YouTubeEmbed></YouTubeEmbed>
+        </div>
+        <ContactForm></ContactForm>
+      </div>
       <br></br>
     </>
   );

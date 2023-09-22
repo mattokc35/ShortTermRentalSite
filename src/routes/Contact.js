@@ -10,9 +10,7 @@ function Contact() {
     <>
       <Navbar></Navbar>
       <Intro cName="intro-mid" introImg={contactImage} title="Contact Us" />
-      <ContactForm/>
-
-     
+      <ContactForm />
     </>
   );
 }

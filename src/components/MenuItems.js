@@ -17,10 +17,4 @@ export const MenuItems = [
     cName: "nav-links",
     icon: "fa-solid fa-address-book",
   },
-  {
-    title: "About",
-    url: "/about",
-    cName: "nav-links",
-    icon: "fa-solid fa-circle-info",
-  },
 ];

@@ -18,7 +18,7 @@ const PriceLabsRequest = async (input) => {
     const response = await fetch("https://api.pricelabs.co/v1/listing_prices", {
       method: "POST",
       headers: {
-        "X-API-Key": "your-api-key-here",
+        "X-API-Key": "API-key-here",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -45,9 +45,7 @@ const PriceLabsRequest = async (input) => {
 
 //async function to load calendar from Airbnb url and parse ics file for booked dates
 async function getCalendarFile() {
-  const events = await ical.async.fromURL(
-    "your-ical-link-here"
-  );
+  const events = await ical.async.fromURL("your-ical-link-here");
   delete events.vcalendar;
   delete events.prodid;
   console.log(events);
@@ -60,7 +58,7 @@ async function getCalendarFile() {
     //calculate checked out date ranges with moment.js and add to BookedRanges array
     BookedRanges = [
       ...BookedRanges,
-      moment.range(moment(startDate), moment(endDate).subtract(1, "days")),
+      moment.range(moment(startDate), moment(endDate)),
     ];
   });
 }

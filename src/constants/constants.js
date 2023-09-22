@@ -46,6 +46,10 @@ const carouselImages = [
     src: "./carouselImages/kitchen.jpg",
   },
   {
+    caption: "Coffee Bar!",
+    src: "./carouselImages/coffeebar2.jpg",
+  },
+  {
     caption: "Living room with games and entertainment",
     src: "./carouselImages/livingroom.jpg",
   },
@@ -54,12 +58,20 @@ const carouselImages = [
     src: "./carouselImages/livingroom2.jpg",
   },
   {
-    caption: "Bedroom one (master)",
+    caption: "Master Bedroom",
     src: "./carouselImages/sapphirebedroom.jpg",
   },
   {
-    caption: "Bedroom one (master)",
+    caption: "Master Bedroom",
     src: "./carouselImages/masterbedroom2.jpg",
+  },
+  {
+    caption: "Master Bathroom",
+    src: "./carouselImages/masterbath1.jpg",
+  },
+  {
+    caption: "Master Bathroom",
+    src: "./carouselImages/masterbath2.jpg",
   },
   {
     caption: "Bedroom two",
@@ -68,6 +80,42 @@ const carouselImages = [
   {
     caption: "Bedroom two",
     src: "./carouselImages/bedroomtwo2.jpg",
+  },
+  {
+    caption: "Bathroom two",
+    src: "./carouselImages/hallbath1.jpg",
+  },
+  {
+    caption: "Bathroom two",
+    src: "./carouselImages/hallbath2.jpg",
+  },
+  {
+    caption: "Bedroom three (bunk beds!)",
+    src: "./carouselImages/bunkroom1.jpg",
+  },
+  {
+    caption: "Bedroom three (bunk beds!)",
+    src: "./carouselImages/bunkroom2.jpg",
+  },
+  {
+    caption: "Bedroom three (bunk beds!)",
+    src: "./carouselImages/bunkroom3.jpg",
+  },
+  {
+    caption: "Outdoor balcony lounge!",
+    src: "./carouselImages/exteriorfront1.jpg",
+  },
+  {
+    caption: "Outdoor balcony lounge!",
+    src: "./carouselImages/exteriorfront3.jpg",
+  },
+  {
+    caption: "Outdoor balcony lounge!",
+    src: "./carouselImages/exteriorfront2.jpg",
+  },
+  {
+    caption: "Lounge Chairs",
+    src: "./carouselImages/exteriorside.jpg",
   },
   {
     caption: "Games!",
@@ -84,6 +132,10 @@ const carouselImages = [
   {
     caption: "Outdoor tiki bar and lounge!",
     src: "./carouselImages/outdoortiki.jpg",
+  },
+  {
+    caption: "5 min walk to beach!",
+    src: "./carouselImages/outdoordistance.jpg",
   },
 ];
 

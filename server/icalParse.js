@@ -12,4 +12,3 @@ Object.entries(events).map((entry) => {
   console.log(startDate, "\n", endDate, "\n\n");
   return startDate, endDate;
 });
-

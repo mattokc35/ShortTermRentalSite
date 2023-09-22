@@ -1,10 +1,22 @@
 import "./GuestInfoPaymentPageModal.css";
-import { useState, React } from "react";
+import { useState, React, useRef } from "react";
+import emailjs from "@emailjs/browser";
 import Button from "react-bootstrap/Button";
+import { PatternFormat } from "react-number-format";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 import Form from "react-bootstrap/Form";
 
 function GuestInfoPaymentPageModal(props) {
+  const form = useRef();
+  const [phoneNumberValid, setPhoneNumberValid] = useState(false);
+
+  const [showTooltip, setShowTooltip] = useState(false);
+  // Toggle tooltip visibility
+  const toggleTooltip = () => {
+    setShowTooltip(!showTooltip);
+  };
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -13,20 +25,79 @@ function GuestInfoPaymentPageModal(props) {
   });
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmitInquiry = (event) => {
     const form = event.currentTarget;
+    const phoneNumberStripped = JSON.stringify(form.phoneNumber.value).replace(
+      /_/g,
+      "",
+    );
+
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      return;
     }
+
+    if (phoneNumberStripped.length < 20) {
+      alert("Please Enter a Valid Phone Number");
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    event.preventDefault();
+    // Include props values in the formData object
+    const formDataWithProps = {
+      ...formData,
+      adults: props.adults,
+      children: props.children,
+      pets: props.pets,
+      price: props.price,
+      tax: props.tax,
+      startDate: props.startDate.substr(1, 10),
+      endDate: props.endDate.substr(1, 10),
+      infants: props.infants,
+      petFee: props.petFee,
+      nightsPrice: props.nightsPrice,
+    };
+
+    emailjs.sendForm("service-id", "template-id", form, "key").then(
+      (result) => {
+        console.log(result.text);
+      },
+      (error) => {
+        console.log(error.text);
+      },
+    );
     setValidated(true);
+    window.alert("Thanks for the inquiry! We'll contact you shortly.");
+  };
+
+  const handleBook = (event) => {
+    alert("Still under construction, try sending us an inquiry instead!");
   };
 
   // Handle change event for all input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if (name === "phoneNumber") {
+      // Check if the phone number has reached the desired length (10 digits)
+      const isPhoneNumberValid = value.length === 10;
+      setPhoneNumberValid(isPhoneNumberValid);
+    }
   };
+
+  const priceTooltip = (
+    <Tooltip id="price-tooltip" style={{ marginLeft: "-150px" }}>
+      {/* Add your price breakdown information here */}
+      {props.numNights} nights price: ${props.nightsPrice} <br></br>
+      Cleaning Fee: $185 <br></br>
+      Pet Fee: ${props.petFee} <br></br>
+      Tax: ${props.tax} <br></br>
+      Total Price: ${props.price}
+    </Tooltip>
+  );
 
   return (
     <>
@@ -41,16 +112,52 @@ function GuestInfoPaymentPageModal(props) {
         {props.children} <bold> Infants: </bold> {props.infants}{" "}
         <bold> Pets: </bold> {props.pets}
       </h5>
-      <h4>
-        {" "}
-        <bold> Total Price:</bold> ${props.price}
-      </h4>
 
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <OverlayTrigger
+        placement="right"
+        overlay={priceTooltip}
+        trigger={["click", "focus"]}
+        show={showTooltip}
+      >
+        <h4>
+          {" "}
+          <bold> Total Price:</bold> ${props.price}
+          <br></br>
+          <span
+            style={{ color: "black", cursor: "pointer", fontSize: "72%" }}
+            onClick={(e) => {
+              e.preventDefault();
+              toggleTooltip();
+            }}
+          >
+            (click for price breakdown)
+          </span>
+        </h4>
+      </OverlayTrigger>
+
+      <Form validated={validated} onSubmit={handleSubmitInquiry} ref={form}>
+        <input type="hidden" name="adults" value={props.adults} />
+        <input type="hidden" name="children" value={props.children} />
+        <input type="hidden" name="price" value={props.price} />
+        <input type="hidden" name="tax" value={props.tax} />
+        <input type="hidden" name="pets" value={props.pets} />
+        <input type="hidden" name="infants" value={props.infants} />
+        <input type="hidden" name="nightsPrice" value={props.nightsPrice} />
+        <input
+          type="hidden"
+          name="startDate"
+          value={props.startDate.substr(1, 10)}
+        />
+        <input
+          type="hidden"
+          name="endDate"
+          value={props.endDate.substr(1, 10)}
+        />
+        <input type="hidden" name="petFee" value={props.petFee} />
         <Form.Group
           className="mb-3"
           controlId="formBasicName"
-          onSubmit={handleSubmit}
+          onSubmit={handleSubmitInquiry}
         >
           <Form.Label>Guest Name</Form.Label>
           <Form.Control
@@ -76,21 +183,36 @@ function GuestInfoPaymentPageModal(props) {
             We'll never share your email with anyone else.
           </Form.Text>
         </Form.Group>
-
-        <Form.Group className="mb-3" controlId="formBasicPhoneNumber">
-          <Form.Label>Phone Number</Form.Label>
-          <Form.Control
-            onChange={handleChange}
-            name="phoneNumber"
-            required
-            value={formData.phoneNumber}
-            type="tel"
-            placeholder="Phone Number"
+        {
+          <PatternFormat
+            format="(+##) ###-###-####"
+            mask="_"
+            isNumericString={true}
+            allowEmptyFormatting={false}
+            customInput={(props) => {
+              return (
+                <Form.Group controlId="formBasicPhoneNumber" className="mb-3">
+                  <Form.Label>
+                    Phone Number{" "}
+                    <span style={{ fontSize: "79%" }}>
+                      (Enter country code first, ex: "01" for United States)
+                    </span>
+                  </Form.Label>
+                  <Form.Control
+                    name="phoneNumber"
+                    placeholder="Phone Number"
+                    required
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    size="sm"
+                    {...props}
+                    type="tel"
+                  />
+                </Form.Group>
+              );
+            }}
           />
-          <Form.Text className="text-muted">
-            We'll never share your phone number with anyone else.
-          </Form.Text>
-        </Form.Group>
+        }
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Label>Questions/Comments</Form.Label>
           <Form.Control
@@ -101,7 +223,16 @@ function GuestInfoPaymentPageModal(props) {
             rows="3"
           />
         </Form.Group>
-        <Button type="submit">Submit form</Button>
+        <Button className="custom-primary-button" type="submit">
+          Send An Inquiry
+        </Button>
+        <Button
+          variant="primary"
+          onClick={handleBook}
+          className="custom-primary-button"
+        >
+          Book
+        </Button>
       </Form>
     </>
   );

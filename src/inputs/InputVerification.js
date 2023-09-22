@@ -6,7 +6,7 @@ const bookingFormValidation = (
   infants,
   startDate,
   endDate,
-  bookedDates
+  bookedDates,
 ) => {
   if (adults + children + infants > 12) {
     return [true, "Please select a total of 12 guests or fewer"];
@@ -27,7 +27,6 @@ const bookingFormValidation = (
   for (var m = startDateCopy; m.isBefore(endDate); m.add(1, "days")) {
     for (var i = 0; i < bookedDates.length; i++) {
       if (m.format("YYYY-MM-DD") === bookedDates[i].start.substring(0, 10)) {
-        console.log("dates overlap!");
         return [
           true,
           "You selected dates that overlap with unavailable dates!",
