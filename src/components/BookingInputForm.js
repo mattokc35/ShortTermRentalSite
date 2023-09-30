@@ -51,7 +51,7 @@ function BookingInputForm() {
     async function fetchCalendarData() {
       const bookedDatesResponse = await calendarRequest();
       setBookedDates(
-        (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges),
+        (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
       );
     }
 
@@ -60,10 +60,6 @@ function BookingInputForm() {
       setPriceArray(priceArray);
     }
 
-    async function fetchPriceData() {
-      const priceArray = await priceRequest();
-      setPriceArray(priceArray);
-    }
     fetchCalendarData();
     fetchPriceData();
     const { selectedAdults, selectedChildren, selectedInfants } = selectValues;
@@ -73,7 +69,7 @@ function BookingInputForm() {
       selectedInfants,
       startDate,
       endDate,
-      bookedDates,
+      bookedDates
     );
     setbookingFormNotValid(isBookingFormValid[0]);
     setValidationMessage(isBookingFormValid[1]);
@@ -94,7 +90,7 @@ function BookingInputForm() {
       startDate,
       endDate,
       selectValues.selectedPets,
-      priceArray,
+      priceArray
     );
 
     let numberOfNights = differenceInDays(endDate.toDate(), startDate.toDate());
@@ -140,7 +136,7 @@ function BookingInputForm() {
   const renderDayContents = (date) => {
     let found = 1;
     found = priceArray.PriceData[0].data.findIndex(
-      (element) => element.date === date.format("YYYY-MM-DD"),
+      (element) => element.date === date.format("YYYY-MM-DD")
     );
     if (found === -1) {
       return;
