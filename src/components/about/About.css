@@ -1,0 +1,13 @@
+.profile-pic{
+    max-width: 250px; /* Adjust the size as needed */
+    max-height: 250px;
+}
+.about-section{
+    width:85%;
+}
+
+@media screen and (min-width: 2000px){
+    .about-section{
+        width:55%;
+    }
+}

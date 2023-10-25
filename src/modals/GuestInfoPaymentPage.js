@@ -5,8 +5,18 @@ import Button from "react-bootstrap/Button";
 import { PatternFormat } from "react-number-format";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { getCurrentDate } from "../helpers/helperFunctions";
+import {
+  owners,
+  checkinTime,
+  checkoutTime,
+  service_id_1,
+  template_id_1,
+  key_1,
+} from "../constants/constants";
 
 import Form from "react-bootstrap/Form";
+import { contractRequest } from "../network/networkRequests";
 
 function GuestInfoPaymentPageModal(props) {
   const form = useRef();
@@ -29,7 +39,7 @@ function GuestInfoPaymentPageModal(props) {
     const form = event.currentTarget;
     const phoneNumberStripped = JSON.stringify(form.phoneNumber.value).replace(
       /_/g,
-      "",
+      ""
     );
 
     if (form.checkValidity() === false) {
@@ -61,20 +71,47 @@ function GuestInfoPaymentPageModal(props) {
       nightsPrice: props.nightsPrice,
     };
 
-    emailjs.sendForm("service-id", "template-id", form, "key").then(
+    emailjs.sendForm(service_id_1, template_id_1, form, key_1).then(
       (result) => {
         console.log(result.text);
       },
       (error) => {
         console.log(error.text);
-      },
+      }
     );
     setValidated(true);
     window.alert("Thanks for the inquiry! We'll contact you shortly.");
   };
 
   const handleBook = (event) => {
-    alert("Still under construction, try sending us an inquiry instead!");
+    event.preventDefault();
+
+    const currentDate = getCurrentDate();
+
+    // Define placeholder values for fields you don't have yet
+    const placeholderValues = {
+      Today: currentDate,
+      Guests: formData.name,
+      Guest_email: formData.email,
+      Owners: owners,
+      Total_Rent: props.price,
+      Total_Guests: props.adults + props.children + props.infants,
+      Checkin: props.startDate.substr(1, 10),
+      Checkout: props.endDate.substr(1, 10),
+      Checkin_Time: checkinTime,
+      Checkout_Time: checkoutTime,
+    };
+
+    // Combine placeholder values with props
+    const requestData = {
+      ...placeholderValues,
+    };
+
+    try {
+      const contractRequestData = contractRequest(requestData);
+    } catch {
+      console.log("Contract request failed. Please try again later.");
+    }
   };
 
   // Handle change event for all input fields

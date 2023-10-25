@@ -75,6 +75,11 @@ p {
   color: #0f52ba;
 }
 
+.about-section{
+  position:relative;
+  left: 8%;
+}
+
 @media screen and (max-width: 500px) {
   .amenities-section ul {
     text-align: left;
@@ -111,4 +116,65 @@ p {
   .video-section {
     display: flex;
   }
+  .about-section{
+    position:relative;
+    left:38%;
+    bottom: 30%;
+  }
 }
+
+.reviews-carousel {
+  width: 65%;
+  position: relative;
+  margin-top: 3%;
+  left: 18%;
+}
+
+@media screen and (min-width: 1500px) {
+  .reviews-carousel {
+    width: 65%;
+    position: relative;
+    margin-top: 3%;
+    left: 10%;
+  }
+}
+
+.recentGuestReviews {
+  margin-bottom: -22px;
+}
+
+@media screen and (max-width: 850px) {
+  .recentGuestReviews {
+    margin-bottom: -11px;
+  }
+  h6 {
+    font-size: 80%;
+  }
+}
+
+@media screen and (min-width: 2000px) {
+  .reviews-section {
+    position: relative;
+    bottom: 34%;
+    left: 24%;
+  }
+  .reviews-carousel {
+    width: 30%;
+    position: relative;
+    margin-top: 1%;
+    left: 35%;
+    top: 10%;
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1500px) {
+  .reviews-carousel {
+    width: 55%;
+    position: relative;
+    margin-top: 3%;
+    left: 16%;
+    top: 10%;
+  }
+}
+
+

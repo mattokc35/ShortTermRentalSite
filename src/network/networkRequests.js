@@ -9,7 +9,7 @@ export const initialPriceRequest = async (input) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(input),
-      },
+      }
     );
 
     if (!response.ok) {
@@ -27,6 +27,32 @@ export const initialPriceRequest = async (input) => {
   }
 };
 
+export const contractRequest = async (requestData) => {
+   // Create a POST request using fetch
+   fetch("https://shorttermrentalsite-backend.onrender.com/create-contract", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(requestData),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      // Handle the response as needed
+      window.alert(
+        "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
+      ); // You can customize this alert message.
+      return data;
+    })
+    .catch((error) => {
+      console.error(error);
+      // Handle errors
+      window.alert("Failed to send booking request. Please try again later, or you may have not filled out all input fields."); // You can customize this alert message.
+      return null;
+    });
+}
+
 export const calendarRequest = async () => {
   try {
     const response = await fetch(
@@ -37,7 +63,7 @@ export const calendarRequest = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
 
     if (!response.ok) {
@@ -65,7 +91,7 @@ export const priceRequest = async () => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
 
     if (!response.ok) {

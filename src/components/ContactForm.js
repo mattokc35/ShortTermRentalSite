@@ -6,21 +6,30 @@ import Button from "react-bootstrap/Button";
 
 import "bootstrap/dist/css/bootstrap.css";
 import "./ContactForm.css";
+import { key_1, service_id_1, template_id_2 } from "../constants/constants";
 
 function ContactForm() {
   const form = useRef();
 
   const handleSubmit = (e) => {
+    console.log("SEND EMAIL");
     e.preventDefault();
 
-    emailjs.sendForm("service-id", "template-id", form.current, "key").then(
-      (result) => {
-        console.log(result.text);
-      },
-      (error) => {
-        console.log(error.text);
-      },
-    );
+    emailjs
+      .sendForm(
+        service_id_1,
+        template_id_2,
+        form.current,
+        key_1,
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+        },
+        (error) => {
+          console.log(error.text);
+        },
+      );
     window.alert("Thanks for contacting us! We will get back to you soon.");
   };
   return (

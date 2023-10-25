@@ -1,0 +1,44 @@
+.footer {
+  background-color: #0f52ba;
+  color: white;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  padding: 20px;
+  font-size:85%;
+  border-top-left-radius: 3px; /* Round the top-left corner */
+  border-top-right-radius: 3px; /* Round the top-right corner */
+}
+
+.footer-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-info,
+.footer-contact {
+  flex: 1;
+  padding: 10px;
+}
+
+@media (max-width: 800px) {
+  .footer-content {
+    flex-direction: column;
+  }
+
+  .footer-info,
+  .footer-contact {
+    flex: none;
+  }
+  .footer p {
+    font-size: 70%;
+  }
+}
+
+.footer p {
+  margin: 5px 0;
+  color: white;
+}
+
+/* Add any additional styles as needed */

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
+import About from "./about/About";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from "react-responsive-carousel";
 import { carouselImages } from "../constants/constants";
-import { Amenities } from "../constants/constants";
+import { Amenities, reviews } from "../constants/constants";
 import "./HomeDetails.css";
 import YouTubeEmbed from "./YoutubeEmbed";
-import ContactForm from "./ContactForm";
+import Review from "./reviews/Review";
 
 function HomeDetails() {
   return (
@@ -45,7 +46,35 @@ function HomeDetails() {
           <h3>Check out a video tour below!</h3>
           <YouTubeEmbed></YouTubeEmbed>
         </div>
-        <ContactForm></ContactForm>
+      </div>
+
+      <div className="reviews-section">
+        <h3 className="recentGuestReviews">Recent Guest Reviews </h3>
+        <h6 className="recentGuestReviews">
+          (5.0 Star Average Rating on Airbnb as of September 2023)
+        </h6>
+        <Carousel
+          className="reviews-carousel"
+          showThumbs={false}
+          showArrows={true}
+          dynamicHeight={false}
+        >
+          {reviews.map((review, index) => (
+            <div key={index}>
+              {/* Use the Review component with all properties */}
+              <Review
+                text={review.text}
+                rating={review.rating}
+                name={review.name}
+                date={review.date}
+              />
+            </div>
+          ))}
+        </Carousel>
+      </div>
+      <br></br>
+      <div className="about-section">
+        <About />
       </div>
       <br></br>
     </>

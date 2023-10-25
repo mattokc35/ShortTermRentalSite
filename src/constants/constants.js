@@ -1,3 +1,6 @@
+const owners = "B and D Chen";
+const checkinTime = "4:00 PM";
+const checkoutTime = "10:00 AM";
 const petOptions = [
   { value: 0, label: "0" },
   { value: 1, label: "1" },
@@ -167,11 +170,65 @@ const Amenities = [
   "ladder ball toss, ring toss, dart, and frisbee",
 ];
 
+const reviews = [
+  {
+    text: "The house was lovely, cozy, and clean. Our kids loved the LED lights and having their own bed in the bunk room! It was the perfect place for our relaxing mid-week beach trip. Access to the beach was an easy 5-minute walk. Communication was excellent. We will definitely keep this place in mind if we head to Crystal Beach again.",
+    rating: 5,
+    name: "Rebecca",
+    date: "October 2023",
+  },
+  {
+    text: "The house was beautiful and the host really went out of their way to put extra special touches on everything. We really enjoyed out stay and will be back again.",
+    rating: 5,
+    name: "Michelle",
+    date: "September 2023",
+  },
+  {
+    text: "I will definitely be back!! Perfect family friendly house with lots of indoor and outdoor games, lots of space for outdoor entertaining, and everything was clean and comfortable. Deborah was very kind to check in on us and make sure everything was to our liking and The beach is a quick 5 minute walk away. 10/10 recommend",
+    rating: 5,
+    name: "Heather",
+    date: "August 2023",
+  },
+  {
+    text: "Excellent place the kids loved it, very clean and the host is great with responding! A friend booked it for us but I would definitely recommend and choose this home again thanks for having me and my family!",
+    rating: 5,
+    name: "Sirwelton",
+    date: "August 2023",
+  },
+  {
+    text: "The home is gorgeous and just as described in the listing. Deborah has lots of games inside and outside and plenty to keep big kids and little kids busy and having fun after a day in the sun. Would definitely stay again!",
+    rating: 5,
+    name: "Alicia",
+    date: "July 2023",
+  },
+  {
+    text: "Perfect for our family and had everything we needed! We will return for sure",
+    rating: 5,
+    name: "Trish",
+    date: "July 2023",
+  },
+  {
+    text: "Sapphire by the Sea was an amazing home to stay in. It was fully stocked, more than I actually expected. The home is beautifully decorated, very cozy and clean. We had several teenagers staying with us as they loved the the size of the bunk beds and all the games provided indoors and outdoors. It was truly relaxing and fun to stay in this home. We hope to be back next summer.",
+    rating: 5,
+    name: "Lorie",
+    date: "June 2023",
+  },
+  // Add more reviews as needed
+];
+
 export {
   petOptions,
+  owners,
+  service_id_1,
+  template_id_1,
+  template_id_2,
+  key_1,
+  checkinTime,
+  checkoutTime,
   childrenOptions,
   infantOptions,
   adultOptions,
   carouselImages,
   Amenities,
+  reviews,
 };
