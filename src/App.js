@@ -1,10 +1,9 @@
-import logo from "./logo.svg";
 import "./App.css";
 import { Route, Routes } from "react-router-dom";
 import Home from "./routes/Home";
 import Book from "./routes/Book";
 import Contact from "./routes/Contact";
-import PrivateRoutes from "./routes/PrivateRoutes";
+
 
 function App() {
   return (

@@ -1,16 +1,13 @@
 export const initialPriceRequest = async (input) => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/initial-request",
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(input),
-      }
-    );
+    const response = await fetch("<your-backend-here>/initial-request", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(input),
+    });
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -29,7 +26,7 @@ export const initialPriceRequest = async (input) => {
 
 export const contractRequest = async (requestData) => {
   try {
-    const response = await fetch("https://shorttermrentalsite-backend.onrender.com/create-contract", {
+    const response = await fetch("<your-backend-here>/create-contract", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,10 +37,14 @@ export const contractRequest = async (requestData) => {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
-      window.alert("Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page.");
+      window.alert(
+        "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
+      );
       return data;
     } else {
-      throw new Error("Failed to send booking request. Please try again later, or you may have not filled out all input fields.");
+      throw new Error(
+        "Failed to send booking request. Please try again later, or you may have not filled out all input fields."
+      );
     }
   } catch (error) {
     console.error(error);
@@ -54,7 +55,7 @@ export const contractRequest = async (requestData) => {
 
 export const contractStatusRequest = async (requestData) => {
   try {
-    const response = await fetch("https://shorttermrentalsite-backend.onrender.com/get-contract-status", {
+    const response = await fetch("<your-backend-here>/get-contract-status", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +68,9 @@ export const contractStatusRequest = async (requestData) => {
       window.alert("Contract Status request sent.");
       return data;
     } else {
-      throw new Error("Failed to send contract status request. Please try again later.");
+      throw new Error(
+        "Failed to send contract status request. Please try again later."
+      );
     }
   } catch (error) {
     console.error(error);
@@ -76,19 +79,15 @@ export const contractStatusRequest = async (requestData) => {
   }
 };
 
-
 export const calendarRequest = async () => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/calendar-request",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch("<your-backend-here>/calendar-request", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -107,16 +106,13 @@ export const calendarRequest = async () => {
 
 export const priceRequest = async () => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/price-request",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch("<your-backend-here>/price-request", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -132,4 +128,3 @@ export const priceRequest = async () => {
     return null; // Return null or a default value if there was an error
   }
 };
-
