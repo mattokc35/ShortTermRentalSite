@@ -7,7 +7,19 @@ const moment = extendMoment(Moment);
 
 const app = express();
 
-app.use(cors());
+
+
+const ESIGN_API_TOKEN = 'your-token-here';
+
+
+const corsOptions = {
+  origin: ["localhost:3000"], // Replace with your allowed origin(s)
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Allow cookies to be sent with the request
+  optionsSuccessStatus: 204, // No content response for preflight requests
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 //parse calendar
@@ -17,8 +29,9 @@ const PriceLabsRequest = async (input) => {
   try {
     const response = await fetch("https://api.pricelabs.co/v1/listing_prices", {
       method: "POST",
+      mode: "cors",
       headers: {
-        "X-API-Key": "API-key-here",
+        "X-API-Key": "your-key-here",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -45,7 +58,9 @@ const PriceLabsRequest = async (input) => {
 
 //async function to load calendar from Airbnb url and parse ics file for booked dates
 async function getCalendarFile() {
-  const events = await ical.async.fromURL("your-ical-link-here");
+  const events = await ical.async.fromURL(
+    "your-ical-link-here",
+  );
   delete events.vcalendar;
   delete events.prodid;
   console.log(events);
@@ -68,6 +83,74 @@ getCalendarFile();
 
 //Express Requests
 
+//contract post request
+app.post('/create-contract', async (req, res) => {
+  const templateId = 'your-template-id-here';
+  const signers = [{
+    name: req.body.Guests,
+    email: req.body.Guest_email,
+  }];
+
+  const placeholderFields = [
+    { api_key: 'Guests', value: req.body.Guests },
+    { api_key: 'Owners', value: req.body.Owners },
+    { api_key: 'Today', value: req.body.Today },
+    { api_key: 'Total_Rent', value: req.body.Total_Rent },
+    { api_key: 'Total_Guests', value: req.body.Total_Guests },
+    { api_key: 'Checkin', value: req.body.Checkin },
+    { api_key: 'Checkout', value: req.body.Checkout },
+    { api_key: 'Guest_email', value: req.body.Guest_email },
+    { api_key: 'Checkin_Time', value: req.body.Checkin_Time },
+    { api_key: 'Checkout_Time', value: req.body.Checkout_Time },
+  ];
+
+  try {
+    const response = await fetch('https://esignatures.io/api/contracts?token=' + ESIGN_API_TOKEN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        template_id: templateId,
+        signers,
+        placeholder_fields: placeholderFields,
+      }),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      res.send(responseData); // Use res.send to send the response
+    } else {
+      res.status(response.status).send('Contract POST request failed'); // Use res.send to send the error response
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//contract get request
+app.post('/get-contract-status', async (req, res) => {
+
+  const contract_id = req.body.id;
+  try {
+    const response = await fetch('https://esignatures.io/api/contracts/' + contract_id + '?token=' + ESIGN_API_TOKEN, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      res.send(responseData); // Use res.send to send the response
+    } else {
+      res.status(response.status).send('Contract GET request failed'); // Use res.send to send the error response
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //calendar get request
 app.get("/calendar-request", (req, res) => {
   res.send({ BookedRanges });
@@ -84,6 +167,6 @@ app.get("/price-request", async (req, res) => {
   res.send({ PriceData });
 });
 
-app.listen(8000, () => {
-  console.log(`Server is running on port 8000.`);
+app.listen(443, () => {
+  console.log(`Server is running on port 443.`);
 });

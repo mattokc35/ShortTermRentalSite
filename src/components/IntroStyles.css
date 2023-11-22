@@ -1,7 +1,23 @@
+/* src/assets/css/mystery-quest.css */
+@font-face {
+  font-family: "Mystery Quest";
+  src: url("../assets/MysteryQuest-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
 .intro {
   width: 100%;
   height: 100vh;
   position: relative;
+}
+
+.intro-text .sapphire-logo {
+  position: relative;
+  height: auto; /* Maintain aspect ratio */
+  max-width: 50%;
+  left: 17%;
+  transform: translate(-45%, -8%);
 }
 
 .intro-mid {
@@ -26,12 +42,13 @@ img {
 }
 
 .intro-text {
+  font-family: "Mystery Quest" !important;
   position: absolute;
   top: 39%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  text-shadow: 1px 1px 1px black;
+  text-shadow: 0.5px 0.5px 0.5px black;
 }
 
 @media screen and (max-width: 550px) {
@@ -50,43 +67,52 @@ img {
 }
 
 .intro-text h1 {
-  font-size: 400%;
+  font-family: "Cormorant", serif;
+  font-size: 450%;
   font-weight: 550;
   font-style: italic;
   color: #0f52ba;
 }
 
 .intro-text p {
-  font-size: 2.1rem;
-  font-weight: 450;
+  font-size: 1.3rem;
+  font-weight: 300;
   color: #0f52ba;
   padding: 0.5rem 0 2rem 0;
   font-style: italic;
 }
 
 .intro-text .show {
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
   text-decoration: none;
-  background: #0f52ba;
+  background: clear;
   padding: 1rem 2rem;
   border-radius: 6px;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: bold;
   letter-spacing: 2px;
   color: white;
 }
 .intro-text .show:hover {
-  background-color: white;
+  background-color: #0f52ba;
   color: black;
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
 }
 
 @media screen and (max-width: 450px) {
+  .intro-text .sapphire-logo {
+    position: relative;
+    height: auto; /* Maintain aspect ratio */
+    max-width: 75%;
+    left: 26%;
+    transform: translate(-45%, -8%);
+  }
   .intro-text h1 {
     padding: 10px 20px;
   }
   .intro-text p {
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 0 0 2rem 0;
   }
   .intro-text .show {

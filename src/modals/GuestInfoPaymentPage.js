@@ -16,13 +16,19 @@ import {
 } from "../constants/constants";
 
 import Form from "react-bootstrap/Form";
-import { contractRequest } from "../network/networkRequests";
+import {
+  contractRequest,
+  contractStatusRequest,
+} from "../network/networkRequests";
 
 function GuestInfoPaymentPageModal(props) {
   const form = useRef();
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
-
+  const [contractID, setContractID] = useState(null);
+  const [contractStatus, setContractStatus] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
+  const [showProceedToPayment, setShowProceedToPayment] = useState(false);
+  const [showBook, setShowBook] = useState(true);
   // Toggle tooltip visibility
   const toggleTooltip = () => {
     setShowTooltip(!showTooltip);
@@ -83,7 +89,7 @@ function GuestInfoPaymentPageModal(props) {
     window.alert("Thanks for the inquiry! We'll contact you shortly.");
   };
 
-  const handleBook = (event) => {
+  const handleBook = async (event) => {
     event.preventDefault();
 
     const currentDate = getCurrentDate();
@@ -108,9 +114,56 @@ function GuestInfoPaymentPageModal(props) {
     };
 
     try {
-      const contractRequestData = contractRequest(requestData);
+      const contractRequestData = await contractRequest(requestData);
+      const contractID = contractRequestData?.data?.contract?.id;
+      if (contractID) {
+        setContractID(contractID);
+        setShowProceedToPayment(true);
+        window.alert("Contract created successfully!");
+        setShowBook(false);
+      } else {
+        window.alert("Failed to get contract ID");
+      }
     } catch {
       console.log("Contract request failed. Please try again later.");
+    }
+  };
+
+  const handlePayment = async () => {
+    if (contractID === null) {
+      window.alert(
+        "Please submit a booking first to receive a tenant-landlord contract."
+      );
+      return;
+    }
+
+    const requestData = {
+      id: contractID,
+    };
+    try {
+      const contractStatusResponse = await contractStatusRequest(requestData);
+      console.log(contractStatusResponse);
+      setContractStatus(contractStatusResponse.data.contract.status);
+      console.log(contractStatus);
+      if (contractStatus === null) {
+        window.alert(
+          "Contract still sending... Please try again in a few seconds"
+        );
+        return;
+      }
+      if (contractStatus === "signed") {
+        window.alert(
+          "Contract Status requested succesfully: Signed! Thanks for signing the contract, you will now be redirected to the payment page."
+        );
+      } else if (contractStatus === "sent") {
+        window.alert(
+          'Contract Status requested succesfully: Not Signed. Please keep this page open and check your email to review the contract. Once the contract has been signed, come back to this page and click "Proceed to Payment" again'
+        );
+      }
+    } catch {
+      window.alert(
+        "Contract Status request failed. Please try again in a few minutes."
+      );
     }
   };
 
@@ -263,13 +316,25 @@ function GuestInfoPaymentPageModal(props) {
         <Button className="custom-primary-button" type="submit">
           Send An Inquiry
         </Button>
-        <Button
-          variant="primary"
-          onClick={handleBook}
-          className="custom-primary-button"
-        >
-          Book
-        </Button>
+        {showBook && (
+          <Button
+            variant="primary"
+            onClick={handleBook}
+            className="custom-primary-button"
+          >
+            Book
+          </Button>
+        )}
+        {/* Render "Proceed to Payment" button conditionally */}
+        {showProceedToPayment && (
+          <Button
+            variant="primary"
+            onClick={handlePayment}
+            className="custom-primary-button"
+          >
+            Go to Payment
+          </Button>
+        )}
       </Form>
     </>
   );

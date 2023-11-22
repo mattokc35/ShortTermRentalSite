@@ -6,14 +6,14 @@ export const MenuItems = [
     icon: "fa-solid fa-house",
   },
   {
-    title: "   Book",
-    url: "/book",
+    title: "Book",
+    url: "/",
     cName: "nav-links",
     icon: "fa-solid fa-book",
   },
   {
     title: "Contact",
-    url: "/contact",
+    url: "/",
     cName: "nav-links",
     icon: "fa-solid fa-address-book",
   },

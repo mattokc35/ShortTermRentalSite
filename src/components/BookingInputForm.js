@@ -45,14 +45,17 @@ function BookingInputForm() {
   const [priceArray, setPriceArray] = useState([]);
   const [tax, setTax] = useState(0);
   const [petFee, setPetFee] = useState(0);
-
   //useEffect hook, will run on render and if variable changes
   React.useEffect(() => {
     async function fetchCalendarData() {
-      const bookedDatesResponse = await calendarRequest();
-      setBookedDates(
-        (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
-      );
+      try {
+        const bookedDatesResponse = await calendarRequest();
+        setBookedDates(
+          (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
+        );
+      } catch {
+        console.log("can't get the calendar data");
+      }
     }
 
     async function fetchPriceData() {
@@ -188,12 +191,11 @@ function BookingInputForm() {
             </Modal.Footer>
           </Modal>
         </div>
-        <h2>Our 3-bedroom home sleeps up to a maximum of 12 guests</h2>
-        <br></br>
+        <h4>Our 3-bedroom home sleeps up to a maximum of 12 guests</h4>
       </div>
       <form onSubmit={handleFormSubmit}>
         <div className="BookingInputFormInner">
-          <h2>Select your dates:</h2>
+          <h4>Select your dates:</h4>
           <DateRangePicker
             startDate={startDate}
             startDateId="start-date"

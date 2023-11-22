@@ -15,6 +15,7 @@ function Book() {
         title="Book Now"
       />
       <BookingInputForm />
+      <Footer/>
     </>
   );
 }

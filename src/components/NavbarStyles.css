@@ -3,23 +3,33 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px 30px 5px;
-  box-shadow: 0 5px 15px 0 rgba(0, 0, 0, 0.24);
   width: 95%;
-  background-color: #0f52ba;
+  background-color: clear;
+  opacity: 1.0; /* Initial opacity value */
+  transition: opacity 0.3s ease-in;
   height: 82px;
   border-radius: 13px;
-  position: fixed;
+  position: absolute;
   top: 20px;
   left: 50%;
   transform: translate(-50%);
   z-index: 20;
 }
-
 .navbar-logo {
-  color: white;
-  font-size: 1.6rem;
+  color: #0f52ba;
+  font-size: 1.7em;
+  font-weight:bold;
   cursor: pointer;
 }
+
+.sapphire-logo{
+  position:relative;
+  right:35%;
+  height: auto; /* Maintain aspect ratio */
+  max-width:32%;
+  
+}
+
 
 .nav-menu {
   display: grid;
@@ -31,8 +41,8 @@
 
 .nav-links {
   text-decoration: none;
-  color: white;
-  font-size: 1.2rem;
+  color: #0f52ba;
+  font-size: 1.5rem;
   font-weight: 600;
   padding: 0.7rem 1rem;
   white-space: nowrap;
@@ -46,19 +56,19 @@
   background-color: white;
   color: black;
   border-radius: 4px;
+  opacity: 0.5;
   transition: all 0.2s ease-in-out;
 }
 
 .menu-icons {
   display: none;
 }
-
 @media screen and (max-width: 850px) {
   .nav-menu {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background: #0f52ba;
+    background: white;
     width: 100%;
     height: auto;
     position: absolute;
@@ -88,7 +98,7 @@
   }
 
   .nav-links:hover {
-    background: white;
+    background:#0f52ba ;
     transition: none;
   }
   .NavbarItems {

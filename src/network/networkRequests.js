@@ -28,30 +28,54 @@ export const initialPriceRequest = async (input) => {
 };
 
 export const contractRequest = async (requestData) => {
-   // Create a POST request using fetch
-   fetch("https://shorttermrentalsite-backend.onrender.com/create-contract", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(requestData),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-      // Handle the response as needed
-      window.alert(
-        "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
-      ); // You can customize this alert message.
-      return data;
-    })
-    .catch((error) => {
-      console.error(error);
-      // Handle errors
-      window.alert("Failed to send booking request. Please try again later, or you may have not filled out all input fields."); // You can customize this alert message.
-      return null;
+  try {
+    const response = await fetch("https://shorttermrentalsite-backend.onrender.com/create-contract", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
     });
-}
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      window.alert("Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page.");
+      return data;
+    } else {
+      throw new Error("Failed to send booking request. Please try again later, or you may have not filled out all input fields.");
+    }
+  } catch (error) {
+    console.error(error);
+    window.alert(error.message);
+    return null;
+  }
+};
+
+export const contractStatusRequest = async (requestData) => {
+  try {
+    const response = await fetch("https://shorttermrentalsite-backend.onrender.com/get-contract-status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestData),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      window.alert("Contract Status request sent.");
+      return data;
+    } else {
+      throw new Error("Failed to send contract status request. Please try again later.");
+    }
+  } catch (error) {
+    console.error(error);
+    window.alert(error.message);
+    return null;
+  }
+};
+
 
 export const calendarRequest = async () => {
   try {
@@ -108,3 +132,4 @@ export const priceRequest = async () => {
     return null; // Return null or a default value if there was an error
   }
 };
+

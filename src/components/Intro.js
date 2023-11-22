@@ -1,4 +1,5 @@
 import "./IntroStyles.css";
+import SapphireLogo from "../assets/sapphirelogo.svg";
 
 function Intro(props) {
   return (
@@ -8,9 +9,9 @@ function Intro(props) {
       </div>
 
       <div className="intro-text">
-        <h1>{props.title}</h1>
+      <img src={SapphireLogo} className="sapphire-logo"></img>
         <p>{props.text}</p>
-        <a href={props.url} className={props.btnClass}>
+        <a disabled href={props.url} className={props.btnClass}>
           {props.buttonText}
         </a>
       </div>
