@@ -45,6 +45,7 @@ function BookingInputForm() {
   const [priceArray, setPriceArray] = useState([]);
   const [tax, setTax] = useState(0);
   const [petFee, setPetFee] = useState(0);
+
   //useEffect hook, will run on render and if variable changes
   React.useEffect(() => {
     async function fetchCalendarData() {
@@ -76,7 +77,15 @@ function BookingInputForm() {
     );
     setbookingFormNotValid(isBookingFormValid[0]);
     setValidationMessage(isBookingFormValid[1]);
-  }, [selectValues, startDate, endDate]);
+    // Logic to check for a successful payment (added to the existing useEffect)
+    const searchParams = new URLSearchParams(location.search);
+    const successParam = searchParams.get("success");
+
+    if (successParam === "true") {
+      window.alert("payment was successful!");
+      console.log("Payment was successful!");
+    }
+  }, [selectValues, startDate, endDate, location.search]); // Include location.search in the dependency array if needed
 
   const changeHandler = (name, selectedOption) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });

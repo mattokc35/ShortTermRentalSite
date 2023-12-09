@@ -19,12 +19,14 @@ import Form from "react-bootstrap/Form";
 import {
   contractRequest,
   contractStatusRequest,
+  createCheckoutSession,
 } from "../network/networkRequests";
 
 function GuestInfoPaymentPageModal(props) {
   const form = useRef();
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
   const [contractID, setContractID] = useState(null);
+  const [transactionId, setTransactionId] = useState(null);
   const [contractStatus, setContractStatus] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
@@ -153,8 +155,40 @@ function GuestInfoPaymentPageModal(props) {
       }
       if (contractStatus === "signed") {
         window.alert(
-          "Contract Status requested succesfully: Signed! Thanks for signing the contract, you will now be redirected to the payment page."
+          "Contract Status requested succesfully: Signed! Thanks for signing the contract, you will now be redirected to the stripe payment page..."
         );
+        console.log("hello");
+        try {
+          window.alert("redirecting to Stripe payment...");
+          const productName =
+            "Sapphire By The Sea, " +
+            props.startDate.substr(1, 10) +
+            " to " +
+            props.endDate.substr(1, 10) +
+            " for " +
+            formData.name;
+          // Assuming props.price is in the format xx.xx
+          const price = props.price; // Replace this with your actual props.price value
+
+          // Convert the price to the desired string format
+          const formattedPrice = (parseFloat(price) * 100).toFixed(4);
+          const response = await createCheckoutSession(
+            productName,
+            formattedPrice
+          );
+          console.log(response);
+          if (response != null) {
+            console.log(response);
+            window.alert("unique transaction id:" + response.transactionId);
+            setTransactionId(response.transactionId);
+            window.location.href = response.url; // Redirect to Stripe Checkout
+          } else {
+            // Handle error response
+            console.error("Failed to create checkout session");
+          }
+        } catch (error) {
+          console.error("Error creating checkout session:", error);
+        }
       } else if (contractStatus === "sent") {
         window.alert(
           'Contract Status requested succesfully: Not Signed. Please keep this page open and check your email to review the contract. Once the contract has been signed, come back to this page and click "Proceed to Payment" again'
