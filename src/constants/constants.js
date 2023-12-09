@@ -216,6 +216,10 @@ const reviews = [
   // Add more reviews as needed
 ];
 
+const hostName = "Ben and Deborah";
+const hostBio =
+  "We have always enjoyed traveling and spending time with family and friends. Crystal Beach is the hidden gem that we have found and loved. From the clean sandy beaches to the peaceful ocean waves, we hope you will love your stay at Sapphire by the Sea as much as our family does. Be our guest and make this place your home away from home!";
+
 export {
   petOptions,
   owners,
@@ -231,4 +235,6 @@ export {
   carouselImages,
   Amenities,
   reviews,
+  hostName,
+  hostBio
 };
