@@ -231,7 +231,3 @@ app.post("/create-checkout-session", async (req, res) => {
 app.listen(443, () => {
   console.log(`Server is running on port 443.`);
 });
-
-app.listen(443, () => {
-  console.log(`Server is running on port 443.`);
-});
