@@ -7,6 +7,22 @@ const moment = extendMoment(Moment);
 
 const app = express();
 
+const stripe = require("stripe")(
+  "your-key-here"
+);
+const bodyParser = require("body-parser");
+
+// Use body-parser middleware to parse JSON
+app.use(bodyParser.json());
+
+//uuid unique transaction ID generator
+const { v4: uuidv4 } = require('uuid');
+
+function generateUniqueTransactionId() {
+  // Generate a random UUID (Universally Unique Identifier) version 4
+  return uuidv4();
+}
+
 
 
 const ESIGN_API_TOKEN = 'your-token-here';
@@ -24,6 +40,9 @@ app.use(express.json());
 
 //parse calendar
 let BookedRanges = [];
+
+const YOUR_DOMAIN = "your-domain-here";
+
 
 const PriceLabsRequest = async (input) => {
   try {
@@ -165,6 +184,52 @@ app.post("/initial-request", (req, res) => {
 app.get("/price-request", async (req, res) => {
   const PriceData = await PriceLabsRequest();
   res.send({ PriceData });
+});
+
+const transactions = {}; // In-memory storage for transaction IDs and their respective Stripe session IDs
+
+app.post("/create-checkout-session", async (req, res) => {
+  // Generate a unique transaction ID (you can use libraries like UUID for this purpose)
+  const transactionId = generateUniqueTransactionId(); // Function to generate a unique ID
+
+  // Retrieve other details from the request body
+  const { productName, priceAmount } = req.body;
+
+  // Create a new product dynamically
+  const product = await stripe.products.create({
+    name: productName,
+    type: "service",
+  });
+
+  // Generate a new price for the created product
+  const price = await stripe.prices.create({
+    unit_amount: parseInt(priceAmount),
+    currency: "usd",
+    product: product.id,
+  });
+
+  const session = await stripe.checkout.sessions.create({
+    line_items: [
+      {
+        price: price.id,
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: `${YOUR_DOMAIN}?success=true`,
+    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+    client_reference_id: transactionId, // Attach your unique transaction ID as a reference
+  });
+
+  // Store the relationship between the transaction ID and session ID
+  transactions[transactionId] = session.id;
+
+  // Respond with JSON containing the session URL and your transaction ID
+  res.status(200).json({ url: session.url, transactionId });
+});
+
+app.listen(443, () => {
+  console.log(`Server is running on port 443.`);
 });
 
 app.listen(443, () => {
