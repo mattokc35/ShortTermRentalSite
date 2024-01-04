@@ -13,7 +13,7 @@ class Navbar extends Component {
     return (
       <nav className="NavbarItems">
         <div className="navbar-logo">
-          <img src={SapphireLogo} className="sapphire-logo"></img>
+        <img src={SapphireLogo} className="sapphire-logo"></img>
         </div>
 
         <div className="menu-icons" onClick={this.handleClick}>

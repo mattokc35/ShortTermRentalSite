@@ -1,5 +1,5 @@
 import "./GuestInfoPaymentPageModal.css";
-import { useState, React, useRef } from "react";
+import { useState, React, useRef, useEffect } from "react";
 import emailjs from "@emailjs/browser";
 import Button from "react-bootstrap/Button";
 import { PatternFormat } from "react-number-format";
@@ -14,7 +14,9 @@ import {
   template_id_1,
   key_1,
 } from "../constants/constants";
-
+import { connect } from "react-redux";
+import { setTransactionId } from "../actions/transactionActions";
+import { setContractValues } from "../actions/contractValuesActions";
 import Form from "react-bootstrap/Form";
 import {
   contractRequest,
@@ -23,10 +25,15 @@ import {
 } from "../network/networkRequests";
 
 function GuestInfoPaymentPageModal(props) {
+  useEffect(() => {
+    window.alert(
+      props.transactionId.transactionId + "guest info payment modal"
+    );
+    props.setTransactionId("123456");
+    window.alert(props.transactionId.transactionId);
+  }, []);
   const form = useRef();
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
-  const [contractID, setContractID] = useState(null);
-  const [transactionId, setTransactionId] = useState(null);
   const [contractStatus, setContractStatus] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
@@ -92,12 +99,13 @@ function GuestInfoPaymentPageModal(props) {
   };
 
   const handleBook = async (event) => {
+    window.alert("Redirecting to Stripe payment page!");
     event.preventDefault();
 
     const currentDate = getCurrentDate();
 
     // Define placeholder values for fields you don't have yet
-    const placeholderValues = {
+    const contractValues = {
       Today: currentDate,
       Guests: formData.name,
       Guest_email: formData.email,
@@ -110,28 +118,38 @@ function GuestInfoPaymentPageModal(props) {
       Checkout_Time: checkoutTime,
     };
 
-    // Combine placeholder values with props
-    const requestData = {
-      ...placeholderValues,
-    };
-
+    props.setContractValues(contractValues);
     try {
-      const contractRequestData = await contractRequest(requestData);
-      const contractID = contractRequestData?.data?.contract?.id;
-      if (contractID) {
-        setContractID(contractID);
-        setShowProceedToPayment(true);
-        window.alert("Contract created successfully!");
-        setShowBook(false);
+      window.alert("redirecting to Stripe payment...");
+      const productName =
+        "Sapphire By The Sea, " +
+        props.startDate.substr(1, 10) +
+        " to " +
+        props.endDate.substr(1, 10) +
+        " for " +
+        formData.name;
+      // Assuming props.price is in the format xx.xx
+      const price = props.price; // Replace this with your actual props.price value
+
+      // Convert the price to the desired string format
+      const formattedPrice = (parseFloat(price) * 100).toFixed(4);
+      const response = await createCheckoutSession(productName, formattedPrice);
+      console.log(response);
+      if (response != null) {
+        console.log(response);
+        props.setTransactionId(response.transactionId);
+        window.location.href = response.url; // Redirect to Stripe Checkout
       } else {
-        window.alert("Failed to get contract ID");
+        // Handle error response
+        console.error("Failed to create checkout session");
       }
-    } catch {
-      console.log("Contract request failed. Please try again later.");
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
     }
   };
 
   const handlePayment = async () => {
+    /*
     if (contractID === null) {
       window.alert(
         "Please submit a booking first to receive a tenant-landlord contract."
@@ -157,38 +175,6 @@ function GuestInfoPaymentPageModal(props) {
         window.alert(
           "Contract Status requested succesfully: Signed! Thanks for signing the contract, you will now be redirected to the stripe payment page..."
         );
-        console.log("hello");
-        try {
-          window.alert("redirecting to Stripe payment...");
-          const productName =
-            "Sapphire By The Sea, " +
-            props.startDate.substr(1, 10) +
-            " to " +
-            props.endDate.substr(1, 10) +
-            " for " +
-            formData.name;
-          // Assuming props.price is in the format xx.xx
-          const price = props.price; // Replace this with your actual props.price value
-
-          // Convert the price to the desired string format
-          const formattedPrice = (parseFloat(price) * 100).toFixed(4);
-          const response = await createCheckoutSession(
-            productName,
-            formattedPrice
-          );
-          console.log(response);
-          if (response != null) {
-            console.log(response);
-            window.alert("unique transaction id:" + response.transactionId);
-            setTransactionId(response.transactionId);
-            window.location.href = response.url; // Redirect to Stripe Checkout
-          } else {
-            // Handle error response
-            console.error("Failed to create checkout session");
-          }
-        } catch (error) {
-          console.error("Error creating checkout session:", error);
-        }
       } else if (contractStatus === "sent") {
         window.alert(
           'Contract Status requested succesfully: Not Signed. Please keep this page open and check your email to review the contract. Once the contract has been signed, come back to this page and click "Proceed to Payment" again'
@@ -198,7 +184,7 @@ function GuestInfoPaymentPageModal(props) {
       window.alert(
         "Contract Status request failed. Please try again in a few minutes."
       );
-    }
+    }*/
   };
 
   // Handle change event for all input fields
@@ -359,7 +345,7 @@ function GuestInfoPaymentPageModal(props) {
             Book
           </Button>
         )}
-        {/* Render "Proceed to Payment" button conditionally */}
+        {/* Render "Proceed to Payment" button conditionally 
         {showProceedToPayment && (
           <Button
             variant="primary"
@@ -368,10 +354,25 @@ function GuestInfoPaymentPageModal(props) {
           >
             Go to Payment
           </Button>
+          
         )}
+        */}
       </Form>
     </>
   );
 }
 
-export default GuestInfoPaymentPageModal;
+const mapDispatchToProps = {
+  setTransactionId,
+  setContractValues,
+};
+
+const mapStateToProps = (state) => ({
+  transactionId: state.transactionId,
+  contractValues: state.contractValues,
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GuestInfoPaymentPageModal);

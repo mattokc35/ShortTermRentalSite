@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { DateRangePicker } from "react-dates";
 import "react-dates/initialize";
@@ -19,8 +19,15 @@ import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import { calculatePrice } from "../helpers/helperFunctions";
 import moment from "moment";
+import { useLocation, useNavigate } from "react-router-dom";
+import { connect } from "react-redux";
+import { setTransactionId } from "../actions/transactionActions";
+import { contractRequest } from "../network/networkRequests";
+import { setContractValues } from "../actions/contractValuesActions";
 
-function BookingInputForm() {
+function BookingInputForm(props) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -45,9 +52,10 @@ function BookingInputForm() {
   const [priceArray, setPriceArray] = useState([]);
   const [tax, setTax] = useState(0);
   const [petFee, setPetFee] = useState(0);
+  const [contractID, setContractID] = useState(null);
 
   //useEffect hook, will run on render and if variable changes
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchCalendarData() {
       try {
         const bookedDatesResponse = await calendarRequest();
@@ -62,6 +70,21 @@ function BookingInputForm() {
     async function fetchPriceData() {
       const priceArray = await priceRequest();
       setPriceArray(priceArray);
+    }
+
+    async function sendContractRequestAndEmail() {
+      const contractRequestData = await contractRequest(
+        props.contractValues.contractValues
+      );
+      const contractID = contractRequestData?.data?.contract?.id;
+      if (contractID) {
+        setContractID(contractID);
+        window.alert(
+          "Contract created successfully! Email should be sending now..."
+        );
+      } else {
+        window.alert("Failed to get contract ID");
+      }
     }
 
     fetchCalendarData();
@@ -82,10 +105,33 @@ function BookingInputForm() {
     const successParam = searchParams.get("success");
 
     if (successParam === "true") {
-      window.alert("payment was successful!");
-      console.log("Payment was successful!");
+      // On page load, retrieve values from local storage and update the Redux store
+      window.alert(props.transactionId.transactionId);
+      if (props.transactionId.transactionId != null) {
+        window.alert("payment was successful! Sending contract to email...");
+        console.log("Payment was successful!");
+
+        if (props.contractValues.contractValues != null) {
+          try {
+            sendContractRequestAndEmail();
+          } catch {
+            console.log("Contract request failed. Please try again later.");
+          }
+        }
+      } else {
+        window.alert(
+          "You need to submit a payment before you can visit this page."
+        );
+        navigate("/");
+      }
     }
-  }, [selectValues, startDate, endDate, location.search]); // Include location.search in the dependency array if needed
+  }, [
+    selectValues,
+    startDate,
+    endDate,
+    location.search,
+    props.transactionId.transactionId,
+  ]); // Include location.search in the dependency array if needed
 
   const changeHandler = (name, selectedOption) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });
@@ -278,4 +324,14 @@ function BookingInputForm() {
   );
 }
 
-export default BookingInputForm;
+const mapStateToProps = (state) => ({
+  transactionId: state.transactionId,
+  contractValues: state.contractValues,
+});
+
+const mapDispatchToProps = {
+  setTransactionId,
+  setContractValues,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BookingInputForm);
