@@ -7,12 +7,13 @@ import { Amenities, reviews } from "../constants/constants";
 import "./HomeDetails.css";
 import YouTubeEmbed from "./YoutubeEmbed";
 import Review from "./reviews/Review";
+import Divider from "./divider/Divider";
 
 function HomeDetails() {
   return (
     <>
-      <h3>Welcome to our beautiful home...</h3>
       <div className="homeDetails">
+        <Divider title="Photos and Amenities" />
         <div className="carousel-section">
           <Carousel showIndicators={false} className="carousel">
             {carouselImages.map(function (object, i) {
@@ -39,19 +40,18 @@ function HomeDetails() {
           </ul>
         </div>
       </div>
+      <Divider title="Video Tour" />
       <div className="video-section">
         <br></br>
 
         <div className="YoutubeEmbed2">
-          <h3>Check out a video tour below!</h3>
           <YouTubeEmbed></YouTubeEmbed>
         </div>
       </div>
-
+      <Divider title="Customer Reviews" />
       <div className="reviews-section">
-        <h3 className="recentGuestReviews">Recent Guest Reviews </h3>
         <h6 className="recentGuestReviews">
-          (5.0 Star Average Rating on Airbnb as of September 2023)
+          (5.0 Star Average Rating on Airbnb with over 40 reviews as of January 2024)
         </h6>
         <Carousel
           className="reviews-carousel"
@@ -73,6 +73,7 @@ function HomeDetails() {
         </Carousel>
       </div>
       <br></br>
+      <Divider title="About The Host" />
       <div className="about-section">
         <About />
       </div>

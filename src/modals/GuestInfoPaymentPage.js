@@ -5,6 +5,7 @@ import Button from "react-bootstrap/Button";
 import { PatternFormat } from "react-number-format";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import IDVerificationButton from "../components/IDVerificationButton";
 import { getCurrentDate } from "../helpers/helperFunctions";
 import {
   owners,
@@ -19,25 +20,26 @@ import { setTransactionId } from "../actions/transactionActions";
 import { setContractValues } from "../actions/contractValuesActions";
 import Form from "react-bootstrap/Form";
 import {
-  contractRequest,
-  contractStatusRequest,
   createCheckoutSession,
+  sendContractEmailDataToBackend,
 } from "../network/networkRequests";
+import { loadStripe } from "@stripe/stripe-js";
+import { stripePublicTestKey } from "../constants/constants";
 
 function GuestInfoPaymentPageModal(props) {
-  useEffect(() => {
-    window.alert(
-      props.transactionId.transactionId + "guest info payment modal"
-    );
-    props.setTransactionId("123456");
-    window.alert(props.transactionId.transactionId);
-  }, []);
+  useEffect(() => {}, []);
   const form = useRef();
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
-  const [contractStatus, setContractStatus] = useState(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
-  const [showBook, setShowBook] = useState(true);
+  const stripePromise = loadStripe(stripePublicTestKey);
+  const [isIDVerified, setIsIDVerified] = useState(false);
+
+  // callback function to get ID verification result from child component IDVerificationButton
+  const handleVerificationResult = (verificationResult) => {
+    setIsIDVerified(verificationResult);
+    setShowProceedToPayment(verificationResult);
+  };
   // Toggle tooltip visibility
   const toggleTooltip = () => {
     setShowTooltip(!showTooltip);
@@ -135,9 +137,34 @@ function GuestInfoPaymentPageModal(props) {
       const formattedPrice = (parseFloat(price) * 100).toFixed(4);
       const response = await createCheckoutSession(productName, formattedPrice);
       console.log(response);
+      //if checkout session is created successfully, we want to pass transactionId, and contract/email values to the backend
       if (response != null) {
         console.log(response);
-        props.setTransactionId(response.transactionId);
+        const contractEmailDataObject = {
+          transactionId: response.transactionId,
+          nightsPrice: props.nightsPrice,
+          petFee: props.petFee,
+          adults: props.adults,
+          children: props.children,
+          phoneNumber: formData.phoneNumber,
+          comments: formData.comments,
+          email: formData.email,
+          Owners: owners,
+          total_rent: props.price,
+          total_guests: props.adults + props.children + props.infants,
+          Checkin: props.startDate.substr(1, 10),
+          Checkout: props.endDate.substr(1, 10),
+          Checkin_Time: checkinTime,
+          Checkout_Time: checkoutTime,
+          today: currentDate,
+          tax: props.tax,
+          guest: formData.name,
+          infants: props.infants,
+          pets: props.pets,
+        };
+        const sendDataToBackendResponse = await sendContractEmailDataToBackend(
+          contractEmailDataObject
+        );
         window.location.href = response.url; // Redirect to Stripe Checkout
       } else {
         // Handle error response
@@ -146,45 +173,6 @@ function GuestInfoPaymentPageModal(props) {
     } catch (error) {
       console.error("Error creating checkout session:", error);
     }
-  };
-
-  const handlePayment = async () => {
-    /*
-    if (contractID === null) {
-      window.alert(
-        "Please submit a booking first to receive a tenant-landlord contract."
-      );
-      return;
-    }
-
-    const requestData = {
-      id: contractID,
-    };
-    try {
-      const contractStatusResponse = await contractStatusRequest(requestData);
-      console.log(contractStatusResponse);
-      setContractStatus(contractStatusResponse.data.contract.status);
-      console.log(contractStatus);
-      if (contractStatus === null) {
-        window.alert(
-          "Contract still sending... Please try again in a few seconds"
-        );
-        return;
-      }
-      if (contractStatus === "signed") {
-        window.alert(
-          "Contract Status requested succesfully: Signed! Thanks for signing the contract, you will now be redirected to the stripe payment page..."
-        );
-      } else if (contractStatus === "sent") {
-        window.alert(
-          'Contract Status requested succesfully: Not Signed. Please keep this page open and check your email to review the contract. Once the contract has been signed, come back to this page and click "Proceed to Payment" again'
-        );
-      }
-    } catch {
-      window.alert(
-        "Contract Status request failed. Please try again in a few minutes."
-      );
-    }*/
   };
 
   // Handle change event for all input fields
@@ -336,27 +324,27 @@ function GuestInfoPaymentPageModal(props) {
         <Button className="custom-primary-button" type="submit">
           Send An Inquiry
         </Button>
-        {showBook && (
-          <Button
-            variant="primary"
-            onClick={handleBook}
-            className="custom-primary-button"
-          >
-            Book
-          </Button>
-        )}
-        {/* Render "Proceed to Payment" button conditionally 
         {showProceedToPayment && (
           <Button
             variant="primary"
-            onClick={handlePayment}
+            type="submit"
+            onClick={handleBook}
             className="custom-primary-button"
           >
-            Go to Payment
+            Proceed to Payment
           </Button>
-          
         )}
-        */}
+        {/* Render "Proceed to Payment" button conditionally */}
+        {!isIDVerified && (
+          <IDVerificationButton
+            className="custom-primary-button"
+            type="submit"
+            stripePromise={stripePromise}
+            onVerificationResult={handleVerificationResult}
+          >
+            Verify Identity
+          </IDVerificationButton>
+        )}
       </Form>
     </>
   );

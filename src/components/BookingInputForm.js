@@ -11,7 +11,11 @@ import {
 } from "../constants/constants";
 import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
-import { calendarRequest, priceRequest } from "../network/networkRequests";
+import {
+  calendarRequest,
+  priceRequest,
+  contractRequest,
+} from "../network/networkRequests";
 import { bookingFormValidation } from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
@@ -22,7 +26,6 @@ import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { setTransactionId } from "../actions/transactionActions";
-import { contractRequest } from "../network/networkRequests";
 import { setContractValues } from "../actions/contractValuesActions";
 
 function BookingInputForm(props) {
@@ -59,9 +62,7 @@ function BookingInputForm(props) {
     async function fetchCalendarData() {
       try {
         const bookedDatesResponse = await calendarRequest();
-        setBookedDates(
-          (bookedDates) => (bookedDates = bookedDatesResponse.BookedRanges)
-        );
+        setBookedDates(bookedDatesResponse.BookedRanges);
       } catch {
         console.log("can't get the calendar data");
       }
@@ -70,21 +71,6 @@ function BookingInputForm(props) {
     async function fetchPriceData() {
       const priceArray = await priceRequest();
       setPriceArray(priceArray);
-    }
-
-    async function sendContractRequestAndEmail() {
-      const contractRequestData = await contractRequest(
-        props.contractValues.contractValues
-      );
-      const contractID = contractRequestData?.data?.contract?.id;
-      if (contractID) {
-        setContractID(contractID);
-        window.alert(
-          "Contract created successfully! Email should be sending now..."
-        );
-      } else {
-        window.alert("Failed to get contract ID");
-      }
     }
 
     fetchCalendarData();
@@ -105,25 +91,11 @@ function BookingInputForm(props) {
     const successParam = searchParams.get("success");
 
     if (successParam === "true") {
-      // On page load, retrieve values from local storage and update the Redux store
-      window.alert(props.transactionId.transactionId);
-      if (props.transactionId.transactionId != null) {
-        window.alert("payment was successful! Sending contract to email...");
-        console.log("Payment was successful!");
-
-        if (props.contractValues.contractValues != null) {
-          try {
-            sendContractRequestAndEmail();
-          } catch {
-            console.log("Contract request failed. Please try again later.");
-          }
-        }
-      } else {
-        window.alert(
-          "You need to submit a payment before you can visit this page."
-        );
-        navigate("/");
-      }
+      window.alert("payment was successful! Sending contract to email...");
+      console.log("Payment was successful!");
+      navigate("/");
+    } else {
+      navigate("/");
     }
   }, [
     selectValues,
@@ -135,10 +107,6 @@ function BookingInputForm(props) {
 
   const changeHandler = (name, selectedOption) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });
-    /*
-    const { selectedAdults, selectedChildren, selectedInfants } = selectValues;
-    const isBookingFormValid = bookingFormValidation(selectedAdults, selectedChildren, selectedInfants);
-    */
   };
 
   // Event handler for form submission

@@ -15,21 +15,14 @@ function ContactForm() {
     console.log("SEND EMAIL");
     e.preventDefault();
 
-    emailjs
-      .sendForm(
-        service_id_1,
-        template_id_2,
-        form.current,
-        key_1,
-      )
-      .then(
-        (result) => {
-          console.log(result.text);
-        },
-        (error) => {
-          console.log(error.text);
-        },
-      );
+    emailjs.sendForm(service_id_1, template_id_2, form.current, key_1).then(
+      (result) => {
+        console.log(result.text);
+      },
+      (error) => {
+        console.log(error.text);
+      }
+    );
     window.alert("Thanks for contacting us! We will get back to you soon.");
   };
   return (
