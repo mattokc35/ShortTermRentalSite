@@ -93,11 +93,16 @@ img {
   letter-spacing: 2px;
   color: white;
 }
+
 .intro-text .show:hover {
   background-color: #0f52ba;
   color: black;
   border-radius: 4px;
   transition: all 0.2s ease-in-out;
+}
+
+.intro-button:hover {
+  cursor: pointer;
 }
 
 @media screen and (max-width: 450px) {
