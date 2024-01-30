@@ -1,0 +1,230 @@
+.reviews-carousel {
+  width: 65%;
+  position: relative;
+  margin-top: 3%;
+  left: 23%;
+}
+.booking-input-form {
+  position: relative;
+  left: 10%;
+}
+.contact-form {
+  position: relative;
+  left: 10%;
+}
+.carousel img {
+  max-height: 500px;
+}
+h6 {
+  font-size: 110%;
+  font-weight: 700;
+}
+.about-section {
+  position: relative;
+  left: 13%;
+}
+@media screen and (min-width: 1550px) and (max-width: 2000px) {
+  .book-and-photos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .booking-input-form,
+  .carousel-section {
+    width: calc(50% - 10px);
+  }
+  .booking-input-form {
+    position: relative;
+    left: 14%;
+  }
+  .carousel img {
+    max-height: 450px;
+  }
+  .thumbs-wrapper {
+    position: relative;
+    left: 6%;
+    margin-top: -5%;
+    width: 80%;
+  }
+  .carousel {
+    width: 110%;
+    left: 10%;
+  }
+  p {
+    font-size: 100%;
+    margin-bottom: -1px;
+    color: #0f52ba;
+    font-style: normal;
+  }
+}
+@media screen and (min-width: 2000px) {
+  .book-and-photos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .booking-input-form,
+  .carousel-section {
+    width: calc(50% - 30px);
+  }
+  .carousel {
+    left: 13%;
+  }
+  .carousel img {
+    max-height: 500px;
+  }
+  .thumbs-wrapper {
+    position: relative;
+    left: 7.5%;
+    margin-top: -5%;
+    width: 80%;
+  }
+  p {
+    font-size: 115%;
+    margin-bottom: -4px;
+    color: #0f52ba;
+    font-style: normal;
+  }
+}
+@media screen and (max-width: 1550px) and (min-width: 800px) {
+  p {
+    font-size: 110%;
+    margin-bottom: -4px;
+    color: #0f52ba;
+    font-style: normal;
+  }
+  .thumbs-wrapper {
+    position: relative;
+    left: 7%;
+    width: 80%;
+  }
+}
+@media screen and (max-width: 1550px) and (min-width: 600px) {
+  .reviews-carousel {
+    width: 65%;
+    position: relative;
+    margin-top: 3%;
+    left: 26%;
+  }
+  .carousel {
+    width: 110%;
+    left: 5%;
+  }
+}
+@media screen and (max-width: 800px) {
+  p {
+    font-size: 90%;
+    margin-bottom: -40px;
+    color: #0f52ba;
+    font-style: normal;
+  }
+  .thumbs-wrapper {
+    position: relative;
+    left: 4.5%;
+    width: 80%;
+  }
+  .carousel img {
+    max-height: 350px;
+  }
+  .recentGuestReviews {
+    margin-bottom: -10px;
+  }
+  h6 {
+    font-size: 80%;
+  }
+}
+h3 {
+  font-size: 189%;
+  font-weight: 450;
+  color: #0f52ba;
+  padding: 0.5rem 0 2rem 0;
+  font-style: normal;
+}
+@media screen and (max-width: 500px) {
+  h3 {
+    font-size: 130%;
+    font-weight: 450;
+    color: #0f52ba;
+    padding: 0.5rem 0 2rem 0;
+    font-style: normal;
+  }
+}
+.carousel-section img {
+  opacity: 1;
+}
+.amenities-section h4 {
+  font-size: 145%;
+  width: 85%;
+  position: relative;
+  left: 16%;
+}
+.amenities-section {
+  text-align: center;
+  position: relative;
+}
+.amenities-section ul {
+  margin: 2px;
+  padding: 0;
+  list-style-type: none;
+  position: relative;
+  left: 10%;
+  font-size: 140%;
+}
+.amenities-section ul li {
+  font-style: italic;
+  font-weight: 700;
+}
+@media screen and (max-width: 600px) {
+  .amenities-section ul {
+    text-align: center;
+    width: 75%;
+    left: 21%;
+    font-size: 90%;
+  }
+  .carousel img {
+    max-height: 230px;
+  }
+  p {
+    font-size: 70%;
+    margin-bottom: -5px;
+    color: #0f52ba;
+    font-style: normal;
+  }
+  .reviews-carousel {
+    width: 65%;
+    position: relative;
+    margin-top: 3%;
+    left: 27%;
+  }
+  .carousel {
+    width: 110%;
+    left: 4%;
+  }
+  .thumbs-wrapper {
+    position: relative;
+    left: 5%;
+    margin-top: -5%;
+    width: 80%;
+  }
+}
+@media screen and (min-width: 1500px) {
+  .reviews-carousel {
+    width: 65%;
+    position: relative;
+    margin-top: 3%;
+    left: 21%;
+  }
+}
+@media screen and (min-width: 1900px) {
+  .reviews-carousel {
+    width: 65%;
+    position: relative;
+    margin-top: 3%;
+    left: 19%;
+  }
+}
+.recentGuestReviews {
+  margin-bottom: -22px;
+  position: relative;
+  left: 10%;
+}

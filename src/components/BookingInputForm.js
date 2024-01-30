@@ -11,11 +11,7 @@ import {
 } from "../constants/constants";
 import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
-import {
-  calendarRequest,
-  priceRequest,
-  contractRequest,
-} from "../network/networkRequests";
+import { calendarRequest, priceRequest } from "../network/networkRequests";
 import { bookingFormValidation } from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
@@ -57,7 +53,7 @@ function BookingInputForm(props) {
   const [petFee, setPetFee] = useState(0);
   const [contractID, setContractID] = useState(null);
 
-  //useEffect hook, will run on render and if variable changes
+  //separate useEffect for network requests to only run once on component render
   useEffect(() => {
     async function fetchCalendarData() {
       try {
@@ -69,12 +65,20 @@ function BookingInputForm(props) {
     }
 
     async function fetchPriceData() {
-      const priceArray = await priceRequest();
-      setPriceArray(priceArray);
+      try {
+        const priceArray = await priceRequest();
+        setPriceArray(priceArray);
+      } catch {
+        console.log("can't get price data");
+      }
     }
 
     fetchCalendarData();
     fetchPriceData();
+  }, []);
+
+  //useEffect hook, will run on render and if variable changes
+  useEffect(() => {
     const { selectedAdults, selectedChildren, selectedInfants } = selectValues;
     const isBookingFormValid = bookingFormValidation(
       selectedAdults,
@@ -168,7 +172,6 @@ function BookingInputForm(props) {
       return;
     }
     const entries = Object.entries(priceArray.PriceData[0].data);
-
     let foundPrice = JSON.stringify(entries[found][1].price);
     let dayValue = JSON.stringify(date._d).substring(9, 11);
     return (
