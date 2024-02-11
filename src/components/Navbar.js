@@ -1,61 +1,116 @@
-import { Component } from "react";
+import React, { useState, useEffect } from "react";
 import "./NavbarStyles.css";
 import { Link } from "react-router-dom";
 import SapphireLogo from "../assets/sapphirelogo.svg";
 
-class Navbar extends Component {
-  state = { clicked: false };
+const Navbar = (props) => {
+  const [clicked, setClicked] = useState(false);
 
-  handleClick = () => {
-    this.setState({ clicked: !this.state.clicked });
+  const handleMenuItemClick = () => {
+    setClicked(false);
   };
 
-  render() {
-    return (
-      <nav className="NavbarItems">
+  return (
+    <nav className={`NavbarItems`}>
+      <div className="menu-icons">
+        <i className={"fas fa-bars"}></i>
+      </div>
+
+      <ul className={"nav-menu"}>
         <div className="navbar-logo">
-          <img src={SapphireLogo} className="sapphire-logo" alt="Sapphire Logo" />
+          <img
+            src={SapphireLogo}
+            className="sapphire-logo-header"
+            alt="Sapphire Logo"
+          />
         </div>
-
-        <div className="menu-icons" onClick={this.handleClick}>
-          <i className={this.state.clicked ? "fas fa-times" : "fas fa-bars"}></i>
-        </div>
-
-        <ul className={this.state.clicked ? "nav-menu active" : "nav-menu"}>
-          <li>
-            <Link
-              onClick={() => this.props.handleScroll(this.props.homeRef)}
-              className="nav-links"
-              to="/"
-            >
-              <i className="fa-solid fa-house"></i>
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link
-              onClick={() => this.props.handleScroll(this.props.bookNowRef)}
-              className="nav-links"
-              to="/"
-            >
-              <i className="fa-solid fa-book"></i>
-              Book
-            </Link>
-          </li>
-          <li>
-            <Link
-              onClick={() => this.props.handleScroll(this.props.contactFormRef)}
-              className="nav-links"
-              to="/"
-            >
-              <i className="fa-solid fa-address-book"></i>
-              Contact
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    );
-  }
-}
+        <li key="home">
+          <Link
+            onClick={() => {
+              props.handleScroll(props.homeRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#home"
+          >
+            Home
+          </Link>
+        </li>
+        <li key="book">
+          <Link
+            onClick={() => {
+              props.handleScroll(props.bookNowRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#book-now"
+          >
+            Book
+          </Link>
+        </li>
+        <li key="contact">
+          <Link
+            onClick={() => {
+              props.handleScroll(props.contactFormRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#"
+          >
+            Contact
+          </Link>
+        </li>
+        <li>
+          <Link
+            onClick={() => {
+              props.handleScroll(props.amenitiesRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#"
+          >
+            Amenities
+          </Link>
+        </li>
+        <li>
+          <Link
+            onClick={() => {
+              props.handleScroll(props.aboutRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#"
+          >
+            About Us
+          </Link>
+        </li>
+        <li>
+          <Link
+            onClick={() => {
+              props.handleScroll(props.reviewsRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#"
+          >
+            Reviews
+          </Link>
+        </li>
+        <li>
+          <Link
+            onClick={() => {
+              props.handleScroll(props.videoRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#"
+          >
+            Video Tour
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
+};
 
 export default Navbar;

@@ -1,0 +1,92 @@
+/* AmenitiesTable.module.css */
+
+.tableContainer {
+  width: 120%;
+  overflow-x: auto;
+}
+
+.table {
+  position: relative;
+  left: -3%;
+  width: 90%;
+  font-size: 90%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.table th,
+.table td {
+  border: 0px solid #ddd;
+  text-align: left;
+}
+
+/* Add a minimum height for cells containing 'z' */
+.table td:empty::before {
+  content: "\00a0"; /* Non-breaking space character */
+  min-height: 15px; /* Adjust the minimum height as needed */
+  display: block;
+}
+
+@media screen and (max-width: 1400px) {
+  .table {
+    font-size: 100%;
+  }
+  .table th,
+  .table td {
+    border: 0px solid #ddd;
+    text-align: left;
+    padding-right: 1px;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .table {
+    position: relative;
+    left: 0%;
+    font-size: 120%;
+    border-collapse: collapse;
+
+    margin-top: 10px;
+  }
+
+  .table th,
+  .table td {
+    /* border: 1px solid #ddd; Uncomment this line if needed */
+    text-align: center;
+    overflow-x: hidden;
+  }
+  .listContainer {
+    width: 100%;
+  }
+}
+
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.category {
+  margin-bottom: 5px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.cell {
+  flex: 1;
+  text-align: left;
+}
+
+@media screen and (max-width: 650px) {
+  .table {
+    position: relative;
+    left: -10px;
+    top: -20px;
+    font-size: 74%;
+  }
+}

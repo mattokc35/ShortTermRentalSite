@@ -5,9 +5,13 @@ import React from "react";
 const Intro = React.forwardRef((props, ref) => {
   return (
     <>
-      <div ref={ref}>
+      <div className="intro" ref={ref}>
         <div className={props.cName}>
-          <img alt={props.introImg} src={props.introImg} />
+          <img
+            className="background-image"
+            alt={props.introImg}
+            src={props.introImg}
+          />
         </div>
 
         <div className="intro-text">

@@ -1,5 +1,38 @@
-@media screen and (min-width: 1918px) {
+.iframe-youtube {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.embed-responsive-item {
+  width: 90%;
+  height: 500px;
+}
+@media screen and (max-width: 1500px) {
   .iframe-youtube {
-    height: 700px;
+    max-width: 100%;
+  }
+  .embed-responsive-item {
+    width: 55%;
+    height: 500px;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .iframe-youtube {
+    max-width: 100%;
+  }
+  .embed-responsive-item {
+    width: 55%;
+    height: 300px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .iframe-youtube {
+    max-width: 100%;
+  }
+  .embed-responsive-item {
+    width: 65%;
+    height: 150px;
   }
 }

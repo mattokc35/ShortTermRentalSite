@@ -1,21 +1,19 @@
-/* Divider.css */
-
 .divider-container {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-  }
-  
-  .divider-line {
-    flex-grow: 1;
-    border: none;
-    border-top: 2px solid #0f52ba; /* Adjust the color and style as needed */
-  }
-  
-  .divider-title {
-    margin: 0 10px;
-    font-weight: bold;
-    font-size: 150%;
-    color: #0f52ba; /* Adjust the title color */
-  }
-  
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  width: 100%;
+  scroll-margin-top: 110px;
+}
+
+.divider-line {
+  flex-grow: 1;
+  border: none;
+  border-top: 2px solid #0f52ba;
+}
+.divider-title {
+  margin: 0 10px;
+  font-weight: 700;
+  font-size: 150%;
+  color: #0f52ba;
+}

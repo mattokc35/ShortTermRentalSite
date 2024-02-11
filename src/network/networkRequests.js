@@ -1,22 +1,18 @@
 export const initialPriceRequest = async (input) => {
   try {
-    const response = await fetch(
-      "<your-backend-server>/initial-request",
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(input),
-      }
-    );
+    const response = await fetch("<your-backend-server>/initial-request", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(input),
+    });
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
       throw new Error("Network response was not ok");
     }
-
 
     const data = await response.json();
     console.log("price request successful");
@@ -40,11 +36,14 @@ export const contractRequest = async (requestData) => {
 
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
-      window.alert("Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page.");
+      window.alert(
+        "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
+      );
       return data;
     } else {
-      throw new Error("Failed to send booking request. Please try again later, or you may have not filled out all input fields.");
+      throw new Error(
+        "Failed to send booking request. Please try again later, or you may have not filled out all input fields."
+      );
     }
   } catch (error) {
     console.error(error);
@@ -68,7 +67,9 @@ export const contractStatusRequest = async (requestData) => {
       window.alert("Contract Status request sent.");
       return data;
     } else {
-      throw new Error("Failed to send contract status request. Please try again later.");
+      throw new Error(
+        "Failed to send contract status request. Please try again later."
+      );
     }
   } catch (error) {
     console.error(error);
@@ -77,22 +78,18 @@ export const contractStatusRequest = async (requestData) => {
   }
 };
 
-
 export const calendarRequest = async () => {
   try {
-    const response = await fetch(
-      "<your-backend-server>/calendar-request",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch("<your-backend-server>/calendar-request", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
-      window.alert("calendar request not successful")
+      window.alert("calendar request not successful");
       // Handle non-200 status codes if needed
       throw new Error("Network response was not ok");
     }
@@ -109,16 +106,13 @@ export const calendarRequest = async () => {
 
 export const priceRequest = async () => {
   try {
-    const response = await fetch(
-      "<your-backend-server>/price-request",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const response = await fetch("<your-backend-server>/price-request", {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -137,8 +131,8 @@ export const priceRequest = async () => {
 
 export const createCheckoutSession = async (productName, priceAmount) => {
   const input = {
-    "productName": productName,
-    "priceAmount": priceAmount,
+    productName: productName,
+    priceAmount: priceAmount,
   };
   try {
     const response = await fetch(
@@ -154,49 +148,40 @@ export const createCheckoutSession = async (productName, priceAmount) => {
 
     if (response.ok) {
       debugger;
-      console.log("checkout 150")
       const data = await response.json();
-      console.log(data);
-      console.log(data.url);
-      console.log(data.transactionId);
       return data;
     } else {
-      console.log("failed checkout")
-      window.alert("Failed Checkout. Please Try Again.")
+      window.alert("Failed Checkout. Please Try Again.");
       throw new Error("Failed to create checkout session");
     }
   } catch (error) {
-    console.log("failed checkout 2")
     console.error("Error:", error);
     return null;
   }
 };
 
-export const sendContractEmailDataToBackend = async (contractEmailDataObject) => {
+export const sendContractEmailDataToBackend = async (
+  contractEmailDataObject
+) => {
   try {
-    const response = await fetch(
-      "<your-backend-server>/sendDataToBackend",
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(contractEmailDataObject),
-      }
-    );
+    const response = await fetch("<your-backend-server>/sendDataToBackend", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(contractEmailDataObject),
+    });
     if (!response.ok) {
       // Handle non-200 status codes if needed
       throw new Error("send data to backend request was not ok");
     }
 
     const data = await response.json();
-    console.log("send contract email data to backend response data");
-    console.log(data);
 
     return data; // Return the parsed data
   } catch (error) {
-    console.log("failed data send 2")
+    console.log("failed data send 2");
     console.error("Error:", error);
     return null;
   }
@@ -204,25 +189,26 @@ export const sendContractEmailDataToBackend = async (contractEmailDataObject) =>
 
 export const createVerificationSession = async (stripe) => {
   try {
-    const response = await fetch('<your-backend-server>/create-verification-session', {
-      method: 'POST',
-    });
+    const response = await fetch(
+      "<your-backend-server>/create-verification-session",
+      {
+        method: "POST",
+      }
+    );
     const session = await response.json();
 
     // Show the verification modal.
     const { error } = await stripe.verifyIdentity(session.clientSecret);
 
     if (error) {
-      console.log('[error]', error);
+      console.log("[error]", error);
       window.alert("ID verification not completed. Please try again.");
       return false;
     } else {
-      console.log('Verification submitted!');
       window.alert("Verification submitted! You can now proceed to payment");
       return true;
     }
   } catch (error) {
-    console.error('Error creating verification session:', error);
+    console.error("Error creating verification session:", error);
   }
 };
-

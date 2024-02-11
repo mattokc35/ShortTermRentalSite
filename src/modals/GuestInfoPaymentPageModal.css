@@ -22,4 +22,8 @@ h4 {
   background-color: #0f52ba; /* Replace with your desired color code */
   color: #fff; /* Text color for the button */
   margin-right: 10px;
+  margin-top: 10px;
+}
+.guest-instructions {
+  margin-bottom: 10px;
 }

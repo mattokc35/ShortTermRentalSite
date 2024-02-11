@@ -2,114 +2,99 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 30px 5px;
-  width: 95%;
-  background-color: clear;
-  opacity: 1.0; /* Initial opacity value */
+  padding: 20px 10%;
+  width: 800px;
+  background: linear-gradient(
+    to top,
+    rgba(255, 255, 255, 0.9),
+    rgba(255, 255, 255, 0.9)
+  );
+  opacity: 0.9;
   transition: opacity 0.3s ease-in;
-  height: 82px;
-  border-radius: 13px;
-  position: absolute;
-  top: 20px;
+  height: 60px;
+  border-radius: 50px;
+  position: fixed;
+  top: 2%;
   left: 50%;
-  transform: translate(-50%);
+  transform: translateX(-50%);
   z-index: 20;
+  box-shadow: 0 5px 6px rgba(0, 0, 0, 0.3);
 }
-.navbar-logo {
-  color: #0f52ba;
-  font-size: 1.7em;
-  font-weight:bold;
-  cursor: pointer;
-}
-
-.sapphire-logo{
-  position:relative;
-  right:35%;
-  height: auto; /* Maintain aspect ratio */
-  max-width:32%;
-  
-}
-
-
-.nav-menu {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
-  grid-gap: 10px;
-  list-style: none;
-  align-items: center;
-}
-
-.nav-links {
-  text-decoration: none;
-  color: #0f52ba;
-  font-size: 1.5rem;
-  font-weight: 600;
-  padding: 0.7rem 1rem;
-  white-space: nowrap;
-}
-
-.nav-links i {
-  padding-right: 6px;
-}
-
-.nav-links:hover {
-  background-color: white;
-  color: black;
-  border-radius: 4px;
-  opacity: 0.5;
-  transition: all 0.2s ease-in-out;
-}
-
 .menu-icons {
   display: none;
 }
+.nav-links i {
+  margin-right: 5%;
+}
+/* Hover effect for smaller screens */
+.nav-links:hover {
+  background-color: #f0f0f0; /* Adjust the background color on hover */
+}
+.sapphire-logo-header {
+  max-width: 120px;
+  position: fixed;
+  transform: translate(-120%, -50%);
+}
+.nav-menu {
+  display: flex;
+  gap: 0;
+  margin-top: 1rem;
+  position: fixed;
+  list-style: none;
+  justify-content: center;
+  align-items: center;
+  right: 4%;
+}
+.nav-links {
+  text-decoration: none;
+  color: #0f52ba;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.7rem 1rem;
+  white-space: nowrap;
+  display: flex;
+  transition: background-color 0.1s ease-in; /* Add transition for smooth effect */
+  border-radius: 25px; /* Oval-shaped border-radius */
+  align-items: center;
+}
+
+/* Styling for screens 850px and below */
 @media screen and (max-width: 850px) {
+  .NavbarItems {
+    width: 100%;
+    height: 90px;
+    padding: 20px;
+    border-radius: 0;
+    top: 0;
+  }
+  .sapphire-logo-header {
+    display: none;
+    max-width: 120px;
+    position: fixed;
+    transform: translate(-120%, -50%);
+  }
   .nav-menu {
     display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background: white;
-    width: 100%;
-    height: auto;
-    position: absolute;
-    top: 0;
-    left: -100%;
-    opacity: 0;
-    align-items: stretch;
-    padding: 80px 0 30px 0;
-    margin: 0;
-    z-index: -1;
-    transition: 0.3s ease-in-out;
-    border-radius: 13px;
+    gap: 0;
+    margin-top: 1rem;
+    position: fixed;
+    list-style: none;
+    justify-content: center;
+    align-items: center;
+    right: 8%;
+    flex-wrap: wrap;
   }
-
-  .nav-menu.active {
-    left: 0;
-    opacity: 1;
-    z-index: -1;
-    transition: 0.3s ease-in-out;
-  }
-
   .nav-links {
-    display: block;
-    width: 100%;
-    font-size: 1.2rem;
-    padding: 2rem 0;
+    text-decoration: none;
+    color: #0f52ba;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: center;
   }
-
+  /* Hover effect for smaller screens */
   .nav-links:hover {
-    background:#0f52ba ;
-    transition: none;
-  }
-  .NavbarItems {
-    z-index: 99;
-  }
-  .menu-icons {
-    display: block;
-    cursor: pointer;
-  }
-  .menu-icons i {
-    font-size: 1.2rem;
-    color: #222;
+    background-color: #f0f0f0; /* Adjust the background color on hover */
   }
 }

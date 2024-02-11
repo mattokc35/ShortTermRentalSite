@@ -25,6 +25,7 @@ import {
 } from "../network/networkRequests";
 import { loadStripe } from "@stripe/stripe-js";
 import { stripePublicTestKey } from "../constants/constants";
+import ContractModal from "./ContractModal";
 
 function GuestInfoPaymentPageModal(props) {
   useEffect(() => {}, []);
@@ -34,6 +35,17 @@ function GuestInfoPaymentPageModal(props) {
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
   const stripePromise = loadStripe(stripePublicTestKey);
   const [isIDVerified, setIsIDVerified] = useState(false);
+  const [isContractViewed, setIsContractViewed] = useState(false);
+  const [showContractModal, setShowContractModal] = useState(false);
+  const [testingMode, setTestingMode] = useState(false);
+
+  const handleShowContractModal = () => {
+    setShowContractModal(true);
+  };
+  const handleCloseContractModal = () => {
+    setShowContractModal(false);
+    setIsContractViewed(true);
+  };
 
   // callback function to get ID verification result from child component IDVerificationButton
   const handleVerificationResult = (verificationResult) => {
@@ -183,6 +195,11 @@ function GuestInfoPaymentPageModal(props) {
       // Check if the phone number has reached the desired length (10 digits)
       const isPhoneNumberValid = value.length === 10;
       setPhoneNumberValid(isPhoneNumberValid);
+    } else if (
+      name === "name" &&
+      value === "4710ddae-d9b7-4b8e-995c-b73a205b6b7e"
+    ) {
+      setTestingMode(true);
     }
   };
 
@@ -232,6 +249,18 @@ function GuestInfoPaymentPageModal(props) {
           </span>
         </h4>
       </OverlayTrigger>
+      {testingMode ? (
+        <p className="guest-instructions">
+          You are now in testing mode, you can try out the view contract, verify
+          ID, and proceed to payment features!
+        </p>
+      ) : (
+        <p>
+          Please fill out this form to send us an inquiry! Currently, the view
+          contract, verify ID, and proceed to payment features are disabled
+          temporarily for testing purposes.
+        </p>
+      )}
 
       <Form validated={validated} onSubmit={handleSubmitInquiry} ref={form}>
         <input type="hidden" name="adults" value={props.adults} />
@@ -324,27 +353,43 @@ function GuestInfoPaymentPageModal(props) {
         <Button className="custom-primary-button" type="submit">
           Send An Inquiry
         </Button>
-        {showProceedToPayment && (
-          <Button
-            variant="primary"
-            type="submit"
-            onClick={handleBook}
-            className="custom-primary-button"
-          >
-            Proceed to Payment
-          </Button>
-        )}
-        {/* Render "Proceed to Payment" button conditionally */}
-        {!isIDVerified && (
-          <IDVerificationButton
-            className="custom-primary-button"
-            type="submit"
-            stripePromise={stripePromise}
-            onVerificationResult={handleVerificationResult}
-          >
-            Verify Identity
-          </IDVerificationButton>
-        )}
+
+        <Button
+          variant="primary"
+          type="submit"
+          onClick={handleBook}
+          className="custom-primary-button"
+          disabled={!testingMode}
+        >
+          Proceed to Payment
+        </Button>
+
+        {/* Render "ID Verification" button conditionally */}
+
+        <IDVerificationButton
+          className="custom-primary-button"
+          type="submit"
+          stripePromise={stripePromise}
+          onVerificationResult={handleVerificationResult}
+          disabled={!testingMode}
+        >
+          Verify Identity
+        </IDVerificationButton>
+
+        <Button
+          variant="primary"
+          onClick={handleShowContractModal}
+          className="custom-primary-button"
+          disabled={!testingMode}
+        >
+          View Contract
+        </Button>
+
+        <ContractModal
+          show={showContractModal}
+          handleClose={handleCloseContractModal}
+          contractPath={"./carouselImages/SampleContract.pdf"}
+        ></ContractModal>
       </Form>
     </>
   );

@@ -12,7 +12,6 @@ function ContactForm() {
   const form = useRef();
 
   const handleSubmit = (e) => {
-    console.log("SEND EMAIL");
     e.preventDefault();
 
     emailjs.sendForm(service_id_1, template_id_2, form.current, key_1).then(
