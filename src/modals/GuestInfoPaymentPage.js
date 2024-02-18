@@ -1,5 +1,5 @@
 import "./GuestInfoPaymentPageModal.css";
-import { useState, React, useRef, useEffect } from "react";
+import { useState, React, useRef } from "react";
 import emailjs from "@emailjs/browser";
 import Button from "react-bootstrap/Button";
 import { PatternFormat } from "react-number-format";
@@ -28,7 +28,6 @@ import { stripePublicTestKey } from "../constants/constants";
 import ContractModal from "./ContractModal";
 
 function GuestInfoPaymentPageModal(props) {
-  useEffect(() => {}, []);
   const form = useRef();
   const [phoneNumberValid, setPhoneNumberValid] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
