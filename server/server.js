@@ -69,15 +69,19 @@ const PriceLabsRequest = async (input) => {
   }
 };
 
-//async function to load calendar from Airbnb url and parse ics file for booked dates
+//async function to load calendar from Airbnb and Vrbo ical url and parse ics file for booked dates
 async function getCalendarFile() {
-  const events = await ical.async.fromURL("your-ical-link-here");
-  delete events.vcalendar;
-  delete events.prodid;
-  console.log(events);
+  const airbnbEvents = await ical.async.fromURL("your-ical-link-here");
+  delete airbnbEvents.vcalendar;
+  delete airbnbEvents.prodid;
+  const vrboEvents = await ical.async.fromURL("your-ical-link-here");
+  delete vrboEvents.vcalender;
+  delete vrboEvents.prodid;
+
+  const combinedEvents = { ...airbnbEvents, ...vrboEvents };
 
   //calendar dates
-  Object.entries(events).map((entry) => {
+  Object.entries(combinedEvents).map((entry) => {
     let value = entry[1];
     let startDate = JSON.stringify(value.start).substring(1, 24);
     let endDate = JSON.stringify(value.end).substring(1, 24);
