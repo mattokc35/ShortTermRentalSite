@@ -3,11 +3,20 @@ const cors = require("cors");
 const ical = require("node-ical");
 const Moment = require("moment");
 const { extendMoment } = require("moment-range");
+const emailjs = require("@emailjs/browser");
 const moment = extendMoment(Moment);
+const nodemailer = require("nodemailer");
 
 const app = express();
 
-const stripe = require("stripe")("your-key-here");
+const STRIPE_PAYMENT_KEY_PRIVATE = process.env.STRIPE_PAYMENT_KEY_PRIVATE;
+const PRICELABS_KEY = process.env.PRICELABS_KEY;
+const ESIGN_API_KEY = process.env.ESIGN_API_KEY;
+const AIRBNB_LISTING_ID = process.env.AIRBNB_LISTING_ID;
+const NODEMAILER_GMAIL_PASSWORD = process.env.NODEMAILER_GMAIL_PASSWORD;
+const CONTRACT_TEMPLATE_ID = process.env.CONTRACT_TEMPLATE_ID;
+const stripe = require("stripe")(STRIPE_PAYMENT_KEY_PRIVATE);
+
 const bodyParser = require("body-parser");
 
 // Use body-parser middleware to parse JSON
@@ -21,10 +30,10 @@ function generateUniqueTransactionId() {
   return uuidv4();
 }
 
-const ESIGN_API_TOKEN = "your-token-here";
-
 const corsOptions = {
-  origin: ["localhost:3000"], // Replace with your allowed origin(s)
+  origin: [
+    //your origins here
+  ], // Replace with your allowed origin(s)
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Allow cookies to be sent with the request
   optionsSuccessStatus: 204, // No content response for preflight requests
@@ -33,10 +42,60 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-//parse calendar
-let BookedRanges = [];
-
 const YOUR_DOMAIN = "your-domain-here";
+
+let contractEmailDataObject = {};
+
+const sendContractAndEmail = async (contractEmailDataObject) => {
+  //contract request (create contract)
+  const templateId = CONTRACT_TEMPLATE_ID;
+  const signers = [
+    {
+      name: contractEmailDataObject.guest,
+      email: contractEmailDataObject.email,
+    },
+  ];
+
+  const placeholderFields = [
+    { api_key: "Guests", value: contractEmailDataObject.name },
+    { api_key: "Owners", value: contractEmailDataObject.Owners },
+    { api_key: "Today", value: contractEmailDataObject.today },
+    { api_key: "Total_Rent", value: contractEmailDataObject.total_rent },
+    { api_key: "Total_Guests", value: contractEmailDataObject.total_guests },
+    { api_key: "Checkin", value: contractEmailDataObject.Checkin },
+    { api_key: "Checkout", value: contractEmailDataObject.Checkout },
+    { api_key: "Guest_email", value: contractEmailDataObject.Guest_email },
+    { api_key: "Checkin_Time", value: contractEmailDataObject.Checkin_Time },
+    { api_key: "Checkout_Time", value: contractEmailDataObject.Checkout_Time },
+  ];
+
+  try {
+    const response = await fetch(
+      "https://esignatures.io/api/contracts?token=" + ESIGN_API_KEY,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          template_id: templateId,
+          signers,
+          placeholder_fields: placeholderFields,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      res.status(response.status).send("Contract POST request failed"); // Use res.send to send the error response
+    }
+    console.log(response);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+
+  //after contract is sent, send email
+  emailResponse = await sendEmail(contractEmailDataObject);
+};
 
 const PriceLabsRequest = async (input) => {
   try {
@@ -44,13 +103,13 @@ const PriceLabsRequest = async (input) => {
       method: "POST",
       mode: "cors",
       headers: {
-        "X-API-Key": "your-key-here",
+        "X-API-Key": PRICELABS_KEY,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
         listings: [
           {
-            id: "your-id-here",
+            id: AIRBNB_LISTING_ID,
             pms: "airbnb",
           },
         ],
@@ -69,19 +128,21 @@ const PriceLabsRequest = async (input) => {
   }
 };
 
-//async function to load calendar from Airbnb and Vrbo ical url and parse ics file for booked dates
-async function getCalendarFile() {
+//async function to load calendar from Airbnb url and parse ics file for booked dates
+async function getCalendarFiles() {
+  let BookedRanges = [];
   const airbnbEvents = await ical.async.fromURL("your-ical-link-here");
+
+  const vrboEvents = await ical.async.fromURL("your-ical-link-here");
+
+  delete vrboEvents.vcalendar;
+  delete vrboEvents.prodid;
   delete airbnbEvents.vcalendar;
   delete airbnbEvents.prodid;
-  const vrboEvents = await ical.async.fromURL("your-ical-link-here");
-  delete vrboEvents.vcalender;
-  delete vrboEvents.prodid;
-
-  const combinedEvents = { ...airbnbEvents, ...vrboEvents };
+  const eventsCombined = { ...airbnbEvents, ...vrboEvents };
 
   //calendar dates
-  Object.entries(combinedEvents).map((entry) => {
+  Object.entries(eventsCombined).map((entry) => {
     let value = entry[1];
     let startDate = JSON.stringify(value.start).substring(1, 24);
     let endDate = JSON.stringify(value.end).substring(1, 24);
@@ -91,62 +152,81 @@ async function getCalendarFile() {
       moment.range(moment(startDate), moment(endDate)),
     ];
   });
+  return BookedRanges;
+}
+
+async function sendEmail(emailValues) {
+  try {
+    // Create a transporter using SMTP or other transport mechanism
+    let transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: "your-email-here", // Your email
+        pass: NODEMAILER_GMAIL_PASSWORD,
+      },
+    });
+
+    // Setup email data
+    let mailOptions = {
+      from: "your-email-here", // Sender address
+      cc: "your-email-here",
+      to: emailValues.email, // Receiver address
+      subject: "Booking Confirmation - Sapphire By The Sea", // Subject line
+      html: `
+        <p>Hello ${emailValues.guest},</p>
+
+        <p>Thank you for completing your booking for Sapphire By The Sea! This email serves as your payment confirmation. Also, a contract from eSignature.io has been sent to your email, and you will have 48 hours to sign this contract to finialize your booking.</p>
+
+        <p>-------------------------------------------------------------------------</p>
+
+        <p>Below is your booking information:</p>
+
+        <p>${emailValues.guest} | ${emailValues.email}</p>
+
+        <p>Adults: ${emailValues.adults}</p>
+        <p>Children: ${emailValues.children}</p>
+        <p>Infants: ${emailValues.infants}</p>
+        <p>Pets: ${emailValues.pets}</p>
+        <p>Total guests: ${emailValues.total_guests}</p>
+
+        <p>Start date: ${emailValues.Checkin}</p>
+        <p>End date: ${emailValues.Checkout}</p>
+
+        <p>Pet fee: $${emailValues.petFee}</p>
+        <p>Nights price: $${emailValues.nightsPrice}</p>
+        <p>Discounted nights price: $${emailValues.discountedNightsPrice}</p>
+        <p>Discount percentage for ${emailValues.numberOfNights} nights: ${emailValues.discountPercentage}% </p>
+        <p>Tax: $${emailValues.tax}</p>
+        <p>Cleaning Fee: $225</p>
+        <p>Total price: $${emailValues.total_rent}</p>
+
+        <p>Stripe transaction ID: ${emailValues.transactionId}</p>
+
+        <p>Comments: ${emailValues.comments}</p>
+
+        <p>Best wishes,</p>
+
+        <p>B and D Chen<p>
+
+        <p>Sapphire By The Sea in Crystal Beach, Texas<p>
+      `,
+    };
+
+    // Send mail with defined transport object
+    let info = await transporter.sendMail(mailOptions);
+
+    console.log("Email sent: " + info.response);
+    return true;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return false;
+  }
 }
 
 PriceLabsRequest();
-getCalendarFile();
-
-//Express Requests
-
-//contract post request
-app.post("/create-contract", async (req, res) => {
-  const templateId = "your-template-id-here";
-  const signers = [
-    {
-      name: req.body.Guests,
-      email: req.body.Guest_email,
-    },
-  ];
-
-  const placeholderFields = [
-    { api_key: "Guests", value: req.body.Guests },
-    { api_key: "Owners", value: req.body.Owners },
-    { api_key: "Today", value: req.body.Today },
-    { api_key: "Total_Rent", value: req.body.Total_Rent },
-    { api_key: "Total_Guests", value: req.body.Total_Guests },
-    { api_key: "Checkin", value: req.body.Checkin },
-    { api_key: "Checkout", value: req.body.Checkout },
-    { api_key: "Guest_email", value: req.body.Guest_email },
-    { api_key: "Checkin_Time", value: req.body.Checkin_Time },
-    { api_key: "Checkout_Time", value: req.body.Checkout_Time },
-  ];
-
-  try {
-    const response = await fetch(
-      "https://esignatures.io/api/contracts?token=" + ESIGN_API_TOKEN,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          template_id: templateId,
-          signers,
-          placeholder_fields: placeholderFields,
-        }),
-      }
-    );
-
-    if (response.ok) {
-      const responseData = await response.json();
-      res.send(responseData); // Use res.send to send the response
-    } else {
-      res.status(response.status).send("Contract POST request failed"); // Use res.send to send the error response
-    }
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+getCalendarFiles();
 
 //contract get request
 app.post("/get-contract-status", async (req, res) => {
@@ -156,7 +236,7 @@ app.post("/get-contract-status", async (req, res) => {
       "https://esignatures.io/api/contracts/" +
         contract_id +
         "?token=" +
-        ESIGN_API_TOKEN,
+        ESIGN_API_KEY,
       {
         method: "GET",
         headers: {
@@ -177,16 +257,17 @@ app.post("/get-contract-status", async (req, res) => {
 });
 
 //calendar get request
-app.get("/calendar-request", (req, res) => {
-  res.send({ BookedRanges });
+app.get("/calendar-request", async (req, res) => {
+  try {
+    const BookedRanges = await getCalendarFiles();
+    res.send({ BookedRanges });
+  } catch (error) {
+    console.error("Error fetching calendar files:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 });
 
-//price calculation post request
-app.post("/initial-request", (req, res) => {
-  let totalPrice = req.body.numberOfNights * 200;
-  res.json({ totalPrice });
-});
-
+//price GET request
 app.get("/price-request", async (req, res) => {
   const PriceData = await PriceLabsRequest();
   res.send({ PriceData });
@@ -262,15 +343,20 @@ app.post(
 
 // Handle the post request to '/sendDataToBackend' and trigger Contract generation and request, plus email
 app.post("/sendDataToBackend", async (req, res) => {
-  contractEmailDataObject = req.body; // Retrieve the data sent in the request body
-  // Process and use contractEmailDataObject as needed
+  try {
+    contractEmailDataObject = req.body; // Retrieve the data sent in the request body
+    // Process and use contractEmailDataObject as needed
 
-  // Example: Log the received data
-  console.log("Received data from frontend:");
-  console.log(contractEmailDataObject);
+    // Example: Log the received data
+    console.log("Received data from frontend:");
+    console.log(contractEmailDataObject);
 
-  // Assuming you want to acknowledge the successful reception of data
-  res.status(200).send("Data received successfully by the backend");
+    // Assuming you want to acknowledge the successful reception of data
+    res.status(200).send("Data received successfully by the backend");
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Network Error");
+  }
 });
 
 app.post("/create-verification-session", async (req, res) => {
