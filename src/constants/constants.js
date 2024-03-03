@@ -47,119 +47,119 @@ const carouselImages = [
   {
     caption:
       "The dream kitchen is fully stocked with a walk-in pantry, stainless-steel appliances, and all the necessary amenities to host your family or friends.",
-    src: "./carouselImages/kitchen-1.jpg",
+    src: "./carouselImages/kitchen-1.webp",
   },
   {
     caption:
       "The bright and inviting living room has comfortable seating for 8-10 people and a pull-out memory foam sofa bed that sleeps 2 (blankets found in the ottoman).",
-    src: "./carouselImages/living-1.jpg",
+    src: "./carouselImages/living-1.webp",
   },
   {
     caption:
       "How about engaging in a thrilling basketball shootout with a friend, play a game of foosball, ladder ball toss, cornhole or connect four?",
-    src: "./carouselImages/garage-games.jpg",
+    src: "./carouselImages/garage-games.webp",
   },
   {
     caption:
       "Indulge in the warmth of the sun or relish the picturesque view of the sunset from our comfortable lounge chairs.",
-    src: "./carouselImages/outdoor-lounge-chairs.jpg",
+    src: "./carouselImages/outdoor-lounge-chairs.webp",
   },
   {
     caption:
       "The Main Suite (Captain's Quarters) has a memory foam king bed, a 55” 4K Roku TV, a ceiling fan, dimmable remote-control lights and solid wood furniture. This bedroom features an en-suite bathroom with quartz countertops.",
-    src: "./carouselImages/bedroom-1-1.jpg",
+    src: "./carouselImages/bedroom-1-1.webp",
   },
   {
     caption: "Tranquility awaits in the Mermaid Crossing!",
-    src: "./carouselImages/mermaid-crossing-bed.jpg",
+    src: "./carouselImages/mermaid-crossing-bed.webp",
   },
   {
     caption:
       "Bedroom 3 (Crew’s Quarters) has two custom full-over-full bunk beds, built to accommodate both adults and children. A 43” 4K Roku TV, remote control RGB strip lights, and remote control overhead lights, a ceiling fan.",
-    src: "./carouselImages/bedroom-3-1.jpg",
+    src: "./carouselImages/bedroom-3-1.webp",
   },
   {
     caption:
       "The open-concept of Kitchen and Dining is perfect for large family gathering! The centerpiece of the kitchen is a large quartz counter that comfortably sits six people, making it the perfect spot for socializing or preparing meals.",
-    src: "./carouselImages/kitchen-2.jpg",
+    src: "./carouselImages/kitchen-2.webp",
   },
   {
     caption:
       "Take another look at the roomy dining and kitchen space. With all the necessary amenities, this kitchen is sure to make Mom proud, especially when preparing for Thanksgiving!",
-    src: "./carouselImages/dining-room.jpg",
+    src: "./carouselImages/dining-room.webp",
   },
   {
     caption:
       "Our open-concept dining room offers the convenience of enjoying a meal while catching up on your favorite TV shows.",
-    src: "./carouselImages/dining-room-2.jpg",
+    src: "./carouselImages/dining-room-2.webp",
   },
   {
     caption:
       "Sapphire by the Sea is your perfect home away from home! Living room space includes 2 comfortable chairs, 3 counter stools, a loveseat, and a sofa that comes with a pull-out memory foam queen-sized bed, designed to ensure maximum comfort.",
-    src: "./carouselImages/living-room-2.jpg",
+    src: "./carouselImages/living-room-2.webp",
   },
   {
     caption:
       "The bright and inviting living room has comfortable seating for 8-10 people and a pull-out memory foam sofa bed that sleeps 2 (blankets found in the ottoman). Cozy up on the sofa for a movie night or just relaxing after a day in the sand.",
-    src: "./carouselImages/living-room-3.jpg",
+    src: "./carouselImages/living-room-3.webp",
   },
   {
     caption:
       "We have furnished the space with brand new furniture, including a cozy couch that conveniently converts into a queen-sized bed. In addition, a 65 inch SmartTV and sound bar are at your disposal, perfect for movie nights or enjoying your favorite games.",
-    src: "./carouselImages/living-room-4.jpg",
+    src: "./carouselImages/living-room-4.webp",
   },
   {
     caption:
       "Who doesn't love Nintendo Mario games? We've included a Nintendo Switch with a few selection of games for your enjoyment.",
-    src: "./carouselImages/living-room-5.jpg",
+    src: "./carouselImages/living-room-5.webp",
   },
   {
     caption:
       "Who's ready for a fun-filled game night? Grab a seat and join us as we have an assortment of games, including Nintendo Switch suitable for the entire family to delight in.",
-    src: "./carouselImages/board-games.jpg",
+    src: "./carouselImages/board-games.webp",
   },
   {
     caption: "Sweet dreams of the Sea in the Captain's Quarters!",
-    src: "./carouselImages/bedroom-1-2.jpg",
+    src: "./carouselImages/bedroom-1-2.webp",
   },
   {
     caption:
       "The Captain's Quarters has a king bed, a 55” 4K Roku TV, a ceiling fan, dimmable remote-control lights and solid wood furniture with built-in accent lighting. This bedroom features an en-suite bathroom with quartz countertops.",
-    src: "./carouselImages/bedroom-1-3.jpg",
+    src: "./carouselImages/bedroom-1-3.webp",
   },
   {
     caption: "Comfortable king bed in the Captain's Quarters.",
-    src: "./carouselImages/bedroom1-4.jpg",
+    src: "./carouselImages/bedroom1-4.webp",
   },
   {
     caption:
       "The inclusion of touch lamps equipped with USB port and a 115V power outlet provides utmost convenience for all your charging requirements.",
-    src: "./carouselImages/bedroom1-5.jpg",
+    src: "./carouselImages/bedroom1-5.webp",
   },
   {
     caption:
       "Relax, refresh and revitalize in this en-suite bathroom in the Captain's Quarters which features double sinks, over-sized bathtub, clean towels, and complimentary toiletries.",
-    src: "./carouselImages/master-bath-1.jpg",
+    src: "./carouselImages/master-bath-1.webp",
   },
   {
     caption:
       "Relax, refresh and revitalize in this en-suite bathroom in the Captain's Quarters which features double sinks, over-sized bathtub, clean towels, and complimentary toiletries.",
-    src: "./carouselImages/master-bath-2.jpg",
+    src: "./carouselImages/master-bath-2.webp",
   },
   {
     caption:
       "Prepare yourself for the day with ease in this bright and airy bathroom, designed to provide a refreshing ambiance that enhances your morning routine.",
-    src: "./carouselImages/master-bath-3.jpg",
+    src: "./carouselImages/master-bath-3.webp",
   },
   {
     caption:
       "Relax and indulge in a soothing bath by savoring a glass of wine or catching up on your favorite book.",
-    src: "./carouselImages/bathtub-1.jpg",
+    src: "./carouselImages/bathtub-1.webp",
   },
   {
     caption:
       "Mermaid Crossing features a beautifully decorated queen bed, solid wood furniture, a 50” 4K Roku TV, and a remote control ceiling fan with dimmable lights.",
-    src: "./carouselImages/bedroom-2-1.jpg",
+    src: "./carouselImages/bedroom-2-1.webp",
   },
 ];
 

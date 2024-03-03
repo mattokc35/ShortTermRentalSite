@@ -1,6 +1,6 @@
 import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
-import HomeImage from "./../assets/beachpic.jpg";
+import HomeImage from "./../assets/beachpic.webp";
 import "../App.css";
 import Footer from "../components/footer/Footer";
 import BookingInputForm from "../components/BookingInputForm";
@@ -16,6 +16,8 @@ import { reviews } from "../constants/constants";
 import YouTubeEmbed from "../components/YoutubeEmbed";
 import Review from "../components/reviews/Review";
 import AmenitiesTable from "../components/AmenitiesTable";
+import LocationMap from "../components/locationMap/LocationMap";
+import ImageGallery from "../components/imageGallery/ImageGallery";
 
 function Home() {
   const homeRef = useRef(null);
@@ -58,15 +60,24 @@ function Home() {
         url="/"
         btnClass="show"
       />
+
       <br />
       <div className="site-content">
         <div className="amenities-section">
           <h4>
             Introducing Sapphire by the Sea, an immaculate luxury beach house
-            that has been recently constructed in 2022! It is equipped with
-            everything you need to make unforgettable memories. Just a short
-            5-minute walk to the sands of Crystal Beach and more!
+            that has been recently constructed in November 2022! It is equipped
+            with everything you need to make unforgettable memories.
           </h4>
+          <br />
+          <ImageGallery />
+          <br />
+          <h4>
+            We are located just a short 5-minute walk to the sands of Crystal
+            Beach and more!
+          </h4>
+          <br />
+          <LocationMap />
         </div>
         <br />
 
@@ -106,11 +117,9 @@ function Home() {
               );
             })}
           </Carousel>
-          <br></br>
         </div>
         <Divider title="Amenities" ref={amenitiesRef} />
         <AmenitiesTable />
-
         <Divider ref={videoRef} title="Video Tour" />
         <div className="video-section">
           <div className="YoutubeEmbed2">
@@ -130,6 +139,7 @@ function Home() {
             showArrows={true}
             showIndicators={false}
             dynamicHeight={true}
+            showThumbs={false}
           >
             {reviews.map((review, index) => (
               <div key={index} loading="lazy">
@@ -144,6 +154,7 @@ function Home() {
             ))}
           </Carousel>
         </div>
+
         <Divider ref={aboutRef} title="About The Host" />
         <br></br>
         <div className="about-section">
@@ -157,6 +168,7 @@ function Home() {
         </div>
         <br />
       </div>
+
       <Footer></Footer>
     </>
   );
