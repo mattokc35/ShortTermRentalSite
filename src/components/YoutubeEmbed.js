@@ -1,21 +1,26 @@
 import React from "react";
 import LazyLoad from "react-lazy-load";
 import "./YoutubeEmbed.css";
+import { youtubeURL } from "../constants/constants";
 
 const YouTubeEmbed = () => {
-  const embedUrl = `https://www.youtube.com/embed/YkeAx9Ql5oM`;
-
   return (
-    <LazyLoad>
-      <div className="iframe-youtube embed-responsive embed-responsive-4by3">
-        <iframe
-          title="YouTube Video"
-          className="embed-responsive-item"
-          src={embedUrl}
-          allowFullScreen
-        ></iframe>
-      </div>
-    </LazyLoad>
+    <>
+      <LazyLoad>
+        <div className="iframe-youtube embed-responsive embed-responsive-4by3">
+          <iframe
+            width="560"
+            height="315"
+            src={youtubeURL}
+            title="YouTube video player"
+            frameborder="0"
+            className="embed-responsive-item"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+      </LazyLoad>
+    </>
   );
 };
 
