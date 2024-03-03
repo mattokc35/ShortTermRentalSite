@@ -14,6 +14,8 @@ import {
   service_id_1,
   template_id_1,
   key_1,
+  stripePublicTestKey,
+  contractUrl,
 } from "../constants/constants";
 import { connect } from "react-redux";
 import { setTransactionId } from "../actions/transactionActions";
@@ -24,8 +26,6 @@ import {
   sendContractEmailDataToBackend,
 } from "../network/networkRequests";
 import { loadStripe } from "@stripe/stripe-js";
-import { stripePublicTestKey } from "../constants/constants";
-import ContractModal from "./ContractModal";
 
 function GuestInfoPaymentPageModal(props) {
   const form = useRef();
@@ -37,7 +37,6 @@ function GuestInfoPaymentPageModal(props) {
   const [isContractViewed, setIsContractViewed] = useState(false);
   const [showContractModal, setShowContractModal] = useState(false);
   const [testingMode, setTestingMode] = useState(false);
-
   const handleShowContractModal = () => {
     setShowContractModal(true);
   };
@@ -76,7 +75,7 @@ function GuestInfoPaymentPageModal(props) {
       return;
     }
 
-    if (phoneNumberStripped.length < 20) {
+    if (phoneNumberStripped.length < 12) {
       alert("Please Enter a Valid Phone Number");
       event.preventDefault();
       event.stopPropagation();
@@ -85,19 +84,6 @@ function GuestInfoPaymentPageModal(props) {
 
     event.preventDefault();
     // Include props values in the formData object
-    const formDataWithProps = {
-      ...formData,
-      adults: props.adults,
-      children: props.children,
-      pets: props.pets,
-      price: props.price,
-      tax: props.tax,
-      startDate: props.startDate.substr(1, 10),
-      endDate: props.endDate.substr(1, 10),
-      infants: props.infants,
-      petFee: props.petFee,
-      nightsPrice: props.nightsPrice,
-    };
 
     emailjs.sendForm(service_id_1, template_id_1, form, key_1).then(
       (result) => {
@@ -168,11 +154,15 @@ function GuestInfoPaymentPageModal(props) {
           Checkin_Time: checkinTime,
           Checkout_Time: checkoutTime,
           today: currentDate,
+          discountedNightsPrice: props.discountedNightsPrice,
+          discountPercentage: props.discountPercentage,
+          numberOfNights: props.numberOfNights,
           tax: props.tax,
           guest: formData.name,
           infants: props.infants,
           pets: props.pets,
         };
+        console.log(contractEmailDataObject.phoneNumber);
         const sendDataToBackendResponse = await sendContractEmailDataToBackend(
           contractEmailDataObject
         );
@@ -189,13 +179,17 @@ function GuestInfoPaymentPageModal(props) {
   // Handle change event for all input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
+    console.log("onChange");
     setFormData({ ...formData, [name]: value });
-    if (name === "phoneNumber") {
+    if (name === "phoneNumber" || name === "email") {
+      console.log(`phone number: ${value}`);
       // Check if the phone number has reached the desired length (10 digits)
       const isPhoneNumberValid = value.length === 10;
       setPhoneNumberValid(isPhoneNumberValid);
-    } else if (
-      name === "name" &&
+    }
+
+    if (
+      name === "comments" &&
       value === "4710ddae-d9b7-4b8e-995c-b73a205b6b7e"
     ) {
       setTestingMode(true);
@@ -206,7 +200,14 @@ function GuestInfoPaymentPageModal(props) {
     <Tooltip id="price-tooltip" style={{ marginLeft: "-150px" }}>
       {/* Add your price breakdown information here */}
       {props.numNights} nights price: ${props.nightsPrice} <br></br>
-      Cleaning Fee: $185 <br></br>
+      {props.hasDiscount && (
+        <>
+          <div
+            style={{ color: "white" }}
+          >{`Discounted Price: $${props.discountedNightsPrice} (${props.discountPercentage}% off for ${props.numNights} nights)`}</div>
+        </>
+      )}
+      Cleaning Fee: $225 <br></br>
       Pet Fee: ${props.petFee} <br></br>
       Tax: ${props.tax} <br></br>
       Total Price: ${props.price}
@@ -244,7 +245,9 @@ function GuestInfoPaymentPageModal(props) {
               toggleTooltip();
             }}
           >
-            (click for price breakdown)
+            {props.hasDiscount
+              ? `(Special Discount! Click for price breakdown)`
+              : `(Click for price breakdown)`}
           </span>
         </h4>
       </OverlayTrigger>
@@ -255,9 +258,9 @@ function GuestInfoPaymentPageModal(props) {
         </p>
       ) : (
         <p>
-          Please fill out this form to send us an inquiry! Currently, the view
-          contract, verify ID, and proceed to payment features are disabled
-          temporarily for testing purposes.
+          Please fill out this form to send us an inquiry! Currently, the
+          proceed to payment feature is disabled temporarily for testing
+          purposes.
         </p>
       )}
 
@@ -269,6 +272,21 @@ function GuestInfoPaymentPageModal(props) {
         <input type="hidden" name="pets" value={props.pets} />
         <input type="hidden" name="infants" value={props.infants} />
         <input type="hidden" name="nightsPrice" value={props.nightsPrice} />
+        <input
+          type="hidden"
+          name="numberOfNights"
+          value={props.numberOfNights}
+        />
+        <input
+          type="hidden"
+          name="discountedNightsPrice"
+          value={props.discountedNightsPrice}
+        />
+        <input
+          type="hidden"
+          name="discountPercentage"
+          value={props.discountPercentage}
+        ></input>
         <input
           type="hidden"
           name="startDate"
@@ -309,36 +327,23 @@ function GuestInfoPaymentPageModal(props) {
             We'll never share your email with anyone else.
           </Form.Text>
         </Form.Group>
-        {
-          <PatternFormat
-            format="(+##) ###-###-####"
-            mask="_"
-            isNumericString={true}
-            allowEmptyFormatting={false}
-            customInput={(props) => {
-              return (
-                <Form.Group controlId="formBasicPhoneNumber" className="mb-3">
-                  <Form.Label>
-                    Phone Number{" "}
-                    <span style={{ fontSize: "79%" }}>
-                      (Enter country code first, ex: "01" for United States)
-                    </span>
-                  </Form.Label>
-                  <Form.Control
-                    name="phoneNumber"
-                    placeholder="Phone Number"
-                    required
-                    value={formData.phoneNumber}
-                    onChange={handleChange}
-                    size="sm"
-                    {...props}
-                    type="tel"
-                  />
-                </Form.Group>
-              );
-            }}
+        <Form.Group controlId="formBasicPhoneNumber" className="mb-3">
+          <Form.Label>
+            Phone Number{" "}
+            <span style={{ fontSize: "79%" }}>
+              (Enter country code first, ex: "01" for United States)
+            </span>
+          </Form.Label>
+          <Form.Control
+            name="phoneNumber"
+            placeholder="Phone Number"
+            required
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            size="sm"
+            type="tel"
           />
-        }
+        </Form.Group>
         <Form.Group controlId="exampleForm.ControlTextarea1">
           <Form.Label>Questions/Comments</Form.Label>
           <Form.Control
@@ -352,7 +357,6 @@ function GuestInfoPaymentPageModal(props) {
         <Button className="custom-primary-button" type="submit">
           Send An Inquiry
         </Button>
-
         <Button
           variant="primary"
           type="submit"
@@ -362,33 +366,24 @@ function GuestInfoPaymentPageModal(props) {
         >
           Proceed to Payment
         </Button>
-
         {/* Render "ID Verification" button conditionally */}
-
         <IDVerificationButton
           className="custom-primary-button"
           type="submit"
           stripePromise={stripePromise}
           onVerificationResult={handleVerificationResult}
-          disabled={!testingMode}
         >
           Verify Identity
         </IDVerificationButton>
-
         <Button
           variant="primary"
-          onClick={handleShowContractModal}
+          onClick={() => {
+            window.open(contractUrl, "_blank");
+          }}
           className="custom-primary-button"
-          disabled={!testingMode}
         >
           View Contract
         </Button>
-
-        <ContractModal
-          show={showContractModal}
-          handleClose={handleCloseContractModal}
-          contractPath={"./carouselImages/SampleContract.pdf"}
-        ></ContractModal>
       </Form>
     </>
   );
