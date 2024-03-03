@@ -29,7 +29,6 @@ import { loadStripe } from "@stripe/stripe-js";
 
 function GuestInfoPaymentPageModal(props) {
   const form = useRef();
-  const [phoneNumberValid, setPhoneNumberValid] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
   const stripePromise = loadStripe(stripePublicTestKey);
@@ -64,18 +63,14 @@ function GuestInfoPaymentPageModal(props) {
 
   const handleSubmitInquiry = (event) => {
     const form = event.currentTarget;
-    const phoneNumberStripped = JSON.stringify(form.phoneNumber.value).replace(
-      /_/g,
-      ""
-    );
+    const phoneNumber = form.phoneNumber.value;
 
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
       return;
     }
-
-    if (phoneNumberStripped.length < 12) {
+    if (phoneNumber.length != 12) {
       alert("Please Enter a Valid Phone Number");
       event.preventDefault();
       event.stopPropagation();
@@ -133,10 +128,8 @@ function GuestInfoPaymentPageModal(props) {
       // Convert the price to the desired string format
       const formattedPrice = (parseFloat(price) * 100).toFixed(4);
       const response = await createCheckoutSession(productName, formattedPrice);
-      console.log(response);
       //if checkout session is created successfully, we want to pass transactionId, and contract/email values to the backend
       if (response != null) {
-        console.log(response);
         const contractEmailDataObject = {
           transactionId: response.transactionId,
           nightsPrice: props.nightsPrice,
@@ -162,7 +155,6 @@ function GuestInfoPaymentPageModal(props) {
           infants: props.infants,
           pets: props.pets,
         };
-        console.log(contractEmailDataObject.phoneNumber);
         const sendDataToBackendResponse = await sendContractEmailDataToBackend(
           contractEmailDataObject
         );
@@ -179,14 +171,7 @@ function GuestInfoPaymentPageModal(props) {
   // Handle change event for all input fields
   const handleChange = (e) => {
     const { name, value } = e.target;
-    console.log("onChange");
     setFormData({ ...formData, [name]: value });
-    if (name === "phoneNumber" || name === "email") {
-      console.log(`phone number: ${value}`);
-      // Check if the phone number has reached the desired length (10 digits)
-      const isPhoneNumberValid = value.length === 10;
-      setPhoneNumberValid(isPhoneNumberValid);
-    }
 
     if (
       name === "comments" &&
