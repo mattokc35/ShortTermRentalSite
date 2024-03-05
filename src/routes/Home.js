@@ -131,8 +131,8 @@ function Home() {
         <br></br>
         <div className="reviews-section">
           <h6 className="recentGuestReviews">
-            (5.0 Star Average Rating on Airbnb with over 40 reviews as of
-            January 2024)
+            (5.0 Star Average Rating on Airbnb and Vrbo with over 45 reviews as
+            of March 2024)
           </h6>
           <Carousel
             className="reviews-carousel"
