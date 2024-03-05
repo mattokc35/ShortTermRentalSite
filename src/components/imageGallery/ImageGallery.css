@@ -1,0 +1,43 @@
+.image-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.image-item {
+  flex: 10 1 1%;
+  margin: 6px;
+  max-width: 600px;
+}
+.image-gallery-image {
+  width: 600px; /* Set a fixed width */
+  height: 350px; /* Set a fixed height */
+  object-fit: cover; /* Preserve aspect ratio while covering the content box */
+}
+
+@media screen and (max-width: 650px) {
+  .image-gallery {
+    flex-direction: column;
+    justify-content: center;
+  }
+  .image-gallery-image {
+    width: 350px; /* Set a fixed width */
+    height: 190px; /* Set a fixed height */
+    object-fit: cover; /* Preserve aspect ratio while covering the content box */
+  }
+  .image-item {
+    flex: 1 0 100%; /* Full width on smaller screens, creating a single column */
+  }
+}
+
+@media screen and (min-width: 769px) and (max-width: 1200px) {
+  .image-item {
+    flex: 1 0 48%; /* Two columns for medium-sized screens */
+  }
+}
+
+@media screen and (min-width: 1201px) {
+  .image-item {
+    flex: 1 0 1%; /* Three columns for larger screens */
+  }
+}

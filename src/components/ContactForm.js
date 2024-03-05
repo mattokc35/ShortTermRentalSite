@@ -1,33 +1,38 @@
 import React, { useRef } from "react";
-
 import emailjs from "@emailjs/browser";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-
 import "bootstrap/dist/css/bootstrap.css";
 import "./ContactForm.css";
-import { key_1, service_id_1, template_id_2 } from "../constants/constants";
 
 function ContactForm() {
   const form = useRef();
 
   const handleSubmit = (e) => {
+    console.log("SEND EMAIL");
     e.preventDefault();
 
-    emailjs.sendForm(service_id_1, template_id_2, form.current, key_1).then(
-      (result) => {
-        console.log(result.text);
-      },
-      (error) => {
-        console.log(error.text);
-      }
-    );
+    emailjs
+      .sendForm(
+        process.env.REACT_APP_EMAIL_JS_SERVICE_ID,
+        process.env.REACT_APP_EMAIL_JS_TEMPLATE_2,
+        form.current,
+        process.env.REACT_APP_EMAIL_JS_KEY
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
     window.alert("Thanks for contacting us! We will get back to you soon.");
   };
   return (
     <>
       <div className="ContactForm">
-        <h3>Question or comment? Send us a message...</h3>
+        <h4>Question or comment? Send us a message...</h4>
         <Form ref={form} onSubmit={handleSubmit}>
           <Form.Group className="mb-3" controlId="formBasicName">
             <Form.Label>Guest Name</Form.Label>

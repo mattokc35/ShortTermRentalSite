@@ -48,18 +48,6 @@ const Navbar = (props) => {
             Book
           </Link>
         </li>
-        <li key="contact">
-          <Link
-            onClick={() => {
-              props.handleScroll(props.contactFormRef);
-              handleMenuItemClick();
-            }}
-            className="nav-links"
-            to="/#"
-          >
-            Contact
-          </Link>
-        </li>
         <li>
           <Link
             onClick={() => {
@@ -75,13 +63,13 @@ const Navbar = (props) => {
         <li>
           <Link
             onClick={() => {
-              props.handleScroll(props.aboutRef);
+              props.handleScroll(props.videoRef);
               handleMenuItemClick();
             }}
             className="nav-links"
             to="/#"
           >
-            About Us
+            Video Tour
           </Link>
         </li>
         <li>
@@ -99,13 +87,25 @@ const Navbar = (props) => {
         <li>
           <Link
             onClick={() => {
-              props.handleScroll(props.videoRef);
+              props.handleScroll(props.aboutRef);
               handleMenuItemClick();
             }}
             className="nav-links"
             to="/#"
           >
-            Video Tour
+            About Us
+          </Link>
+        </li>
+        <li key="contact">
+          <Link
+            onClick={() => {
+              props.handleScroll(props.contactFormRef);
+              handleMenuItemClick();
+            }}
+            className="nav-links"
+            to="/#"
+          >
+            Contact
           </Link>
         </li>
       </ul>

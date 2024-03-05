@@ -2,7 +2,6 @@ import "./GuestInfoPaymentPageModal.css";
 import { useState, React, useRef } from "react";
 import emailjs from "@emailjs/browser";
 import Button from "react-bootstrap/Button";
-import { PatternFormat } from "react-number-format";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import IDVerificationButton from "../components/IDVerificationButton";
@@ -11,10 +10,6 @@ import {
   owners,
   checkinTime,
   checkoutTime,
-  service_id_1,
-  template_id_1,
-  key_1,
-  stripePublicTestKey,
   contractUrl,
 } from "../constants/constants";
 import { connect } from "react-redux";
@@ -26,23 +21,19 @@ import {
   sendContractEmailDataToBackend,
 } from "../network/networkRequests";
 import { loadStripe } from "@stripe/stripe-js";
+import ReCAPTCHA from "react-google-recaptcha";
 
 function GuestInfoPaymentPageModal(props) {
   const form = useRef();
+  const recaptcha = useRef();
   const [showTooltip, setShowTooltip] = useState(false);
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
-  const stripePromise = loadStripe(stripePublicTestKey);
+  const stripePromise = loadStripe(
+    process.env.REACT_APP_STRIPE_PUBLIC_TEST_KEY
+  );
   const [isIDVerified, setIsIDVerified] = useState(false);
   const [isContractViewed, setIsContractViewed] = useState(false);
-  const [showContractModal, setShowContractModal] = useState(false);
   const [testingMode, setTestingMode] = useState(false);
-  const handleShowContractModal = () => {
-    setShowContractModal(true);
-  };
-  const handleCloseContractModal = () => {
-    setShowContractModal(false);
-    setIsContractViewed(true);
-  };
 
   // callback function to get ID verification result from child component IDVerificationButton
   const handleVerificationResult = (verificationResult) => {
@@ -61,6 +52,15 @@ function GuestInfoPaymentPageModal(props) {
   });
   const [validated, setValidated] = useState(false);
 
+  const checkRecaptcha = () => {
+    const captchaValue = recaptcha.current.getValue();
+    if (!captchaValue) {
+      window.alert("Please verify the reCAPTCHA!");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmitInquiry = (event) => {
     const form = event.currentTarget;
     const phoneNumber = form.phoneNumber.value;
@@ -78,23 +78,42 @@ function GuestInfoPaymentPageModal(props) {
     }
 
     event.preventDefault();
+    if (!checkRecaptcha()) {
+      return;
+    }
     // Include props values in the formData object
 
-    emailjs.sendForm(service_id_1, template_id_1, form, key_1).then(
-      (result) => {
-        console.log(result.text);
-      },
-      (error) => {
-        console.log(error.text);
-      }
-    );
+    emailjs
+      .sendForm(
+        process.env.REACT_APP_EMAIL_JS_SERVICE_ID,
+        process.env.REACT_APP_EMAIL_JS_TEMPLATE_1,
+        form,
+        process.env.REACT_APP_EMAIL_JS_KEY
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
     setValidated(true);
     window.alert("Thanks for the inquiry! We'll contact you shortly.");
   };
 
   const handleBook = async (event) => {
-    window.alert("Redirecting to Stripe payment page!");
     event.preventDefault();
+    if (!checkRecaptcha()) {
+      window.alert("Please verify the reCAPTCHA!");
+      return;
+    }
+    window.alert("Redirecting to Stripe payment page!");
+    const captchaValue = recaptcha.current.getValue();
+    if (!captchaValue) {
+      window.alert("Please verify the reCAPTCHA!");
+      return;
+    }
 
     const currentDate = getCurrentDate();
 
@@ -339,18 +358,14 @@ function GuestInfoPaymentPageModal(props) {
             rows="3"
           />
         </Form.Group>
+        <ReCAPTCHA
+          ref={recaptcha}
+          sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_KEY}
+        />
         <Button className="custom-primary-button" type="submit">
           Send An Inquiry
         </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={handleBook}
-          className="custom-primary-button"
-          disabled={!testingMode}
-        >
-          Proceed to Payment
-        </Button>
+
         {/* Render "ID Verification" button conditionally */}
         <IDVerificationButton
           className="custom-primary-button"
@@ -368,6 +383,15 @@ function GuestInfoPaymentPageModal(props) {
           className="custom-primary-button"
         >
           View Contract
+        </Button>
+        <Button
+          variant="primary"
+          type="submit"
+          onClick={handleBook}
+          className="custom-primary-button"
+          disabled={!testingMode}
+        >
+          Proceed to Payment
         </Button>
       </Form>
     </>
