@@ -16,6 +16,7 @@ const AIRBNB_LISTING_ID = process.env.AIRBNB_LISTING_ID;
 const NODEMAILER_GMAIL_PASSWORD = process.env.NODEMAILER_GMAIL_PASSWORD;
 const CONTRACT_TEMPLATE_ID = process.env.CONTRACT_TEMPLATE_ID;
 const stripe = require("stripe")(STRIPE_PAYMENT_KEY_PRIVATE);
+const Google_CAPTCHA_API_KEY = process.env.Google_CAPTCHA_API_KEY;
 
 const bodyParser = require("body-parser");
 
@@ -69,6 +70,8 @@ const sendContractAndEmail = async (contractEmailDataObject) => {
     { api_key: "Checkout_Time", value: contractEmailDataObject.Checkout_Time },
   ];
 
+  let contractEmailDataObjectWithContractID;
+
   try {
     const response = await fetch(
       "https://esignatures.io/api/contracts?token=" + ESIGN_API_KEY,
@@ -88,13 +91,18 @@ const sendContractAndEmail = async (contractEmailDataObject) => {
     if (!response.ok) {
       res.status(response.status).send("Contract POST request failed"); // Use res.send to send the error response
     }
-    console.log(response);
+    const responseData = await response.json(); //Parse the JSON response
+    const contractID = responseData?.data?.contract?.id; //extract the contract ID
+    contractEmailDataObjectWithContractID = {
+      ...contractEmailDataObject,
+      contractID: contractID,
+    };
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 
   //after contract is sent, send email
-  emailResponse = await sendEmail(contractEmailDataObject);
+  emailResponse = await sendEmail(contractEmailDataObjectWithContractID);
 };
 
 const PriceLabsRequest = async (input) => {
@@ -177,13 +185,19 @@ async function sendEmail(emailValues) {
       html: `
         <p>Hello ${emailValues.guest},</p>
 
-        <p>Thank you for completing your booking for Sapphire By The Sea! This email serves as your payment confirmation. Also, a contract from eSignature.io has been sent to your email, and you will have 48 hours to sign this contract to finialize your booking.</p>
+        <p>Thank you for completing your booking for Sapphire By The Sea! This email serves as your payment confirmation. Also, a contract from eSignature.io has been sent to your email, and you will have 48 hours to sign this contract to finialize your booking. If you have any questions or concerns, feel free to reach out to us via sapphirecbtx@gmail.com. Once again, thank you for choosing Sapphire By The Sea in Crystal Beach, TX!</p>
 
         <p>-------------------------------------------------------------------------</p>
 
         <p>Below is your booking information:</p>
 
-        <p>${emailValues.guest} | ${emailValues.email}</p>
+        <p>Check-in Date: ${emailValues.Checkin}</p>
+        <p>Check-out Date: ${emailValues.Checkout}</p>
+
+        <p> Guest name: ${emailValues.guest}</p>
+        <p> Guest email: ${emailValues.email}</p>
+        <p> Guest phone number: ${emailValues.phoneNumber}</p>
+        <p> Guest comments: ${emailValues.comments}</p>
 
         <p>Adults: ${emailValues.adults}</p>
         <p>Children: ${emailValues.children}</p>
@@ -191,26 +205,19 @@ async function sendEmail(emailValues) {
         <p>Pets: ${emailValues.pets}</p>
         <p>Total guests: ${emailValues.total_guests}</p>
 
-        <p>Start date: ${emailValues.Checkin}</p>
-        <p>End date: ${emailValues.Checkout}</p>
-
-        <p>Pet fee: $${emailValues.petFee}</p>
-        <p>Nights price: $${emailValues.nightsPrice}</p>
-        <p>Discounted nights price: $${emailValues.discountedNightsPrice}</p>
-        <p>Discount percentage for ${emailValues.numberOfNights} nights: ${emailValues.discountPercentage}% </p>
-        <p>Tax: $${emailValues.tax}</p>
+        <p>$${emailValues.averageNightlyPrice} x ${emailValues.numberOfNights} nights: ${emailValues.nightsPrice}</p>
+        <p>After discount: $${emailValues.discountedNightsPrice}</p>
         <p>Cleaning Fee: $225</p>
-        <p>Total price: $${emailValues.total_rent}</p>
+        <p>Taxes: $${emailValues.tax}</p>
+        <p>Pet fee: $${emailValues.petFee}</p>
+        <p>Booking total (USD): $${emailValues.total_rent}</p>
 
         <p>Stripe transaction ID: ${emailValues.transactionId}</p>
-
-        <p>Comments: ${emailValues.comments}</p>
+        <p>eSignature.io contract ID: ${emailValues.contractID}</p>
 
         <p>Best wishes,</p>
 
-        <p>B and D Chen<p>
-
-        <p>Sapphire By The Sea in Crystal Beach, Texas<p>
+        <p><Your Name Here><p>
       `,
     };
 
@@ -224,9 +231,6 @@ async function sendEmail(emailValues) {
     return false;
   }
 }
-
-PriceLabsRequest();
-getCalendarFiles();
 
 //contract get request
 app.post("/get-contract-status", async (req, res) => {
