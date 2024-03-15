@@ -51,7 +51,10 @@ function BookingInputForm(props) {
   const [priceArray, setPriceArray] = useState([]);
   const [tax, setTax] = useState(0);
   const [petFee, setPetFee] = useState(0);
-  const [contractID, setContractID] = useState(null);
+  const [hasDiscount, setHasDiscount] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [discountedNightsPrice, setDiscountedNightsPrice] = useState(0);
+  const [averageNightlyPrice, setAverageNightlyPrice] = useState(0);
 
   //separate useEffect for network requests to only run once on component render
   useEffect(() => {
@@ -116,34 +119,26 @@ function BookingInputForm(props) {
   // Event handler for form submission
   const handleFormSubmit = async (event) => {
     //event.preventDefault();
+
+    let numberOfNights = differenceInDays(endDate.toDate(), startDate.toDate());
+    setNumNights(numberOfNights);
     let totalPrice = calculatePrice(
       startDate,
       endDate,
       selectValues.selectedPets,
-      priceArray
+      priceArray,
+      numberOfNights
     );
 
-    let numberOfNights = differenceInDays(endDate.toDate(), startDate.toDate());
-    let data = {
-      numberOfNights: differenceInDays(endDate.toDate(), startDate.toDate()),
-      startDate: startDate,
-      endDate: endDate,
-      selectedAdults: selectValues.selectedAdults,
-      selectedChildren: selectValues.selectedChildren,
-      selectedInfants: selectValues.selectedInfants,
-      selectedPets: selectValues.selectedPets,
-    };
-
-    //check for input verification (total of adults, children, and infants needs to be < 12)
-
     try {
-      //const response = await initialPriceRequest(data);
-      //const price = response.totalPrice;
-      setNumNights(numberOfNights);
       setTotalPrice(totalPrice[0]);
       setNightsPrice(totalPrice[1]);
       setTax(totalPrice[2]);
       setPetFee(totalPrice[4]);
+      setDiscountPercentage(totalPrice[5]);
+      setHasDiscount(totalPrice[6]);
+      setDiscountedNightsPrice(totalPrice[7]);
+      setAverageNightlyPrice(totalPrice[8]);
       handleShow();
     } catch (error) {
       // Handle any errors that occurred during the fetch
@@ -153,14 +148,11 @@ function BookingInputForm(props) {
 
   //function to check if calendar date is blocked
   const checkDateBlocked = (date) => {
-    for (let i = 0; i < bookedDates.length; i++) {
-      const startMoment = moment(bookedDates[i].start, "YYYY-MM-DD");
-      const endMoment = moment(bookedDates[i].end, "YYYY-MM-DD");
-      if (date.isBetween(startMoment, endMoment, "day", "()")) {
-        return true;
-      }
-    }
-    return false;
+    return bookedDates.some(({ start, end }) => {
+      const startMoment = moment(start, "YYYY-MM-DD");
+      const endMoment = moment(end, "YYYY-MM-DD");
+      return date.isBetween(startMoment, endMoment, "day", "[]");
+    });
   };
 
   const renderDayContents = (date) => {
@@ -181,7 +173,7 @@ function BookingInputForm(props) {
           <p className="calendar-text-day">{dayValue} </p>
           <br></br>
           <div className="calendar-price-div">
-            <p className="calendar-text-price">${foundPrice} </p>
+            {/*<p className="calendar-text-price">${foundPrice} </p>*/}
           </div>
         </div>
       </>
@@ -205,6 +197,11 @@ function BookingInputForm(props) {
                 pets={selectValues.selectedPets}
                 price={totalPrice}
                 nightsPrice={nightsPrice}
+                numberOfNights={numberOfNights}
+                hasDiscount={hasDiscount}
+                discountPercentage={discountPercentage}
+                discountedNightsPrice={discountedNightsPrice}
+                averageNightlyPrice={averageNightlyPrice}
                 tax={(Math.round(tax * 100) / 100).toFixed(2)}
                 petFee={petFee}
                 numNights={numberOfNights}
@@ -217,7 +214,9 @@ function BookingInputForm(props) {
             </Modal.Footer>
           </Modal>
         </div>
-        <h4>Our 3-bedroom home sleeps up to a maximum of 12 guests</h4>
+        <h4 className="booking-h4">
+          Our 3-bedroom home sleeps up to a maximum of 12 guests
+        </h4>
       </div>
       <form onSubmit={handleFormSubmit}>
         <div className="BookingInputFormInner">
