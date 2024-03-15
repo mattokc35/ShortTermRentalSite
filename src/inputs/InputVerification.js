@@ -1,4 +1,4 @@
-import differenceInDays from "date-fns/differenceInDays";
+import { differenceInDays } from "date-fns";
 
 const bookingFormValidation = (
   adults,
@@ -8,31 +8,30 @@ const bookingFormValidation = (
   endDate,
   bookedDates
 ) => {
-  if (adults + children + infants > 12) {
+  // Check total number of guests
+  const totalGuests = adults + children + infants;
+  if (totalGuests > 12) {
     return [true, "Please select a total of 12 guests or fewer"];
   }
-  if (startDate === null || endDate === null) {
+
+  // Check if start date or end date is not selected
+  if (!startDate || !endDate) {
     return [true, ""];
   }
 
-  let numNights = differenceInDays(endDate.toDate(), startDate.toDate());
-  if (numNights <= 1) {
+  // Calculate number of nights
+  const numNights = differenceInDays(endDate, startDate);
+  if (numNights < 2 || numNights >= 31) {
     return [true, "Bookings must be 2 or more nights but less than 31 nights"];
   }
 
-  if (numNights >= 31) {
-    return [true, "Bookings must be 2 or more nights but less than 31 nights"];
-  }
-  let startDateCopy = startDate.clone();
-  for (var m = startDateCopy; m.isBefore(endDate); m.add(1, "days")) {
-    for (var i = 0; i < bookedDates.length; i++) {
-      if (m.format("YYYY-MM-DD") === bookedDates[i].start.substring(0, 10)) {
-        return [
-          true,
-          "You selected dates that overlap with unavailable dates!",
-        ];
-      }
-    }
+  // Check for overlapping booked dates
+  const overlappingDate = bookedDates.find(
+    (booking) =>
+      startDate <= new Date(booking.end) && endDate >= new Date(booking.start)
+  );
+  if (overlappingDate) {
+    return [true, "You selected dates that overlap with unavailable dates!"];
   }
 
   return [false, "Looks Good! :)"];
