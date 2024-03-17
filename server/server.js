@@ -389,6 +389,47 @@ app.post("/create-verification-session", async (req, res) => {
   }
 });
 
+app.post("/verifyPromoCode", async (req, res) => {
+  try {
+    const { promoCode } = req.body;
+    let discountPercentage = 0;
+    const isPromoCodeValid = validPromoCodes.includes(promoCode);
+    if (isPromoCodeValid) {
+      if (promoCode === "Your-Promo-Code-Here") {
+        discountPercentage = 5;
+      }
+    }
+    res.status(200).json({
+      isPromoValid: isPromoCodeValid,
+      discountPercentage: discountPercentage,
+    });
+  } catch {
+    console.error("Error validating promo code: ", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+//handle captcha score verification
+app.post("/verifyCaptcha", async (req, res) => {
+  try {
+    const { captchaValue } = req.body;
+    const { data } = await fetch("Your-Link-Here" + Google_CAPTCHA_API_KEY, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        template_id: templateId,
+        signers,
+        placeholder_fields: placeholderFields,
+      }),
+    });
+  } catch {
+    console.error("Error verifying CAPTCHA: ", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 app.listen(443, () => {
   console.log(`Server is running on port 443.`);
 });
