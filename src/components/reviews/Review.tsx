@@ -1,8 +1,14 @@
-import React from "react";
+import React, { FC } from "react";
 import "./Review.css";
 
-function Review(props) {
-  // Convert rating to an array of stars
+interface ReviewProps {
+  rating: number;
+  text: string;
+  name: string;
+  date: string;
+}
+
+const Review: FC<ReviewProps> = (props) => {
   const stars = Array.from({ length: props.rating }, (_, index) => (
     <span key={index} className="star-icon">
       ★
@@ -22,6 +28,6 @@ function Review(props) {
       </div>
     </div>
   );
-}
+};
 
 export default Review;
