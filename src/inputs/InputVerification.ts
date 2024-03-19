@@ -1,13 +1,18 @@
 import { differenceInDays } from "date-fns";
 
+interface BookedDate {
+  start: Date;
+  end: Date;
+}
+
 const bookingFormValidation = (
-  adults,
-  children,
-  infants,
-  startDate,
-  endDate,
-  bookedDates
-) => {
+  adults: number,
+  children: number,
+  infants: number,
+  startDate: Date,
+  endDate: Date,
+  bookedDates: BookedDate[]
+): [boolean, string] => {
   // Check total number of guests
   const totalGuests = adults + children + infants;
   if (totalGuests > 12) {

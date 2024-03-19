@@ -5,19 +5,21 @@ import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.css";
 import "./ContactForm.css";
 
-function ContactForm() {
-  const form = useRef();
+interface ContactFormProps {}
 
-  const handleSubmit = (e) => {
+const ContactForm: React.FC<ContactFormProps> = () => {
+  const form = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     console.log("SEND EMAIL");
     e.preventDefault();
 
     emailjs
       .sendForm(
-        process.env.REACT_APP_EMAIL_JS_SERVICE_ID,
-        process.env.REACT_APP_EMAIL_JS_TEMPLATE_2,
-        form.current,
-        process.env.REACT_APP_EMAIL_JS_KEY
+        process.env.REACT_APP_EMAIL_JS_SERVICE_ID!,
+        process.env.REACT_APP_EMAIL_JS_TEMPLATE_2!,
+        form.current!,
+        process.env.REACT_APP_EMAIL_JS_KEY!
       )
       .then(
         (result) => {
@@ -43,11 +45,7 @@ function ContactForm() {
               placeholder="Enter name"
             />
           </Form.Group>
-          <Form.Group
-            className="mb-3"
-            name="user_email"
-            controlId="formBasicEmail"
-          >
+          <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control
               type="email"
@@ -61,7 +59,7 @@ function ContactForm() {
           </Form.Group>
           <Form.Group controlId="exampleForm.ControlTextarea1">
             <Form.Label>Questions/Comments/Phone Number</Form.Label>
-            <Form.Control required as="textarea" rows="3" name="message" />
+            <Form.Control required as="textarea" rows={3} name="message" />
           </Form.Group>
           <Button
             className="contactSubmitButton"
@@ -74,6 +72,6 @@ function ContactForm() {
       </div>
     </>
   );
-}
+};
 
 export default ContactForm;

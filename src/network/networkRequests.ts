@@ -1,41 +1,19 @@
-export const initialPriceRequest = async (input) => {
+export const contractRequest = async (requestData: any): Promise<any> => {
   try {
-    const response = await fetch("<your-backend-server>/initial-request", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(input),
-    });
-
-    if (!response.ok) {
-      // Handle non-200 status codes if needed
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    console.log("price request successful");
-    return data; // Return the parsed data
-  } catch (error) {
-    // Handle any errors that occurred during the fetch
-    console.error("Error:", error);
-    return null; // Return null or a default value if there was an error
-  }
-};
-
-export const contractRequest = async (requestData) => {
-  try {
-    const response = await fetch("<your-backend-server>/create-contract", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    });
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/create-contract",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
+      console.log(data);
       window.alert(
         "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
       );
@@ -45,22 +23,25 @@ export const contractRequest = async (requestData) => {
         "Failed to send booking request. Please try again later, or you may have not filled out all input fields."
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     window.alert(error.message);
     return null;
   }
 };
 
-export const contractStatusRequest = async (requestData) => {
+export const contractStatusRequest = async (requestData: any): Promise<any> => {
   try {
-    const response = await fetch("<your-backend-server>/get-contract-status", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestData),
-    });
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/get-contract-status",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestData),
+      }
+    );
 
     if (response.ok) {
       const data = await response.json();
@@ -71,22 +52,25 @@ export const contractStatusRequest = async (requestData) => {
         "Failed to send contract status request. Please try again later."
       );
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     window.alert(error.message);
     return null;
   }
 };
 
-export const calendarRequest = async () => {
+export const calendarRequest = async (): Promise<any> => {
   try {
-    const response = await fetch("<your-backend-server>/calendar-request", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/calendar-request",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       window.alert("calendar request not successful");
@@ -95,7 +79,6 @@ export const calendarRequest = async () => {
     }
 
     const data = await response.json();
-    console.log("calendar request successful");
     return data; // Return the parsed data
   } catch (error) {
     // Handle any errors that occurred during the fetch
@@ -104,15 +87,18 @@ export const calendarRequest = async () => {
   }
 };
 
-export const priceRequest = async () => {
+export const priceRequest = async (): Promise<any> => {
   try {
-    const response = await fetch("<your-backend-server>/price-request", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/price-request",
+      {
+        method: "GET",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       // Handle non-200 status codes if needed
@@ -129,14 +115,17 @@ export const priceRequest = async () => {
   }
 };
 
-export const createCheckoutSession = async (productName, priceAmount) => {
+export const createCheckoutSession = async (
+  productName: string,
+  priceAmount: number
+): Promise<any> => {
   const input = {
     productName: productName,
     priceAmount: priceAmount,
   };
   try {
     const response = await fetch(
-      "<your-backend-server>/create-checkout-session",
+      "https://shorttermrentalsite-backend.onrender.com/create-checkout-session",
       {
         method: "POST",
         headers: {
@@ -147,37 +136,48 @@ export const createCheckoutSession = async (productName, priceAmount) => {
     );
 
     if (response.ok) {
-      debugger;
+      console.log("checkout 150");
       const data = await response.json();
+      console.log(data);
+      console.log(data.url);
+      console.log(data.transactionId);
       return data;
     } else {
+      console.log("failed checkout");
       window.alert("Failed Checkout. Please Try Again.");
       throw new Error("Failed to create checkout session");
     }
   } catch (error) {
+    console.log("failed checkout 2");
     console.error("Error:", error);
     return null;
   }
 };
 
 export const sendContractEmailDataToBackend = async (
-  contractEmailDataObject
-) => {
+  contractEmailDataObject: any
+): Promise<any> => {
   try {
-    const response = await fetch("<your-backend-server>/sendDataToBackend", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(contractEmailDataObject),
-    });
+    console.log(contractEmailDataObject);
+    const response = await fetch(
+      "https://shorttermrentalsite-backend.onrender.com/sendDataToBackend",
+      {
+        method: "POST",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(contractEmailDataObject),
+      }
+    );
     if (!response.ok) {
       // Handle non-200 status codes if needed
       throw new Error("send data to backend request was not ok");
     }
 
     const data = await response.json();
+    console.log("send contract email data to backend response data");
+    console.log(data);
 
     return data; // Return the parsed data
   } catch (error) {
@@ -187,10 +187,12 @@ export const sendContractEmailDataToBackend = async (
   }
 };
 
-export const createVerificationSession = async (stripe) => {
+export const createVerificationSession = async (
+  stripe: any
+): Promise<boolean> => {
   try {
     const response = await fetch(
-      "<your-backend-server>/create-verification-session",
+      "https://shorttermrentalsite-backend.onrender.com/create-verification-session",
       {
         method: "POST",
       }
@@ -205,10 +207,12 @@ export const createVerificationSession = async (stripe) => {
       window.alert("ID verification not completed. Please try again.");
       return false;
     } else {
+      console.log("Verification submitted!");
       window.alert("Verification submitted! You can now proceed to payment");
       return true;
     }
   } catch (error) {
     console.error("Error creating verification session:", error);
+    return false;
   }
 };
