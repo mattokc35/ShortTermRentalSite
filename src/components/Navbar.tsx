@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import "./NavbarStyles.css";
 import { Link } from "react-router-dom";
 import SapphireLogo from "../assets/sapphirelogo.svg";
 
-const Navbar = (props) => {
+interface NavbarProps {
+  handleScroll: (ref: React.RefObject<HTMLElement>) => void;
+  homeRef: React.RefObject<HTMLElement>;
+  bookNowRef: React.RefObject<HTMLElement>;
+  amenitiesRef: React.RefObject<HTMLElement>;
+  videoRef: React.RefObject<HTMLElement>;
+  reviewsRef: React.RefObject<HTMLElement>;
+  aboutRef: React.RefObject<HTMLElement>;
+  contactFormRef: React.RefObject<HTMLElement>;
+}
+
+const Navbar: FC<NavbarProps> = (props: NavbarProps) => {
   const [clicked, setClicked] = useState(false);
 
   const handleMenuItemClick = () => {
