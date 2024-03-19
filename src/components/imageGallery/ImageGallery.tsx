@@ -2,11 +2,15 @@ import React from "react";
 import { imageGalleryImages } from "../../constants/constants";
 import "./ImageGallery.css";
 
-//this component is for the 8 first favorited images to be displayed prominently
-const ImageGallery = () => {
+interface Image {
+  src: string;
+  caption: string;
+}
+
+const ImageGallery: React.FC = () => {
   return (
     <div className="image-gallery">
-      {imageGalleryImages.map((image, index) => (
+      {imageGalleryImages.map((image: Image, index: number) => (
         <div key={image.caption} className="image-item">
           <img
             src={image.src}

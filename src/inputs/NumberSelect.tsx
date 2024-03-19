@@ -1,10 +1,22 @@
-import React from "react";
+import React, { FC } from "react";
 import Select from "react-select";
 import "./NumberSelectStyles.css";
 import { adultOptions } from "../constants/constants";
 
-function NumberSelect(props) {
-  const handleSelectChange = (selectedOption) => {
+interface OptionType {
+  value: number; // Assuming the value is a number
+  label: string;
+}
+
+interface NumberSelectProps {
+  label: string;
+  options?: OptionType[];
+  onChange: (selectedOption: OptionType | null) => void; // Update here
+}
+
+const NumberSelect: FC<NumberSelectProps> = (props) => {
+  const handleSelectChange = (selectedOption: OptionType | null) => {
+    // Update here
     // Propagate the selected value back to the parent component
     props.onChange(selectedOption);
   };
@@ -12,7 +24,7 @@ function NumberSelect(props) {
   return (
     <>
       <div className="number-select-form">
-        <h2>{props.label}</h2>
+        <h4>{props.label}</h4>
         <div className="number-select-component">
           <Select
             options={props.options || adultOptions}
@@ -22,6 +34,6 @@ function NumberSelect(props) {
       </div>
     </>
   );
-}
+};
 
 export default NumberSelect;
