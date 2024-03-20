@@ -402,3 +402,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 const mapStateToProps = (state: RootState) => ({
   transactionId: state.transactionId,
 });
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GuestInfoPaymentPageModal);
