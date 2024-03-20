@@ -1,6 +1,6 @@
 import "./GuestInfoPaymentPageModal.css";
-import { useState, React, useRef } from "react";
-import emailjs from "@emailjs/browser";
+import React, { useState, useRef } from "react";
+import emailjs from "emailjs-com";
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -13,8 +13,8 @@ import {
   contractUrl,
 } from "../constants/constants";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { setTransactionId } from "../actions/transactionActions";
-import { setContractValues } from "../actions/contractValuesActions";
 import Form from "react-bootstrap/Form";
 import {
   createCheckoutSession,
@@ -22,21 +22,33 @@ import {
 } from "../network/networkRequests";
 import { loadStripe } from "@stripe/stripe-js";
 import ReCAPTCHA from "react-google-recaptcha";
+import ValidationText from "../components/validationText/ValidationText";
+import {
+  GuestInfoPaymentPageModalProps,
+  RootState,
+  ContractEmailData,
+} from "../types/types";
 
-function GuestInfoPaymentPageModal(props) {
-  const form = useRef();
-  const recaptcha = useRef();
+const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
+  props: GuestInfoPaymentPageModalProps
+) => {
+  const form = useRef<HTMLFormElement>(null);
+  const recaptcha = useRef<ReCAPTCHA>(null);
   const [showTooltip, setShowTooltip] = useState(false);
   const [showProceedToPayment, setShowProceedToPayment] = useState(false);
   const stripePromise = loadStripe(
-    process.env.REACT_APP_STRIPE_PUBLIC_TEST_KEY
+    process.env.REACT_APP_STRIPE_PUBLIC_TEST_KEY!
   );
   const [isIDVerified, setIsIDVerified] = useState(false);
   const [isContractViewed, setIsContractViewed] = useState(false);
   const [testingMode, setTestingMode] = useState(false);
-
+  const [showCaptchaValidationMessage, setShowCaptchaValidationMessage] =
+    useState(false);
+  const [captchaValue, setCaptchaValue] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [isPromoCodeValid, setIsPromoCodeValid] = useState(false);
   // callback function to get ID verification result from child component IDVerificationButton
-  const handleVerificationResult = (verificationResult) => {
+  const handleVerificationResult = (verificationResult: boolean) => {
     setIsIDVerified(verificationResult);
     setShowProceedToPayment(verificationResult);
   };
@@ -51,44 +63,46 @@ function GuestInfoPaymentPageModal(props) {
     comments: "",
   });
   const [validated, setValidated] = useState(false);
-
   const checkRecaptcha = () => {
-    const captchaValue = recaptcha.current.getValue();
+    const captchaValue = recaptcha.current!.getValue();
+    setCaptchaValue(
+      captchaValue === "true"
+        ? true
+        : captchaValue === "false"
+        ? false
+        : (null as any)
+    );
     if (!captchaValue) {
-      window.alert("Please verify the reCAPTCHA!");
+      setShowCaptchaValidationMessage(true);
       return false;
     }
     return true;
   };
-
-  const handleSubmitInquiry = (event) => {
+  const handleSubmitInquiry = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     const phoneNumber = form.phoneNumber.value;
-
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
       return;
     }
-    if (phoneNumber.length != 12) {
+    if (phoneNumber.length !== 12) {
       alert("Please Enter a Valid Phone Number");
       event.preventDefault();
       event.stopPropagation();
       return;
     }
-
     event.preventDefault();
     if (!checkRecaptcha()) {
       return;
     }
     // Include props values in the formData object
-
     emailjs
       .sendForm(
-        process.env.REACT_APP_EMAIL_JS_SERVICE_ID,
-        process.env.REACT_APP_EMAIL_JS_TEMPLATE_1,
+        process.env.REACT_APP_EMAIL_JS_SERVICE_ID!,
+        process.env.REACT_APP_EMAIL_JS_TEMPLATE_1!,
         form,
-        process.env.REACT_APP_EMAIL_JS_KEY
+        process.env.REACT_APP_EMAIL_JS_KEY!
       )
       .then(
         (result) => {
@@ -101,37 +115,15 @@ function GuestInfoPaymentPageModal(props) {
     setValidated(true);
     window.alert("Thanks for the inquiry! We'll contact you shortly.");
   };
-
-  const handleBook = async (event) => {
+  const handleBook = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     if (!checkRecaptcha()) {
       window.alert("Please verify the reCAPTCHA!");
       return;
     }
     window.alert("Redirecting to Stripe payment page!");
-    const captchaValue = recaptcha.current.getValue();
-    if (!captchaValue) {
-      window.alert("Please verify the reCAPTCHA!");
-      return;
-    }
-
     const currentDate = getCurrentDate();
-
     // Define placeholder values for fields you don't have yet
-    const contractValues = {
-      Today: currentDate,
-      Guests: formData.name,
-      Guest_email: formData.email,
-      Owners: owners,
-      Total_Rent: props.price,
-      Total_Guests: props.adults + props.children + props.infants,
-      Checkin: props.startDate.substr(1, 10),
-      Checkout: props.endDate.substr(1, 10),
-      Checkin_Time: checkinTime,
-      Checkout_Time: checkoutTime,
-    };
-
-    props.setContractValues(contractValues);
     try {
       window.alert("redirecting to Stripe payment...");
       const productName =
@@ -142,14 +134,13 @@ function GuestInfoPaymentPageModal(props) {
         " for " +
         formData.name;
       // Assuming props.price is in the format xx.xx
-      const price = props.price; // Replace this with your actual props.price value
-
+      const price: number = props.price; // Replace this with your actual props.price value
       // Convert the price to the desired string format
-      const formattedPrice = (parseFloat(price) * 100).toFixed(4);
+      const formattedPrice = (price * 100).toFixed(4);
       const response = await createCheckoutSession(productName, formattedPrice);
       //if checkout session is created successfully, we want to pass transactionId, and contract/email values to the backend
       if (response != null) {
-        const contractEmailDataObject = {
+        const contractEmailDataObject: ContractEmailData = {
           transactionId: response.transactionId,
           nightsPrice: props.nightsPrice,
           petFee: props.petFee,
@@ -168,6 +159,7 @@ function GuestInfoPaymentPageModal(props) {
           today: currentDate,
           discountedNightsPrice: props.discountedNightsPrice,
           discountPercentage: props.discountPercentage,
+          averageNightlyPrice: props.averageNightlyPrice,
           numberOfNights: props.numberOfNights,
           tax: props.tax,
           guest: formData.name,
@@ -186,12 +178,10 @@ function GuestInfoPaymentPageModal(props) {
       console.error("Error creating checkout session:", error);
     }
   };
-
   // Handle change event for all input fields
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
     if (
       name === "comments" &&
       value === "4710ddae-d9b7-4b8e-995c-b73a205b6b7e"
@@ -199,16 +189,15 @@ function GuestInfoPaymentPageModal(props) {
       setTestingMode(true);
     }
   };
-
   const priceTooltip = (
     <Tooltip id="price-tooltip" style={{ marginLeft: "-150px" }}>
       {/* Add your price breakdown information here */}
-      {props.numNights} nights price: ${props.nightsPrice} <br></br>
+      {props.numberOfNights} nights price: ${props.nightsPrice} <br></br>
       {props.hasDiscount && (
         <>
           <div
             style={{ color: "white" }}
-          >{`Discounted Price: $${props.discountedNightsPrice} (${props.discountPercentage}% off for ${props.numNights} nights)`}</div>
+          >{`Discounted Price: $${props.discountedNightsPrice} (${props.discountPercentage}% off for ${props.numberOfNights} nights)`}</div>
         </>
       )}
       Cleaning Fee: $225 <br></br>
@@ -217,21 +206,19 @@ function GuestInfoPaymentPageModal(props) {
       Total Price: ${props.price}
     </Tooltip>
   );
-
   return (
     <>
       <h5>
         {" "}
-        <bold> Reservation Dates: </bold> {props.startDate.substr(1, 10)} to{" "}
+        <strong> Reservation Dates: </strong> {props.startDate.substr(1, 10)} to{" "}
         {props.endDate.substr(1, 10)}
       </h5>
       <h5>
         {" "}
-        <bold> Adults: </bold> {props.adults} <bold> Children: </bold>{" "}
-        {props.children} <bold> Infants: </bold> {props.infants}{" "}
-        <bold> Pets: </bold> {props.pets}
+        <strong> Adults: </strong> {props.adults} <strong> Children: </strong>{" "}
+        {props.children} <strong> Infants: </strong> {props.infants}{" "}
+        <strong> Pets: </strong> {props.pets}
       </h5>
-
       <OverlayTrigger
         placement="right"
         overlay={priceTooltip}
@@ -240,7 +227,7 @@ function GuestInfoPaymentPageModal(props) {
       >
         <h4>
           {" "}
-          <bold> Total Price:</bold> ${props.price}
+          <strong> Total Price:</strong> ${props.price}
           <br></br>
           <span
             style={{ color: "black", cursor: "pointer", fontSize: "72%" }}
@@ -267,7 +254,6 @@ function GuestInfoPaymentPageModal(props) {
           purposes.
         </p>
       )}
-
       <Form validated={validated} onSubmit={handleSubmitInquiry} ref={form}>
         <input type="hidden" name="adults" value={props.adults} />
         <input type="hidden" name="children" value={props.children} />
@@ -290,6 +276,11 @@ function GuestInfoPaymentPageModal(props) {
           type="hidden"
           name="discountPercentage"
           value={props.discountPercentage}
+        ></input>
+        <input
+          type="hidden"
+          name="averageNightlyPrice"
+          value={props.averageNightlyPrice}
         ></input>
         <input
           type="hidden"
@@ -355,17 +346,23 @@ function GuestInfoPaymentPageModal(props) {
             name="comments"
             value={formData.comments}
             as="textarea"
-            rows="3"
+            rows={3}
           />
         </Form.Group>
         <ReCAPTCHA
           ref={recaptcha}
-          sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_KEY}
+          sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_KEY!}
         />
+        {showCaptchaValidationMessage && (
+          <ValidationText
+            isValid={captchaValue}
+            validationText={"ReCAPTCHAv3 Completed!"}
+            errorText={"Please complete the ReCAPTCHAv3 to proceed."}
+          ></ValidationText>
+        )}
         <Button className="custom-primary-button" type="submit">
           Send An Inquiry
         </Button>
-
         {/* Render "ID Verification" button conditionally */}
         <IDVerificationButton
           className="custom-primary-button"
@@ -396,19 +393,12 @@ function GuestInfoPaymentPageModal(props) {
       </Form>
     </>
   );
-}
-
-const mapDispatchToProps = {
-  setTransactionId,
-  setContractValues,
 };
 
-const mapStateToProps = (state) => ({
-  transactionId: state.transactionId,
-  contractValues: state.contractValues,
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setTransactionId: (id: string) => dispatch(setTransactionId(id)),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuestInfoPaymentPageModal);
+const mapStateToProps = (state: RootState) => ({
+  transactionId: state.transactionId,
+});
