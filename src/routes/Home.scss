@@ -1,0 +1,176 @@
+// Variables
+$center: 50%;
+$translate: translateX(-50%);
+$carousel-width: 75%;
+$max-width-desktop: 2400px;
+$max-width-tablet: 1550px;
+
+// Styles
+.site-content {
+  background: linear-gradient(to top, hsl(211, 73%, 90%), white);
+  width: 120%;
+  background-repeat: no-repeat;
+}
+
+.carousel {
+  width: $carousel-width !important;
+  left: $center;
+  transform: $translate;
+  height: 100%;
+  
+  img {
+    max-height: 500px;
+  }
+}
+
+.booking-input-form,
+.contact-form,
+.about-section,
+.amenities-section,
+.reviews-carousel {
+  position: relative;
+  left: $center;
+  transform: $translate;
+}
+
+h6 {
+  font-size: 110%;
+  font-weight: 700;
+}
+
+@media screen and (min-width: $max-width-desktop) {
+  .carousel img {
+    max-height: 50rem;
+  }
+}
+
+@media screen and (min-width: 2100px) {
+  .book-and-photos,
+  .reviews-carousel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .carousel {
+    width: $carousel-width !important;
+    left: $center;
+    transform: $translate;
+  }
+
+  .carousel img {
+    max-height: 40rem;
+  }
+
+  p {
+    font-size: 95%;
+    margin-bottom: 0;
+    font-style: normal;
+  }
+}
+
+@media screen and (min-width: 1550px) {
+  .carousel img {
+    max-height: 51rem;
+    max-width: 100rem;
+  }
+
+  .carousel {
+    width: 90% !important;
+  }
+}
+
+@media screen and (max-width: 1550px) and (min-width: 800px) {
+  p {
+    font-size: 98%;
+    margin-bottom: 1rem;
+  }
+
+  .carousel img {
+    max-height: 40rem;
+    max-width: 100rem;
+    overflow: hidden;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  p {
+    font-size: 80%;
+    margin-bottom: -5px;
+  }
+
+  .carousel img {
+    max-height: 40rem;
+    max-width: 50rem;
+  }
+
+  .recentGuestReviews {
+    margin-bottom: -10px;
+    font-size: 140%;
+  }
+}
+
+h3 {
+  font-size: 189%;
+  font-weight: 450;
+  padding: 0.5rem 0 2rem 0;
+  font-style: normal;
+}
+
+@media screen and (max-width: 500px) {
+  h3 {
+    font-size: 130%;
+  }
+}
+
+.carousel-section img {
+  opacity: 1;
+}
+
+.amenities-section h4 {
+  font-size: 140%;
+  width: 85%;
+  margin: 0 auto; // Center the h4 horizontally
+}
+
+.amenities-section {
+  text-align: center; // Center the h4 horizontally
+}
+
+@media screen and (min-width: 1500px) {
+  .reviews-carousel {
+    width: 65%;
+    position: relative;
+    margin-top: 3%;
+    left: $center;
+    transform: $translate;
+  }
+}
+
+@media screen and (min-width: 1900px) {
+  .reviews-carousel {
+    left: $center;
+    transform: $translate;
+  }
+}
+
+@media screen and (min-width: 2200px) {
+  .reviews-carousel {
+    left: $center;
+    transform: $translate;
+  }
+}
+
+.recentGuestReviews {
+  margin-bottom: -22px;
+  font-size: 120%;
+  font-weight: normal;
+  position: relative;
+}
+
+@media screen and (max-width: 1550px) and (min-width: 600px) {
+  .carousel img {
+    max-height: 100rem;
+    max-width: 100rem;
+  }
+}
