@@ -1,20 +1,17 @@
-import React from "react";
-import "typeface-cormorant";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import { BrowserRouter } from "react-router-dom";
-import { StrictMode } from "react";
+import "./App.scss";
+import { Route, Routes } from "react-router-dom";
+import Home from "./routes/Home";
+import { Provider } from "react-redux";
+import store from "./store/store";
 
-const rootElement = document.getElementById("root");
+function App() {
+  return (
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </div>
+  );
+}
 
-const app = (
-  <StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </StrictMode>
-);
-
-const root = ReactDOM.createRoot(rootElement);
-root.render(app);
+export default App;

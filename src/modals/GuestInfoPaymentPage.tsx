@@ -1,4 +1,4 @@
-import "./GuestInfoPaymentPageModal.css";
+import "./GuestInfoPaymentPageModal.scss";
 import React, { useState, useRef } from "react";
 import emailjs from "emailjs-com";
 import Button from "react-bootstrap/Button";

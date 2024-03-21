@@ -1,4 +1,4 @@
-import "./IntroStyles.css";
+import "./IntroStyles.scss";
 import SapphireLogo from "../assets/sapphirelogo.svg";
 import React, { ForwardedRef, forwardRef, MouseEvent } from "react";
 

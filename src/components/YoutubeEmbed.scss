@@ -1,0 +1,42 @@
+$youtube-max-width: 800px;
+$video-height-large: 500px;
+$video-height-medium: 300px;
+$video-height-small: 150px;
+
+.iframe-youtube {
+  width: 100%;
+  max-width: $youtube-max-width;
+  margin: 0 auto;
+
+  @media screen and (max-width: 1500px) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 850px) {
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 600px) {
+    max-width: 100%;
+  }
+}
+
+.embed-responsive-item {
+  width: 90%;
+  height: $video-height-large;
+
+  @media screen and (max-width: 1500px) {
+    width: 55%;
+    height: $video-height-large;
+  }
+
+  @media screen and (max-width: 850px) {
+    width: 55%;
+    height: $video-height-medium;
+  }
+
+  @media screen and (max-width: 600px) {
+    width: 65%;
+    height: $video-height-small;
+  }
+}

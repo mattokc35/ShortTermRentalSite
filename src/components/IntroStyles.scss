@@ -1,0 +1,122 @@
+$font-family: "Cormorant", serif;
+$primary-color: #0f52ba;
+$button-hover-color: #fff;
+$button-hover-background: #0f52ba;
+$button-font-weight: 700;
+$button-border-radius: 6px;
+$button-transition: all 0.2s ease-in-out;
+
+@font-face {
+  font-weight: 400;
+  font-style: normal;
+}
+
+.intro {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.intro-text .sapphire-logo {
+  position: relative;
+  height: auto;
+  max-width: 50%;
+  left: 17%;
+  transform: translate(-45%, -8%);
+}
+
+.intro-mid {
+  width: 100%;
+  height: 112vh;
+  position: relative;
+
+  @media screen and (max-height: 505px) {
+    height: 155vh;
+  }
+}
+
+.background-image {
+  width: 120%;
+  height: 87%;
+  object-fit: cover;
+  opacity: 0.98;
+}
+
+.intro-text {
+  position: absolute;
+  top: 39%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-shadow: 0.5px 0.5px 0.5px #000;
+
+  @media screen and (max-width: 550px) {
+    font-size: 70%;
+    font-weight: 650;
+  }
+
+  @media screen and (max-height: 400px) {
+    font-size: 60%;
+    font-weight: 500;
+    top: 75%;
+  }
+
+  h1 {
+    font-family: $font-family;
+    font-size: 450%;
+    font-weight: 550;
+    font-style: italic;
+    color: $primary-color;
+    padding: 10px 20px;
+  }
+
+  p {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: $primary-color;
+    padding: 0.5rem 0 2rem 0;
+    font-style: italic;
+  }
+
+  .show {
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    background: clear;
+    padding: 1rem 2rem;
+    border-radius: $button-border-radius;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+
+    &:hover {
+      border-radius: $button-border-radius;
+      transition: $button-transition;
+    }
+  }
+}
+
+.intro-button {
+  color: #fff;
+  font-weight: $button-font-weight;
+  background: linear-gradient(to top, rgba(15, 82, 186, 0.7), rgba(15, 82, 186, 0.7));
+
+  &:hover {
+    cursor: pointer;
+    color: $primary-color;
+    background: $button-hover-background;
+    font-weight: $button-font-weight;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  .intro-text .sapphire-logo {
+    max-width: 75%;
+    left: 26%;
+    transform: translate(-45%, -8%);
+  }
+
+  .intro-text .show {
+    padding: 0.6rem 1.1rem;
+    border-radius: $button-border-radius;
+    font-size: 1.1rem;
+  }
+}

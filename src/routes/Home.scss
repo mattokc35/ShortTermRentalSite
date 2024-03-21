@@ -147,19 +147,6 @@ h3 {
   }
 }
 
-@media screen and (min-width: 1900px) {
-  .reviews-carousel {
-    left: $center;
-    transform: $translate;
-  }
-}
-
-@media screen and (min-width: 2200px) {
-  .reviews-carousel {
-    left: $center;
-    transform: $translate;
-  }
-}
 
 .recentGuestReviews {
   margin-bottom: -22px;
