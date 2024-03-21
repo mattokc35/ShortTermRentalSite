@@ -12,6 +12,9 @@ interface NumberSelectProps {
   label: string;
   options?: OptionType[];
   onChange: (selectedOption: OptionType | null) => void; // Update here
+  id?: string;
+  className?: string;
+  value: string | number;
 }
 
 const NumberSelect: FC<NumberSelectProps> = (props) => {

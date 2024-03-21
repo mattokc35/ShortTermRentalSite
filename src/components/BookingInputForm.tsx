@@ -18,37 +18,36 @@ import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
 import Modal from "react-bootstrap/Modal";
 import { Button } from "react-bootstrap";
 import { calculatePrice } from "../helpers/helperFunctions";
-import moment from "moment";
+import moment, { Moment } from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { setTransactionId } from "../actions/transactionActions";
 import { setContractValues } from "../actions/contractValuesActions";
+import { PriceArray, PriceData } from "../types/types";
 
-function BookingInputForm(props) {
+function BookingInputForm(props: any) {
   const navigate = useNavigate();
   const location = useLocation();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
   const [selectValues, setSelectValues] = useState({
     selectedAdults: 1,
     selectedChildren: 0,
     selectedInfants: 0,
     selectedPets: 0,
   });
-
   // Create a state variable to track form validity
   const [bookingFormNotValid, setbookingFormNotValid] = useState(true);
   const [validationMessage, setValidationMessage] = useState("");
   const [bookedDates, setBookedDates] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [totalPrice, setTotalPrice] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [focusedInput, setFocusedInput] = useState();
-  const [nightsPrice, setNightsPrice] = useState();
+  const [startDate, setStartDate] = useState<Moment | null>(null);
+  const [endDate, setEndDate] = useState<Moment | null>(null);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [focusedInput, setFocusedInput] = useState<any>();
+  const [nightsPrice, setNightsPrice] = useState<any>();
   const [numberOfNights, setNumNights] = useState(0);
-  const [priceArray, setPriceArray] = useState([]);
+  const [priceArray, setPriceArray] = useState<PriceArray>({ PriceData: [] });
   const [tax, setTax] = useState(0);
   const [petFee, setPetFee] = useState(0);
   const [hasDiscount, setHasDiscount] = useState(false);
@@ -66,7 +65,6 @@ function BookingInputForm(props) {
         console.log("can't get the calendar data");
       }
     }
-
     async function fetchPriceData() {
       try {
         const priceArray = await priceRequest();
@@ -75,11 +73,9 @@ function BookingInputForm(props) {
         console.log("can't get price data");
       }
     }
-
     fetchCalendarData();
     fetchPriceData();
   }, []);
-
   //useEffect hook, will run on render and if variable changes
   useEffect(() => {
     const { selectedAdults, selectedChildren, selectedInfants } = selectValues;
@@ -96,7 +92,6 @@ function BookingInputForm(props) {
     // Logic to check for a successful payment (added to the existing useEffect)
     const searchParams = new URLSearchParams(location.search);
     const successParam = searchParams.get("success");
-
     if (successParam === "true") {
       window.alert("payment was successful! Sending contract to email...");
       console.log("Payment was successful!");
@@ -104,32 +99,24 @@ function BookingInputForm(props) {
     } else {
       navigate("/");
     }
-  }, [
-    selectValues,
-    startDate,
-    endDate,
-    location.search,
-    props.transactionId.transactionId,
-  ]); // Include location.search in the dependency array if needed
-
-  const changeHandler = (name, selectedOption) => {
+  }, [selectValues, startDate, endDate, location.search]); // Include location.search in the dependency array if needed
+  const changeHandler = (name: string, selectedOption: any) => {
     setSelectValues({ ...selectValues, [name]: selectedOption.value });
   };
-
   // Event handler for form submission
-  const handleFormSubmit = async (event) => {
-    //event.preventDefault();
-
-    let numberOfNights = differenceInDays(endDate.toDate(), startDate.toDate());
+  const handleFormSubmit = async () => {
+    let numberOfNights = differenceInDays(
+      endDate!.toDate(),
+      startDate!.toDate()
+    );
     setNumNights(numberOfNights);
     let totalPrice = calculatePrice(
-      startDate,
-      endDate,
+      startDate!,
+      endDate!,
       selectValues.selectedPets,
       priceArray,
       numberOfNights
     );
-
     try {
       setTotalPrice(totalPrice[0]);
       setNightsPrice(totalPrice[1]);
@@ -145,27 +132,25 @@ function BookingInputForm(props) {
       console.error("Error:", error);
     }
   };
-
   //function to check if calendar date is blocked
-  const checkDateBlocked = (date) => {
+  const checkDateBlocked = (date: moment.Moment) => {
     return bookedDates.some(({ start, end }) => {
       const startMoment = moment(start, "YYYY-MM-DD");
       const endMoment = moment(end, "YYYY-MM-DD");
       return date.isBetween(startMoment, endMoment, "day", "[]");
     });
   };
-
-  const renderDayContents = (date) => {
+  const renderDayContents = (date: Moment) => {
     let found = 1;
     found = priceArray.PriceData[0].data.findIndex(
-      (element) => element.date === date.format("YYYY-MM-DD")
+      (element: any) => element.date === date.format("YYYY-MM-DD")
     );
     if (found === -1) {
       return;
     }
     const entries = Object.entries(priceArray.PriceData[0].data);
     let foundPrice = JSON.stringify(entries[found][1].price);
-    let dayValue = JSON.stringify(date._d).substring(9, 11);
+    let dayValue = date.format("DD");
     return (
       <>
         <div className="calendar-box">
@@ -195,16 +180,15 @@ function BookingInputForm(props) {
                 children={selectValues.selectedChildren}
                 infants={selectValues.selectedInfants}
                 pets={selectValues.selectedPets}
-                price={totalPrice}
+                price={parseFloat(totalPrice.toFixed(2))}
                 nightsPrice={nightsPrice}
                 numberOfNights={numberOfNights}
                 hasDiscount={hasDiscount}
                 discountPercentage={discountPercentage}
                 discountedNightsPrice={discountedNightsPrice}
                 averageNightlyPrice={averageNightlyPrice}
-                tax={(Math.round(tax * 100) / 100).toFixed(2)}
+                tax={parseFloat((Math.round(tax * 100) / 100).toFixed(2))}
                 petFee={petFee}
-                numNights={numberOfNights}
               ></GuestInfoPaymentPageModal>
             </Modal.Body>
             <Modal.Footer>
@@ -228,7 +212,7 @@ function BookingInputForm(props) {
             numberOfMonths={1}
             endDateId="end-date"
             onDatesChange={({ startDate, endDate }) => {
-              setTotalPrice(null);
+              setTotalPrice(0);
               setStartDate(startDate);
               setEndDate(endDate);
             }}
