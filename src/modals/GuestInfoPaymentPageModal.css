@@ -1,9 +1,8 @@
-.checkoutInfoText {
+h5 {
   font-size: 120%;
   text-align: center;
 }
-
-.totalPriceText {
+h4 {
   font-size: 115%;
   text-align: center;
 }
@@ -25,7 +24,6 @@
   margin-right: 10px;
   margin-top: 10px;
 }
-
 .guest-instructions {
   margin-bottom: 10px;
 }

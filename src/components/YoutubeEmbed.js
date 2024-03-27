@@ -1,6 +1,6 @@
 import React from "react";
 import LazyLoad from "react-lazy-load";
-import "./YoutubeEmbed.scss";
+import "./YoutubeEmbed.css";
 import { youtubeURL } from "../constants/constants";
 
 const YouTubeEmbed = () => {

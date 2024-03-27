@@ -9,7 +9,7 @@ import {
   childrenOptions,
   infantOptions,
 } from "../constants/constants";
-import "./BookingInputForm.scss";
+import "./BookingInputForm.css";
 import "react-dates/lib/css/_datepicker.css";
 import { calendarRequest, priceRequest } from "../network/networkRequests";
 import { bookingFormValidation } from "../inputs/InputVerification";
