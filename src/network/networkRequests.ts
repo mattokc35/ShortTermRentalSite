@@ -1,117 +1,74 @@
+const BASE_URL = "your-backend-url-here";
+
+const request = async (
+  path: string,
+  method: string,
+  body?: any
+): Promise<any> => {
+  try {
+    const response = await fetch(`${BASE_URL}/${path}`, {
+      method: method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data from ${path}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+};
+
 export const contractRequest = async (requestData: any): Promise<any> => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/create-contract",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      }
+    const data = await request("create-contract", "POST", requestData);
+    console.log(data);
+    window.alert(
+      "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
     );
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log(data);
-      window.alert(
-        "Booking request successful! We have sent a contract to your email you will need to sign in order to proceed to the payment page."
-      );
-      return data;
-    } else {
-      throw new Error(
-        "Failed to send booking request. Please try again later, or you may have not filled out all input fields."
-      );
-    }
-  } catch (error: any) {
-    console.error(error);
-    window.alert(error.message);
+    return data;
+  } catch (error) {
+    window.alert(
+      "Failed to send booking request. Please try again later, or you may have not filled out all input fields."
+    );
     return null;
   }
 };
 
 export const contractStatusRequest = async (requestData: any): Promise<any> => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/get-contract-status",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      }
+    const data = await request("get-contract-status", "POST", requestData);
+    window.alert("Contract Status request sent.");
+    return data;
+  } catch (error) {
+    window.alert(
+      "Failed to send contract status request. Please try again later."
     );
-
-    if (response.ok) {
-      const data = await response.json();
-      window.alert("Contract Status request sent.");
-      return data;
-    } else {
-      throw new Error(
-        "Failed to send contract status request. Please try again later."
-      );
-    }
-  } catch (error: any) {
-    console.error(error);
-    window.alert(error.message);
     return null;
   }
 };
 
 export const calendarRequest = async (): Promise<any> => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/calendar-request",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      window.alert("calendar request not successful");
-      // Handle non-200 status codes if needed
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    return data; // Return the parsed data
+    return await request("calendar-request", "GET");
   } catch (error) {
-    // Handle any errors that occurred during the fetch
-    console.error("Error:", error);
-    return null; // Return null or a default value if there was an error
+    window.alert("Calendar request not successful");
+    return null;
   }
 };
 
 export const priceRequest = async (): Promise<any> => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/price-request",
-      {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      // Handle non-200 status codes if needed
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-
-    return data; // Return the parsed data
+    return await request("price-request", "GET");
   } catch (error) {
-    // Handle any errors that occurred during the fetch
     console.error("Error:", error);
-    return null; // Return null or a default value if there was an error
+    return null;
   }
 };
 
@@ -124,31 +81,13 @@ export const createCheckoutSession = async (
     priceAmount: priceAmount,
   };
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/create-checkout-session",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(input),
-      }
-    );
-
-    if (response.ok) {
-      console.log("checkout 150");
-      const data = await response.json();
-      console.log(data);
-      console.log(data.url);
-      console.log(data.transactionId);
-      return data;
-    } else {
-      console.log("failed checkout");
-      window.alert("Failed Checkout. Please Try Again.");
-      throw new Error("Failed to create checkout session");
-    }
+    const data = await request("create-checkout-session", "POST", input);
+    console.log(data);
+    console.log(data.url);
+    console.log(data.transactionId);
+    return data;
   } catch (error) {
-    console.log("failed checkout 2");
+    window.alert("Failed Checkout. Please Try Again.");
     console.error("Error:", error);
     return null;
   }
@@ -158,30 +97,15 @@ export const sendContractEmailDataToBackend = async (
   contractEmailDataObject: any
 ): Promise<any> => {
   try {
-    console.log(contractEmailDataObject);
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/sendDataToBackend",
-      {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(contractEmailDataObject),
-      }
+    const data = await request(
+      "send-data-to-backend",
+      "POST",
+      contractEmailDataObject
     );
-    if (!response.ok) {
-      // Handle non-200 status codes if needed
-      throw new Error("send data to backend request was not ok");
-    }
-
-    const data = await response.json();
     console.log("send contract email data to backend response data");
     console.log(data);
-
-    return data; // Return the parsed data
+    return data;
   } catch (error) {
-    console.log("failed data send 2");
     console.error("Error:", error);
     return null;
   }
@@ -191,16 +115,9 @@ export const createVerificationSession = async (
   stripe: any
 ): Promise<boolean> => {
   try {
-    const response = await fetch(
-      "https://shorttermrentalsite-backend.onrender.com/create-verification-session",
-      {
-        method: "POST",
-      }
-    );
-    const session = await response.json();
-
+    const response = await request("create-verification-session", "POST");
     // Show the verification modal.
-    const { error } = await stripe.verifyIdentity(session.clientSecret);
+    const { error } = await stripe.verifyIdentity(response.clientSecret);
 
     if (error) {
       console.log("[error]", error);
@@ -214,5 +131,16 @@ export const createVerificationSession = async (
   } catch (error) {
     console.error("Error creating verification session:", error);
     return false;
+  }
+};
+
+export const verifyPromoCode = async (promoCode: string): Promise<any> => {
+  try {
+    const response = await request("/verify-promo-code", promoCode, "GET");
+    console.log("Promo code verification response: ", response);
+    return response;
+  } catch (error) {
+    console.error("Error verifying promo code:", error);
+    return null;
   }
 };

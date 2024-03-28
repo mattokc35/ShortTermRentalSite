@@ -1,0 +1,33 @@
+.profile-pic {
+  max-width: 300px;
+  max-height: 470px;
+}
+
+.about-section {
+  width: 85%;
+}
+
+.host-details h4 {
+  font-weight: 700;
+}
+
+.host-details p {
+  font-weight: 400;
+  font-size: 110%;
+}
+
+@media screen and (max-width: 675px) {
+  .profile-pic {
+    position: relative;
+    left: 2%;
+    max-width: 200px;
+    max-height: 470px;
+  }
+
+  .host-details p {
+    position: relative;
+    font-weight: 400;
+    font-size: 95%;
+    left: 3%;
+  }
+}
