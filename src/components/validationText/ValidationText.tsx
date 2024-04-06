@@ -1,19 +1,24 @@
 import React from "react";
 
 interface ValidationTextProps {
-  isValid: boolean;
+  isValid: boolean | undefined;
   validationText: string;
+  starterText?: string;
   errorText: string;
 }
 
 const ValidationText: React.FC<ValidationTextProps> = (
   props: ValidationTextProps
 ) => {
-  return props.isValid ? (
-    <p style={{ color: "green" }}>{props.validationText}</p>
-  ) : (
+  return (
     <div>
-      <p style={{ color: "red" }}>{props.errorText}</p>
+      <p>{props.starterText}</p>
+      {props.isValid === true && (
+        <p style={{ color: "green" }}>{props.validationText}</p>
+      )}
+      {props.isValid === false && (
+        <p style={{ color: "red" }}>{props.errorText}</p>
+      )}
     </div>
   );
 };

@@ -40,13 +40,13 @@ export function calculatePrice(
 
   for (let m = startDate.clone(); m.isBefore(endDate); m.add(1, "days")) {
     //find price for date
-    let found = priceArray.PriceData[0].data.findIndex(
+    let found = priceArray.findIndex(
       (element: any) => element.date === m.format("YYYY-MM-DD")
     );
     if (found === -1) {
       return [0, 0, 0, 0, 0, 0, false, 0, 0];
     }
-    const entries: any = Object.entries(priceArray.PriceData[0].data);
+    const entries: any = Object.entries(priceArray);
     let foundPrice = JSON.stringify(entries[found][1].price);
     nightsPrice = nightsPrice + parseInt(foundPrice);
   }
@@ -71,11 +71,8 @@ export function calculatePrice(
   const cleaningFee: number = 225;
   totalPrice += tax;
 
-  // Always show 2 decimal places in the price
-  totalPrice = parseFloat(totalPrice.toFixed(2));
-
   return [
-    totalPrice,
+    parseFloat(totalPrice.toFixed(2)),
     nightsPrice,
     parseFloat(tax.toFixed(2)),
     cleaningFee,
@@ -101,4 +98,35 @@ export function getCurrentDate(): string {
   // Create the formatted date string in "mm/dd/yy" format
   const formattedDate: string = `${month}/${day}/${year}`;
   return formattedDate;
+}
+
+export function calculatePromoCodePrice(
+  nightsPrice: number,
+  discountedPrice: number,
+  promoCodeDiscountPercentage: number,
+  petFee: number
+): [number, number, number] {
+  let currentPrice: number = 0;
+  console.log(nightsPrice);
+  console.log(discountedPrice);
+  nightsPrice === discountedPrice
+    ? (currentPrice = nightsPrice)
+    : (currentPrice = discountedPrice);
+
+  const promoCodeDiscountedPrice =
+    currentPrice - currentPrice * (promoCodeDiscountPercentage * 0.01);
+  console.log(promoCodeDiscountedPrice);
+  let newTotalPrice = promoCodeDiscountedPrice;
+  //cleaning fee
+  newTotalPrice += 225;
+  newTotalPrice += petFee;
+  //tax
+  const newTax: number = newTotalPrice * 0.06;
+  newTotalPrice += newTax;
+
+  return [
+    parseFloat(promoCodeDiscountedPrice.toFixed(2)),
+    parseFloat(newTotalPrice.toFixed(2)),
+    parseFloat(newTax.toFixed(2)),
+  ];
 }

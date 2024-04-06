@@ -24,8 +24,11 @@ export interface ContractEmailData {
   transactionId: string;
   nightsPrice: number;
   petFee: number;
+  promoCode: string;
   adults: number;
   children: number;
+  promoCodeDiscountPercentage: number;
+  promoCodeDiscountPrice: number;
   phoneNumber: string;
   comments: string;
   email: string;
@@ -47,7 +50,7 @@ export interface ContractEmailData {
   pets: number;
 }
 
-export interface PriceDataItem {
+export interface PriceLabsDataItem {
   date: string;
   price: number;
   user_price: number;
@@ -66,15 +69,20 @@ export interface PriceDataItem {
   demand_desc: string;
 }
 
-export interface PriceData {
+export interface PriceLabsData {
   id: string;
   pms: string;
   group: string;
   currency: string;
   last_refreshed_at: string;
-  data: PriceDataItem[];
+  data: PriceLabsDataItem[];
 }
 
 export interface PriceArray {
-  PriceData: PriceData[];
+  PriceData: PriceDataGoogleAPI[];
+}
+
+export interface PriceDataGoogleAPI {
+  date: string;
+  price: number;
 }

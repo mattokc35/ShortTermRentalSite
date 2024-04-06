@@ -1,31 +1,31 @@
-import "./GuestInfoPaymentPageModal.css";
-import React, { useState, useRef } from "react";
+import "./GuestInfoPaymentPageModal.scss";
+import React, { useState, useRef, useEffect } from "react";
 import emailjs from "emailjs-com";
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import IDVerificationButton from "../components/IDVerificationButton";
-import { getCurrentDate } from "../helpers/helperFunctions";
+import {
+  getCurrentDate,
+  calculatePromoCodePrice,
+} from "../helpers/helperFunctions";
 import {
   owners,
   checkinTime,
   checkoutTime,
   contractUrl,
 } from "../constants/constants";
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
-import { setTransactionId } from "../actions/transactionActions";
 import Form from "react-bootstrap/Form";
 import {
   createCheckoutSession,
   sendContractEmailDataToBackend,
+  verifyPromoCode,
 } from "../network/networkRequests";
 import { loadStripe } from "@stripe/stripe-js";
 import ReCAPTCHA from "react-google-recaptcha";
 import ValidationText from "../components/validationText/ValidationText";
 import {
   GuestInfoPaymentPageModalProps,
-  RootState,
   ContractEmailData,
 } from "../types/types";
 
@@ -35,22 +35,50 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
   const form = useRef<HTMLFormElement>(null);
   const recaptcha = useRef<ReCAPTCHA>(null);
   const [showTooltip, setShowTooltip] = useState(false);
-  const [showProceedToPayment, setShowProceedToPayment] = useState(false);
   const stripePromise = loadStripe(
     process.env.REACT_APP_STRIPE_PUBLIC_TEST_KEY!
   );
-  const [isIDVerified, setIsIDVerified] = useState(false);
-  const [isContractViewed, setIsContractViewed] = useState(false);
-  const [testingMode, setTestingMode] = useState(false);
+  const [isIDVerified, setIsIDVerified] = useState<boolean | undefined>(
+    undefined
+  );
+  const [isContractViewed, setIsContractViewed] = useState<boolean | undefined>(
+    undefined
+  );
+  const [isInquiryValid, setIsInquiryValid] = useState<boolean | undefined>(
+    undefined
+  );
+  const [inquiryErrorText, setInquiryErrorText] = useState<string>("");
   const [showCaptchaValidationMessage, setShowCaptchaValidationMessage] =
     useState(false);
   const [captchaValue, setCaptchaValue] = useState(false);
   const [promoCode, setPromoCode] = useState("");
-  const [isPromoCodeValid, setIsPromoCodeValid] = useState(false);
+  const [isPromoCodeValid, setIsPromoCodeValid] = useState<boolean | undefined>(
+    undefined
+  );
+  const [promoCodeDiscountPercentage, setPromoCodeDiscountPercentage] =
+    useState<number>(0);
+  const [promoCodeDiscountPrice, setPromoCodeDiscountPrice] = useState<number>(
+    props.discountedNightsPrice
+  );
+  const [totalPrice, setTotalPrice] = useState<number>(props.price);
+  const [tax, setTax] = useState<number>(props.tax);
+
+  useEffect(() => {
+    console.log(totalPrice);
+    const promoCodePriceArray = calculatePromoCodePrice(
+      props.nightsPrice,
+      props.discountedNightsPrice,
+      promoCodeDiscountPercentage,
+      props.petFee
+    );
+    console.log(promoCode);
+    setPromoCodeDiscountPrice(promoCodePriceArray[0]);
+    setTotalPrice(promoCodePriceArray[1]);
+    setTax(promoCodePriceArray[2]);
+  }, [promoCodeDiscountPercentage]);
   // callback function to get ID verification result from child component IDVerificationButton
   const handleVerificationResult = (verificationResult: boolean) => {
     setIsIDVerified(verificationResult);
-    setShowProceedToPayment(verificationResult);
   };
   // Toggle tooltip visibility
   const toggleTooltip = () => {
@@ -84,12 +112,15 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
+      setIsInquiryValid(false);
+      setInquiryErrorText("Please fill out all form fields.");
       return;
     }
     if (phoneNumber.length !== 12) {
-      alert("Please Enter a Valid Phone Number");
+      setIsInquiryValid(false);
       event.preventDefault();
       event.stopPropagation();
+      setInquiryErrorText("Please enter a valid phone number.");
       return;
     }
     event.preventDefault();
@@ -110,15 +141,33 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
         },
         (error) => {
           console.log(error.text);
+          setIsInquiryValid(false);
+          setInquiryErrorText("Error submitting inquiry, please try again");
         }
       );
     setValidated(true);
-    window.alert("Thanks for the inquiry! We'll contact you shortly.");
+    setIsInquiryValid(true);
   };
   const handleBook = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    const form = event.currentTarget.form as HTMLFormElement;
+    const phoneNumber = form.phoneNumber.value;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsInquiryValid(false);
+      setInquiryErrorText("Please fill out all form fields.");
+      return;
+    }
+    if (phoneNumber.length !== 12) {
+      setIsInquiryValid(false);
+      event.preventDefault();
+      event.stopPropagation();
+      setInquiryErrorText("Please enter a valid phone number.");
+      return;
+    }
+    event.preventDefault();
     if (!checkRecaptcha()) {
-      window.alert("Please verify the reCAPTCHA!");
       return;
     }
     window.alert("Redirecting to Stripe payment page!");
@@ -150,7 +199,10 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
           comments: formData.comments,
           email: formData.email,
           Owners: owners,
-          total_rent: props.price,
+          promoCode: promoCode,
+          promoCodeDiscountPercentage: promoCodeDiscountPercentage,
+          promoCodeDiscountPrice: promoCodeDiscountPrice,
+          total_rent: totalPrice,
           total_guests: props.adults + props.children + props.infants,
           Checkin: props.startDate.substr(1, 10),
           Checkout: props.endDate.substr(1, 10),
@@ -161,7 +213,7 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
           discountPercentage: props.discountPercentage,
           averageNightlyPrice: props.averageNightlyPrice,
           numberOfNights: props.numberOfNights,
-          tax: props.tax,
+          tax: tax,
           guest: formData.name,
           infants: props.infants,
           pets: props.pets,
@@ -182,13 +234,22 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (
-      name === "comments" &&
-      value === "4710ddae-d9b7-4b8e-995c-b73a205b6b7e"
-    ) {
-      setTestingMode(true);
-    }
   };
+
+  const handlePromoCodeValidation = () => {
+    verifyPromoCode(promoCode)
+      .then((promoCodeData) => {
+        if (promoCodeData) {
+          console.log(promoCodeData);
+          setIsPromoCodeValid(promoCodeData.isPromoValid);
+          setPromoCodeDiscountPercentage(promoCodeData.discountPercentage);
+        }
+      })
+      .catch((error) => {
+        console.error("Error verifying promo code:", error);
+      });
+  };
+
   const priceTooltip = (
     <Tooltip id="price-tooltip" style={{ marginLeft: "-150px" }}>
       {/* Add your price breakdown information here */}
@@ -197,23 +258,33 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
         <>
           <div
             style={{ color: "white" }}
-          >{`Discounted Price: $${props.discountedNightsPrice} (${props.discountPercentage}% off for ${props.numberOfNights} nights)`}</div>
+          >{`Length of Stay Discount Price: $${props.discountedNightsPrice} (${props.discountPercentage}% off for ${props.numberOfNights} nights)`}</div>
+        </>
+      )}
+      {isPromoCodeValid && (
+        <>
+          <div style={{ color: "white" }}>
+            {`Promo Code: ${promoCodeDiscountPercentage}% off for ${promoCode}`}
+          </div>
+          <div style={{ color: "white" }}>
+            {`Promo Code Discount Price: $${promoCodeDiscountPrice}`}
+          </div>
         </>
       )}
       Cleaning Fee: $225 <br></br>
       Pet Fee: ${props.petFee} <br></br>
-      Tax: ${props.tax} <br></br>
-      Total Price: ${props.price}
+      Tax: ${tax.toFixed(2)} <br></br>
+      Total Price: ${totalPrice.toFixed(2)}
     </Tooltip>
   );
   return (
     <>
-      <h5>
+      <h5 className="checkoutInfoText">
         {" "}
         <strong> Reservation Dates: </strong> {props.startDate.substr(1, 10)} to{" "}
         {props.endDate.substr(1, 10)}
       </h5>
-      <h5>
+      <h5 className="checkoutInfoText">
         {" "}
         <strong> Adults: </strong> {props.adults} <strong> Children: </strong>{" "}
         {props.children} <strong> Infants: </strong> {props.infants}{" "}
@@ -225,9 +296,9 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
         trigger={["click", "focus"]}
         show={showTooltip}
       >
-        <h4>
+        <h4 className="totalPriceText">
           {" "}
-          <strong> Total Price:</strong> ${props.price}
+          <strong> Total Price:</strong> ${totalPrice.toFixed(2)}
           <br></br>
           <span
             style={{ color: "black", cursor: "pointer", fontSize: "72%" }}
@@ -242,23 +313,16 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
           </span>
         </h4>
       </OverlayTrigger>
-      {testingMode ? (
-        <p className="guest-instructions">
-          You are now in testing mode, you can try out the view contract, verify
-          ID, and proceed to payment features!
-        </p>
-      ) : (
-        <p>
-          Please fill out this form to send us an inquiry! Currently, the
-          proceed to payment feature is disabled temporarily for testing
-          purposes.
-        </p>
-      )}
+      <p className="guest-instructions" style={{ textAlign: "center" }}>
+        Please fill out this form to send us an inquiry! If would like to
+        proceed to payment, please complete the ID Verification and Contract
+        Viewing steps first, then a payment option will be available.
+      </p>
       <Form validated={validated} onSubmit={handleSubmitInquiry} ref={form}>
         <input type="hidden" name="adults" value={props.adults} />
         <input type="hidden" name="children" value={props.children} />
-        <input type="hidden" name="price" value={props.price} />
-        <input type="hidden" name="tax" value={props.tax} />
+        <input type="hidden" name="price" value={totalPrice} />
+        <input type="hidden" name="tax" value={tax} />
         <input type="hidden" name="pets" value={props.pets} />
         <input type="hidden" name="infants" value={props.infants} />
         <input type="hidden" name="nightsPrice" value={props.nightsPrice} />
@@ -281,6 +345,16 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
           type="hidden"
           name="averageNightlyPrice"
           value={props.averageNightlyPrice}
+        ></input>
+        <input
+          type="hidden"
+          name="promoCodeDiscountPrice"
+          value={promoCodeDiscountPrice}
+        ></input>
+        <input
+          type="hidden"
+          name="promoCodeDiscountPercentage"
+          value={promoCodeDiscountPercentage}
         ></input>
         <input
           type="hidden"
@@ -348,62 +422,116 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
             as="textarea"
             rows={3}
           />
+          <Form.Group controlId="formBasicPromoCode" className="mb-3">
+            <Form.Label>Promo Code</Form.Label>
+            <Form.Control
+              name="promoCode"
+              onChange={(e) => setPromoCode(e.target.value)}
+              value={promoCode}
+              type="text"
+              placeholder={`Have a promo code? Enter here and press "Validate"`}
+            ></Form.Control>
+            <div style={{ textAlign: "center", marginTop: "10px" }}>
+              <ValidationText
+                isValid={isPromoCodeValid}
+                validationText={
+                  "Promo code is valid! Check price breakdown for discount details."
+                }
+                errorText={"Promo code is not valid"}
+                starterText={""}
+              />
+            </div>
+            <div className="button-container" style={{ textAlign: "right" }}>
+              <Button
+                variant="primary"
+                onClick={handlePromoCodeValidation}
+                className="custom-primary-button"
+              >
+                Validate Promo Code
+              </Button>
+            </div>
+          </Form.Group>
         </Form.Group>
-        <ReCAPTCHA
-          ref={recaptcha}
-          sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_KEY!}
-        />
-        {showCaptchaValidationMessage && (
+        <div className="button-container">
+          <ReCAPTCHA
+            ref={recaptcha}
+            sitekey={process.env.REACT_APP_GOOGLE_RECAPTCHA_KEY!}
+          />
+          {showCaptchaValidationMessage && (
+            <ValidationText
+              isValid={captchaValue}
+              starterText={""}
+              validationText={"ReCAPTCHAv3 Completed!"}
+              errorText={"Please complete the ReCAPTCHAv3 to proceed."}
+            ></ValidationText>
+          )}
+          <Button className="custom-primary-button" type="submit">
+            Send An Inquiry
+          </Button>
+          {!(isContractViewed && isIDVerified) && (
+            <>
+              <IDVerificationButton
+                className="custom-primary-button"
+                type="submit"
+                stripePromise={stripePromise}
+                onVerificationResult={handleVerificationResult}
+              >
+                Verify Identity
+              </IDVerificationButton>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  try {
+                    window.open(contractUrl, "_blank");
+                    setIsContractViewed(true);
+                  } catch (e) {
+                    console.error("Contract not opened successfully: ", e);
+                    setIsContractViewed(false);
+                  }
+                }}
+                className="custom-primary-button"
+              >
+                View Contract
+              </Button>
+            </>
+          )}
+
+          {isContractViewed && isIDVerified && (
+            <Button
+              variant="primary"
+              onClick={handleBook}
+              className="custom-primary-button"
+            >
+              Proceed to Payment
+            </Button>
+          )}
+        </div>
+        <div style={{ textAlign: "center", marginTop: "10px" }}>
           <ValidationText
-            isValid={captchaValue}
-            validationText={"ReCAPTCHAv3 Completed!"}
-            errorText={"Please complete the ReCAPTCHAv3 to proceed."}
-          ></ValidationText>
-        )}
-        <Button className="custom-primary-button" type="submit">
-          Send An Inquiry
-        </Button>
-        {/* Render "ID Verification" button conditionally */}
-        <IDVerificationButton
-          className="custom-primary-button"
-          type="submit"
-          stripePromise={stripePromise}
-          onVerificationResult={handleVerificationResult}
-        >
-          Verify Identity
-        </IDVerificationButton>
-        <Button
-          variant="primary"
-          onClick={() => {
-            window.open(contractUrl, "_blank");
-          }}
-          className="custom-primary-button"
-        >
-          View Contract
-        </Button>
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={handleBook}
-          className="custom-primary-button"
-          disabled={!testingMode}
-        >
-          Proceed to Payment
-        </Button>
+            isValid={isInquiryValid}
+            validationText={
+              "Thanks for the inquiry! We'll contact you shortly."
+            }
+            errorText={inquiryErrorText}
+            starterText={""}
+          />
+          <ValidationText
+            isValid={isIDVerified}
+            validationText={"ID verified successfully!"}
+            errorText={"ID not verified. Please try again."}
+            starterText={""}
+          />
+
+          <ValidationText
+            isValid={isContractViewed}
+            validationText={"Contract viewed successfully!"}
+            errorText={"Contract loaded unsuccessfully. Please try again."}
+            starterText={""}
+          />
+        </div>
       </Form>
     </>
   );
 };
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setTransactionId: (id: string) => dispatch(setTransactionId(id)),
-});
-
-const mapStateToProps = (state: RootState) => ({
-  transactionId: state.transactionId,
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GuestInfoPaymentPageModal);
+export default GuestInfoPaymentPageModal;

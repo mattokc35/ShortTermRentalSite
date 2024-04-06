@@ -1,17 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.css";
 import "./ContactForm.css";
+import ValidationText from "./validationText/ValidationText";
 
 interface ContactFormProps {}
 
 const ContactForm: React.FC<ContactFormProps> = () => {
+  const [isContactSubmitted, setIsContactSubmitted] = useState<
+    boolean | undefined
+  >(undefined);
   const form = useRef<HTMLFormElement>(null);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("SEND EMAIL");
     e.preventDefault();
 
     emailjs
@@ -26,10 +29,11 @@ const ContactForm: React.FC<ContactFormProps> = () => {
           console.log(result.text);
         },
         (error) => {
+          setIsContactSubmitted(false);
           console.log(error.text);
         }
       );
-    window.alert("Thanks for contacting us! We will get back to you soon.");
+    setIsContactSubmitted(true);
   };
   return (
     <>
@@ -68,6 +72,13 @@ const ContactForm: React.FC<ContactFormProps> = () => {
           >
             Submit
           </Button>
+          <ValidationText
+            isValid={isContactSubmitted}
+            validationText={
+              "Contact form successfully submitted! We will get back to you soon."
+            }
+            errorText={"Error sending contact form. Please try again."}
+          ></ValidationText>
         </Form>
       </div>
     </>
