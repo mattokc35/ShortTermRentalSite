@@ -9,9 +9,12 @@ import {
   childrenOptions,
   infantOptions,
 } from "../constants/constants";
-import "./BookingInputForm.css";
+import "./BookingInputForm.scss";
 import "react-dates/lib/css/_datepicker.css";
-import { calendarRequest, priceRequest } from "../network/networkRequests";
+import {
+  calendarRequest,
+  fetchPricesFromGoogleSheets,
+} from "../network/networkRequests";
 import { bookingFormValidation } from "../inputs/InputVerification";
 import differenceInDays from "date-fns/differenceInDays";
 import GuestInfoPaymentPageModal from "../modals/GuestInfoPaymentPage";
@@ -23,7 +26,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
 import { setTransactionId } from "../actions/transactionActions";
 import { setContractValues } from "../actions/contractValuesActions";
-import { PriceArray, PriceData } from "../types/types";
+import { PriceArray, PriceDataGoogleAPI, PriceLabsData } from "../types/types";
 
 function BookingInputForm(props: any) {
   const navigate = useNavigate();
@@ -47,7 +50,7 @@ function BookingInputForm(props: any) {
   const [focusedInput, setFocusedInput] = useState<any>();
   const [nightsPrice, setNightsPrice] = useState<any>();
   const [numberOfNights, setNumNights] = useState(0);
-  const [priceArray, setPriceArray] = useState<PriceArray>({ PriceData: [] });
+  const [priceArray, setPriceArray] = useState<PriceDataGoogleAPI[]>([]);
   const [tax, setTax] = useState(0);
   const [petFee, setPetFee] = useState(0);
   const [hasDiscount, setHasDiscount] = useState(false);
@@ -67,7 +70,7 @@ function BookingInputForm(props: any) {
     }
     async function fetchPriceData() {
       try {
-        const priceArray = await priceRequest();
+        const priceArray = await fetchPricesFromGoogleSheets();
         setPriceArray(priceArray);
       } catch {
         console.log("can't get price data");
@@ -137,23 +140,23 @@ function BookingInputForm(props: any) {
     return bookedDates.some(({ start, end }) => {
       const startMoment = moment(start, "YYYY-MM-DD");
       const endMoment = moment(end, "YYYY-MM-DD");
-      return date.isBetween(startMoment, endMoment, "day", "[]");
+      return date.isBetween(startMoment, endMoment, "day", "()");
     });
   };
   const renderDayContents = (date: Moment) => {
     let found = 1;
-    found = priceArray.PriceData[0].data.findIndex(
+    found = priceArray.findIndex(
       (element: any) => element.date === date.format("YYYY-MM-DD")
     );
     if (found === -1) {
       return;
     }
-    const entries = Object.entries(priceArray.PriceData[0].data);
+    const entries = Object.entries(priceArray);
     let foundPrice = JSON.stringify(entries[found][1].price);
     let dayValue = date.format("DD");
     return (
       <>
-        <div className="calendar-box">
+        <div className={`calendar-box`}>
           <br />
           <p className="calendar-text-day">{dayValue} </p>
           <br></br>
@@ -204,7 +207,7 @@ function BookingInputForm(props: any) {
       </div>
       <form onSubmit={handleFormSubmit}>
         <div className="BookingInputFormInner">
-          <h4>Select your dates:</h4>
+          <h6>Select your dates:</h6>
           <DateRangePicker
             startDate={startDate}
             startDateId="start-date"
@@ -278,14 +281,4 @@ function BookingInputForm(props: any) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  transactionId: state.transactionId,
-  contractValues: state.contractValues,
-});
-
-const mapDispatchToProps = {
-  setTransactionId,
-  setContractValues,
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(BookingInputForm);
+export default BookingInputForm;

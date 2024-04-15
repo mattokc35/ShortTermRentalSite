@@ -30,13 +30,17 @@ const bookingFormValidation = (
   if (numNights < 2 || numNights >= 31) {
     return [true, "Bookings must be 2 or more nights but less than 31 nights"];
   }
-
   // Check for overlapping booked dates
-  const overlappingDate = bookedDates.find(
-    (booking) =>
-      startDate.toDate() <= new Date(booking.end) &&
-      endDate.toDate() >= new Date(booking.start)
-  );
+  const overlappingDate = bookedDates.find((booking) => {
+    const bookingStartDate = new Date(booking.start);
+    bookingStartDate.setDate(bookingStartDate.getDate() + 1);
+    const bookingEndDate = new Date(booking.end);
+    bookingEndDate.setDate(bookingEndDate.getDate() - 1);
+    return (
+      startDate.toDate() <= bookingEndDate &&
+      endDate.toDate() >= bookingStartDate
+    );
+  });
   if (overlappingDate) {
     return [true, "You selected dates that overlap with unavailable dates!"];
   }
