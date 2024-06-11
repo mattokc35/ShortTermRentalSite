@@ -1,0 +1,94 @@
+$primary-color: #0f52ba;
+$secondary-color: #fff;
+$disabled-color: #ccc;
+
+$booking-input-top: 10px;
+$booking-inner-top: 18px;
+
+$booking-h4-font-size: 100%;
+$booking-h4-font-size-large: 130%;
+$booking-h4-font-size-small: 80%;
+
+$total-price-top: 85px;
+$total-price-font-size: 77%;
+
+.calendar-text-day {
+  font-size: 60%;
+}
+.calendar-box {
+  max-height: 25px;
+  position:relative;
+}
+
+.booking-h4 {
+  font-size: $booking-h4-font-size;
+
+  @media screen and (min-width: 1400px) {
+    font-size: $booking-h4-font-size-large;
+  }
+
+  @media screen and (max-width: 800px) {
+    font-size: $booking-h4-font-size-small;
+  }
+}
+
+.BookingInputForm {
+  position: relative;
+  left: 0;
+  top: $booking-input-top;
+
+  h3 {
+    font-style: normal;
+    font-weight: 400;
+    color: $primary-color;
+  }
+}
+
+.BookingInputFormInner {
+  position: relative;
+  top: $booking-inner-top;
+  left: 0;
+  width: 100%;
+  font-size: 100%;
+  z-index: 5;
+}
+
+.totalPriceSection {
+  position: relative;
+  top: 1px;
+  left: 0;
+
+  h6 {
+    position: relative;
+    color: red;
+    top: $total-price-top;
+    font-size: $total-price-font-size;
+  }
+}
+
+.getPriceButton {
+  position: relative;
+  top: $total-price-top;
+  text-decoration: none;
+  background: $primary-color;
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: $secondary-color;
+  border: none;
+
+  &:hover {
+    background-color: $secondary-color;
+    color: $primary-color;
+    border-radius: 100px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  &:disabled {
+    border: 1px solid #999;
+    background-color: $disabled-color;
+    color: #666;
+  }
+}

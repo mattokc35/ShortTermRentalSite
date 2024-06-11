@@ -1,8 +1,9 @@
-h5 {
+.checkoutInfoText {
   font-size: 120%;
   text-align: center;
 }
-h4 {
+
+.totalPriceText {
   font-size: 115%;
   text-align: center;
 }
@@ -23,7 +24,13 @@ h4 {
   color: #fff; /* Text color for the button */
   margin-right: 10px;
   margin-top: 10px;
+  border-radius: 100px;
 }
+
 .guest-instructions {
   margin-bottom: 10px;
+}
+
+.button-container {
+  text-align: right;
 }
