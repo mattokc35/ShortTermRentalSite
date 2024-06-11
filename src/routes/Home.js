@@ -1,6 +1,5 @@
 import Intro from "../components/Intro";
 import Navbar from "../components/Navbar";
-import HomeImage from "./../assets/beachpic.webp";
 import "../App.css";
 import Footer from "../components/footer/Footer";
 import BookingInputForm from "../components/BookingInputForm";
@@ -53,7 +52,6 @@ function Home() {
         bookNowRef={bookNowRef}
         id="home"
         cName="intro-mid"
-        introImg={HomeImage}
         title="Sapphire By The Sea"
         text="A pristine luxury beach cabin for creating unforgettable memories..."
         buttonText="Book Now"

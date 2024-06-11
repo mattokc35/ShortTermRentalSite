@@ -1,6 +1,7 @@
-import "./IntroStyles.css";
+import "./IntroStyles.scss";
 import SapphireLogo from "../assets/sapphirelogo.svg";
-import React, { ForwardedRef, forwardRef, MouseEvent } from "react";
+import React, { forwardRef, MouseEvent } from "react";
+import CloudinaryImage from "./cloudinaryImage/CloudinaryImage";
 
 interface IntroProps {
   cName: string;
@@ -19,13 +20,17 @@ const Intro = forwardRef<HTMLDivElement, IntroProps>((props, ref) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <div className="intro" ref={ref}>
         <div className={props.cName}>
-          <img
-            className="background-image"
-            alt={props.introImg}
-            src={props.introImg}
+          <CloudinaryImage
+            style={{
+              width: "120%",
+              height: "87%",
+              objectFit: "cover",
+              opacity: "0.98",
+            }}
+            publicId={process.env.BEACH_PIC_PUBLIC_ID}
           />
         </div>
 
@@ -41,7 +46,7 @@ const Intro = forwardRef<HTMLDivElement, IntroProps>((props, ref) => {
           </a>
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 });
 
