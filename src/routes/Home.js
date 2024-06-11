@@ -58,8 +58,6 @@ function Home() {
         url="/"
         btnClass="show"
       />
-
-      <br />
       <div className="site-content">
         <div className="amenities-section">
           <h4>
@@ -67,30 +65,20 @@ function Home() {
             that has been recently constructed in November 2022! It is equipped
             with everything you need to make unforgettable memories.
           </h4>
-          <br />
           <ImageGallery />
-          <br />
           <h4>
             We are located just a short 5-minute walk to the sands of Crystal
             Beach and more!
           </h4>
-          <br />
           <LocationMap />
         </div>
-        <br />
-
         <Divider ref={bookNowRef} id="book-now" title="Book Now" />
         <div className="book-and-photos">
           <div className="booking-input-form">
             <BookingInputForm />
           </div>
         </div>
-        <br />
-        <br />
-        <br />
-        <br />
         <Divider title="Photo Gallery" />
-        <br />
         <div className="carousel-section">
           <Carousel
             showIndicators={false}
@@ -124,9 +112,7 @@ function Home() {
             <YouTubeEmbed></YouTubeEmbed>
           </div>
         </div>
-
         <Divider ref={reviewsRef} title="Customer Reviews" />
-        <br></br>
         <div className="reviews-section">
           <h6 className="recentGuestReviews">
             (5.0 Star Average Rating on Airbnb and Vrbo with over 45 reviews as
@@ -152,21 +138,15 @@ function Home() {
             ))}
           </Carousel>
         </div>
-
         <Divider ref={aboutRef} title="About The Host" />
-        <br></br>
         <div className="about-section">
           <About />
         </div>
-        <br></br>
         <Divider ref={contactFormRef} id="contact-form" title="Contact Form" />
-        <br></br>
         <div className="contact-form">
           <ContactForm />
         </div>
-        <br />
       </div>
-
       <Footer></Footer>
     </>
   );
