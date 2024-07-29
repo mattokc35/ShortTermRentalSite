@@ -107,15 +107,12 @@ export function calculatePromoCodePrice(
   petFee: number
 ): [number, number, number] {
   let currentPrice: number = 0;
-  console.log(nightsPrice);
-  console.log(discountedPrice);
   nightsPrice === discountedPrice
     ? (currentPrice = nightsPrice)
     : (currentPrice = discountedPrice);
 
   const promoCodeDiscountedPrice =
     currentPrice - currentPrice * (promoCodeDiscountPercentage * 0.01);
-  console.log(promoCodeDiscountedPrice);
   let newTotalPrice = promoCodeDiscountedPrice;
   //cleaning fee
   newTotalPrice += 225;

@@ -95,8 +95,6 @@ export const sendContractEmailDataToBackend = async (
       "POST",
       contractEmailDataObject
     );
-    console.log("send contract email data to backend response data");
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Error:", error);

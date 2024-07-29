@@ -64,14 +64,12 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
   const [tax, setTax] = useState<number>(props.tax);
 
   useEffect(() => {
-    console.log(totalPrice);
     const promoCodePriceArray = calculatePromoCodePrice(
       props.nightsPrice,
       props.discountedNightsPrice,
       promoCodeDiscountPercentage,
       props.petFee
     );
-    console.log(promoCode);
     setPromoCodeDiscountPrice(promoCodePriceArray[0]);
     setTotalPrice(promoCodePriceArray[1]);
     setTax(promoCodePriceArray[2]);
@@ -240,7 +238,6 @@ const GuestInfoPaymentPageModal: React.FC<GuestInfoPaymentPageModalProps> = (
     verifyPromoCode(promoCode)
       .then((promoCodeData) => {
         if (promoCodeData) {
-          console.log(promoCodeData);
           setIsPromoCodeValid(promoCodeData.isPromoValid);
           setPromoCodeDiscountPercentage(promoCodeData.discountPercentage);
         }
